@@ -23,7 +23,7 @@ class UserData {
   UserData({
     required this.id, required this.email, required this.group, required this.grade,
     required this.name, required this.status, required this.imgData, required this.firebaseUserId,
-    required this.fileName, required this.location,
+    required this.fileName, required this.location, required this.flag,
   });
 
   final int id;
@@ -36,6 +36,7 @@ class UserData {
   final String firebaseUserId;
   String fileName;
   String location;
+  bool flag;
 
   //JSONからオブジェクトを作成するファクトリメソッド
   factory UserData.fromJson(dynamic json) {
@@ -50,6 +51,7 @@ class UserData {
       firebaseUserId: json['firebase_user_id'] as String,
       fileName: json['file_name'] as String,
       location: json['now_location'] as String,
+      flag: json['location_flag'] as bool,
     );
   }
 

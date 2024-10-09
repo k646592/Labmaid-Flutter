@@ -17,7 +17,7 @@ class CreateAttendanceModel extends ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     userId = user!.uid;
     email = user.email;
-    var uri = Uri.parse('http://localhost:8000/user_name_id/$userId');
+    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/user_name_id/$userId');
     var response = await http.get(uri);
 
     // レスポンスのステータスコードを確認
@@ -50,7 +50,7 @@ class CreateAttendanceModel extends ChangeNotifier {
     }
 
     final now = DateTime.now();
-    final urlUser = Uri.parse('http://localhost:8000/update_user_status/$id');
+    final urlUser = Uri.parse('http://sui.al.kansai-u.ac.jp/api/update_user_status/$id');
     // 送信するデータを作成
     Map<String, dynamic> data = {
       'status': title,
@@ -62,7 +62,7 @@ class CreateAttendanceModel extends ChangeNotifier {
       // 他のヘッダーを必要に応じて追加
     };
 
-    final url = Uri.parse('http://localhost:8000/attendances');
+    final url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/attendances');
     final response = await http.post(
       url,
       headers: {
@@ -114,7 +114,7 @@ class CreateAttendanceModel extends ChangeNotifier {
   }
 
   Future sendEmail(String title, DateTime start, DateTime end, String description, bool undecided) async {
-    Uri url = Uri.parse('http://localhost:8000/mail');
+    Uri url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/mail');
     final response = await http.post(url, body: {'name': name, 'subject': subject(title), 'from_email': email, 'text': textMessages(title,start,end,description, undecided)});
 
     if (response.statusCode == 200) {

@@ -217,7 +217,7 @@ class _EventIndexPageState extends State<EventIndexPage> {
   }
 
   Future<void> _fetchEvent() async {
-    var uri = Uri.parse('http://localhost:8000/events');
+    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/events');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -248,7 +248,7 @@ class _EventIndexPageState extends State<EventIndexPage> {
     final user = FirebaseAuth.instance.currentUser;
     final userId = user!.uid;
 
-    var uriUser = Uri.parse('http://localhost:8000/user_id/$userId');
+    var uriUser = Uri.parse('http://sui.al.kansai-u.ac.jp/api/user_id/$userId');
     var responseUser = await http.get(uriUser);
 
     // レスポンスのステータスコードを確認
@@ -286,7 +286,7 @@ class _EventIndexPageState extends State<EventIndexPage> {
 
   void _connectWebSocket() {
     _channel = WebSocketChannel.connect(
-      Uri.parse('ws://localhost:8000/ws_event_list'),
+      Uri.parse('ws://sui.al.kansai-u.ac.jp/api/ws_event_list'),
     );
     _channel.stream.listen((message) {
 

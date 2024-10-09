@@ -120,7 +120,7 @@ class RegisterModel extends ChangeNotifier {
 
         //FastAPIに追加
         //Postリクエストを送信するエンドポイントのURL
-        var uri = Uri.parse('http://localhost:8000/users');
+        var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/users');
         String imagePath = 'assets/images/default.png'; //画像ファイルパス
 
         final request = http.MultipartRequest('POST', uri);
@@ -144,6 +144,7 @@ class RegisterModel extends ChangeNotifier {
           'status': status,
           'firebase_user_id': uid,
           'now_location': 'キャンパス外',
+          'location_flag': false.toString(),
         });
 
 

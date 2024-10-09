@@ -39,7 +39,7 @@ class _AttendanceManagementPage extends State<AttendanceManagementPage> {
   }
 
   Future<void> _fetchAttendanceUserList() async {
-    var uri = Uri.parse('http://localhost:8000/users_attendance');
+    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/users_attendance');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -67,7 +67,7 @@ class _AttendanceManagementPage extends State<AttendanceManagementPage> {
   }
 
   Future<void> _fetchMyUserData() async {
-    var uriUser = Uri.parse('http://localhost:8000/user_id/$firebaseUserId');
+    var uriUser = Uri.parse('http://sui.al.kansai-u.ac.jp/api/user_id/$firebaseUserId');
     var responseUser = await http.get(uriUser);
 
     // レスポンスのステータスコードを確認
@@ -93,7 +93,7 @@ class _AttendanceManagementPage extends State<AttendanceManagementPage> {
   }
 
   Future attendanceUpdate(String updateStatus) async {
-    var uri = Uri.parse('http://localhost:8000/update_user_status/$userId');
+    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/update_user_status/$userId');
 
     // 送信するデータを作成
     Map<String, dynamic> data = {
@@ -128,7 +128,7 @@ class _AttendanceManagementPage extends State<AttendanceManagementPage> {
 
   void _connectWebSocket() {
     _channel = WebSocketChannel.connect(
-      Uri.parse('ws://localhost:8000/ws_user_status'),
+      Uri.parse('ws://sui.al.kansai-u.ac.jp/api/ws_user_status'),
     );
     _channel.stream.listen((message) {
       final Map<String, dynamic> data = jsonDecode(message);

@@ -17,7 +17,7 @@ class _DoorStatusAppbarState extends State<DoorStatusAppbar> {
     super.initState();
     _fetchDoorStatus();
     _channel = WebSocketChannel.connect(
-      Uri.parse('ws://localhost:8000/ws_door_status'),
+      Uri.parse('ws://sui.al.kansai-u.ac.jp/api/ws_door_status'),
     );
 
   }
@@ -44,7 +44,7 @@ class _DoorStatusAppbarState extends State<DoorStatusAppbar> {
 
   Future<void> _fetchDoorStatus() async {
     final response = await http.get(
-      Uri.parse('http://localhost:8000/door_status'),
+      Uri.parse('http://sui.al.kansai-u.ac.jp/api/door_status'),
     );
 
     if (response.statusCode == 200) {

@@ -17,7 +17,7 @@ class CreateEventModel extends ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     userId = user!.uid;
     email = user.email;
-    var uri = Uri.parse('http://localhost:8000/user_name_id/$userId');
+    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/user_name_id/$userId');
     var response = await http.get(uri);
 
     // レスポンスのステータスコードを確認
@@ -49,7 +49,7 @@ class CreateEventModel extends ChangeNotifier {
       throw '詳細が入力されていません。';
     }
 
-    final url = Uri.parse('http://localhost:8000/events');
+    final url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/events');
     final response = await http.post(
       url,
       headers: {
@@ -80,7 +80,7 @@ class CreateEventModel extends ChangeNotifier {
   }
 
   Future sendEmail(String title, DateTime start, DateTime end, String unit, String description) async {
-    Uri url = Uri.parse('http://localhost:8000/mail');
+    Uri url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/mail');
     final response = await http.post(url, body: {'name': name, 'subject': subject(title,unit), 'from_email': email, 'text': textMessages(title,start,end,unit,description)});
 
     if (response.statusCode == 200) {

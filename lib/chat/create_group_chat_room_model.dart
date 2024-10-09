@@ -139,7 +139,7 @@ class AddChatRoomModel extends ChangeNotifier {
   Future fetchUserList() async {
     final currentUser = FirebaseAuth.instance.currentUser;
 
-    var uri = Uri.parse('http://localhost:8000/users/${currentUser!.uid}');
+    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/users/${currentUser!.uid}');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -162,7 +162,7 @@ class AddChatRoomModel extends ChangeNotifier {
     }
 
 
-    var url = Uri.parse('http://localhost:8000/chat_users/${currentUser.uid}');
+    var url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/chat_users/${currentUser.uid}');
 
     // GETリクエストを送信
     var responseGet = await http.get(url);
@@ -209,7 +209,7 @@ class AddChatRoomModel extends ChangeNotifier {
 
     //FastAPIに追加
     //Postリクエストを送信するエンドポイントのURL
-    var uri = Uri.parse('http://localhost:8000/group_chat_room');
+    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/group_chat_room');
     String imagePath = 'assets/images/group_default.jpg'; //画像ファイルパス
 
     final request = http.MultipartRequest('POST', uri);

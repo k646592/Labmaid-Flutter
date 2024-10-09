@@ -31,7 +31,7 @@ class _ChatMemberAddPage extends State<ChatMemberAddPage> {
       }
     }
 
-    final url = Uri.parse('http://localhost:8000/add_members/${groupChatRoomData.id}');
+    final url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/add_members/${groupChatRoomData.id}');
     final response = await http.post(
       url,
       headers: {

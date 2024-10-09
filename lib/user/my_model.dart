@@ -13,7 +13,7 @@ class MyModel extends ChangeNotifier {
     final currentUser = FirebaseAuth.instance.currentUser;
     final uid = currentUser!.uid;
 
-    var uri = Uri.parse('http://localhost:8000/users/$uid');
+    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/users/$uid');
 
     // GETリクエストを送信
     var response = await http.get(uri);

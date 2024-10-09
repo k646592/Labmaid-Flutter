@@ -105,7 +105,7 @@ Future<void> postLocation() async {
         location = '研究室内';
       }
       // サーバに位置情報をPOST
-      var uri = Uri.parse('http://localhost:8000/update_user_location/$firebaseUserId');
+      var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/update_user_location/$firebaseUserId');
 
       // 送信するデータを作成
       Map<String, dynamic> data = {

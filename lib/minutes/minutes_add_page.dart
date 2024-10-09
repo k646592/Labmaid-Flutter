@@ -190,7 +190,7 @@ class _AddMemoPageState extends State<AddMemoPage> {
       throw 'タイトルが入力されていません。';
     }
 
-    final url = Uri.parse('http://localhost:8000/meetings');
+    final url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/meetings');
     final response = await http.post(
       url,
       headers: {

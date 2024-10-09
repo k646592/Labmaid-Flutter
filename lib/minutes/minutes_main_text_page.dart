@@ -85,7 +85,7 @@ class _MainTextPageState extends State<MainTextPage> {
   }
 
   Future updateMainText() async {
-    final url = Uri.parse('http://localhost:8000/update_main_text/${widget.memo.id}');
+    final url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/update_main_text/${widget.memo.id}');
     final response = await http.patch(
       url,
       headers: {
