@@ -42,7 +42,22 @@ void onStart(ServiceInstance service) async {
   });
 }
 
-Future<Position> getCurrentLocation() async {
+Future<Position?> getCurrentLocation() async {
+  LocationPermission permission = await Geolocator.checkPermission();
+
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      // 位置情報の権限が拒否された場合
+      return null;
+    }
+  }
+
+  if (permission == LocationPermission.deniedForever) {
+    // 永久に拒否されている場合
+    return null;
+  }
+
   Position position = await Geolocator.getCurrentPosition(
     desiredAccuracy: LocationAccuracy.high,
   );
@@ -93,7 +108,14 @@ String _checkDistance(Position position) {
 Future<void> postLocation() async {
   try {
     final position = await getCurrentLocation();
-    String location = _checkDistance(position);
+    String location;
+    if (position == null) {
+      // 位置情報が許可されていない場合は「キャンパス外」に設定
+      location = 'キャンパス外';
+    } else {
+      // 位置情報が許可されている場合は通常の処理
+      location = _checkDistance(position);
+    }
     String? firebaseUserId = await getUserData();
 
     // wi-fiの取得

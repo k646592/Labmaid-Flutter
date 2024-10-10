@@ -35,7 +35,7 @@ class _MyPageState extends State<MyPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const LocationPage()),
+                        builder: (context) => const GeoLocationIndexPage()),
                   );
                 },
               ),
