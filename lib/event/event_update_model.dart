@@ -52,6 +52,10 @@ class UpdateEventModel extends ChangeNotifier {
       throw '詳細が入力されていません。';
     }
 
+    if (start.isAfter(end)) {
+      end = start.add(const Duration(hours: 1));
+    }
+
     var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/events/$id');
 
     // 送信するデータを作成
@@ -108,6 +112,10 @@ class UpdateEventModel extends ChangeNotifier {
   }
 
   Future sendEmail(String title, DateTime start, DateTime end, String unit, String description) async {
+    if (start.isAfter(end)) {
+      end = start.add(const Duration(hours: 1));
+    }
+
     Uri url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/event_mail');
     final response = await http.post(url, body: {'name': name, 'subject': subject(title,unit), 'from_email': email, 'text': textMessages(title,start,end,unit,description)});
 

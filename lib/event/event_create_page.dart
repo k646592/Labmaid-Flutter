@@ -350,7 +350,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                                       setState(() {
                                         selectedStartDate = dateTime;
                                         if (selectedStartDate.isAfter(selectedEndDate)) {
-                                          selectedEndDate = selectedStartDate;
+                                          selectedEndDate = DateTime(selectedStartDate.year,selectedStartDate.month,selectedStartDate.day,23,00,00);
                                         }
                                       });
                                     },

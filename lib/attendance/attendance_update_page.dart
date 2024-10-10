@@ -52,11 +52,39 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
     super.dispose();
   }
 
-  void reset() {
-    setState(() {
-      selectedStartDate = DateTime(currentDate.year,currentDate.month,currentDate.day,00,00,00);
-      selectedEndDate = DateTime(currentDate.year,currentDate.month,currentDate.day,23,00,00);
-    });
+  void reset(String content) {
+    if (content == '欠席') {
+      setState(() {
+        selectedStartDate = DateTime(currentDate.year,currentDate.month,currentDate.day,00,00,00);
+        selectedEndDate = DateTime(currentDate.year,currentDate.month,currentDate.day,23,00,00);
+      });
+    } else {
+      setState(() {
+        selectedStartDate = currentDate.add(const Duration(minutes: 30));
+        selectedEndDate = DateTime(currentDate.year,currentDate.month,currentDate.day,23,00,00);
+      });
+    }
+
+  }
+
+  void resetUndecided(bool undecided) {
+    if (undecided == true) {
+      setState(() {
+        selectedStartDate = DateTime(selectedStartDate.year,selectedStartDate.month,selectedStartDate.day,00,00,00);
+      });
+    } else {
+      if (DateTime(selectedStartDate.year,selectedStartDate.month,selectedStartDate.day) == DateTime(currentDate.year,currentDate.month,currentDate.day)) {
+        selectedStartDate = DateTime(selectedStartDate.year,selectedStartDate.month,selectedStartDate.day,currentDate.hour,currentDate.minute,00);
+        setState(() {
+          selectedStartDate = selectedStartDate.add(const Duration(minutes: 30));
+        });
+      }
+      else {
+        setState(() {
+          selectedStartDate = DateTime(selectedStartDate.year,selectedStartDate.month,selectedStartDate.day,12,00,00);
+        });
+      }
+    }
   }
 
   @override
@@ -214,7 +242,7 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
                                       setState(() {
                                         _titleController.text = text.toString();
                                       });
-                                      reset();
+                                      reset(_titleController.text);
                                     },
                                   ),
                                 ],
@@ -549,10 +577,8 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
                   // 「完了」を押したときの処理
                   onConfirm: (dateTime) {
                     setState(() {
-                      selectedStartDate = dateTime;
-                      if (selectedStartDate.isAfter(selectedEndDate)) {
-                        selectedEndDate = selectedStartDate;
-                      }
+                      selectedStartDate = DateTime(dateTime.year,dateTime.month,dateTime.day,12,00,00);
+                      selectedEndDate = DateTime(dateTime.year,dateTime.month,dateTime.day,23,00,00);
                     });
                   },
 
@@ -651,6 +677,7 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
                           setState(() {
                             undecided = value!;
                           });
+                          resetUndecided(undecided);
                         }
                     ),
                     const Text(
@@ -700,10 +727,8 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
                   // 「完了」を押したときの処理
                   onConfirm: (dateTime) {
                     setState(() {
-                      selectedStartDate = dateTime;
-                      if (selectedStartDate.isAfter(selectedEndDate)) {
-                        selectedEndDate = selectedStartDate;
-                      }
+                      selectedStartDate = DateTime(dateTime.year,dateTime.month,dateTime.day,12,00,00);
+                      selectedEndDate = DateTime(dateTime.year,dateTime.month,dateTime.day,23,00,00);
                     });
                   },
 
@@ -806,7 +831,7 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
                     setState(() {
                       selectedStartDate = dateTime;
                       if (selectedStartDate.isAfter(selectedEndDate)) {
-                        selectedEndDate = selectedStartDate;
+                        selectedEndDate = DateTime(selectedStartDate.year,selectedStartDate.month,selectedStartDate.day,23,00,00);
                       }
                     });
                   },

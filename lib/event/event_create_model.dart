@@ -49,6 +49,10 @@ class CreateEventModel extends ChangeNotifier {
       throw '詳細が入力されていません。';
     }
 
+    if (start.isAfter(end)) {
+      end = start.add(const Duration(hours: 1));
+    }
+
     final url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/events');
     final response = await http.post(
       url,
@@ -80,6 +84,10 @@ class CreateEventModel extends ChangeNotifier {
   }
 
   Future sendEmail(String title, DateTime start, DateTime end, String unit, String description) async {
+    if (start.isAfter(end)) {
+      end = start.add(const Duration(hours: 1));
+    }
+
     Uri url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/mail');
     final response = await http.post(url, body: {'name': name, 'subject': subject(title,unit), 'from_email': email, 'text': textMessages(title,start,end,unit,description)});
 
