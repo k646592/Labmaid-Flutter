@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 
 import '../pick_export/pick_image_export.dart';
+import '../save_export/save_image_export.dart';
 
 class GroupChatPage extends StatefulWidget {
   final GroupChatRoomData groupChatRoomData;
@@ -177,6 +178,72 @@ class _GroupChatPageState extends State<GroupChatPage> {
     }
   }
 
+  void _showImageDialog(BuildContext context, String imgData) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          child: Stack(
+            children: [
+              // 画像表示 (サイズ統一: 300x300)
+              Center(
+                child: Container(
+                  width: 300, // 固定サイズ
+                  height: 300, // 固定サイズ
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.memory(
+                      base64Decode(imgData),
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.error);
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              // 保存ボタンを画像の右下に配置
+              Positioned(
+                right: 25,
+                bottom: 25,
+                child: FloatingActionButton(
+                  onPressed: () async {
+                    await SaveImage().saveImage(base64Decode(imgData));
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.green,
+                        content: Text('Image Saved!'),
+                      ),
+                    );
+                  },
+                  child: const Icon(Icons.save),
+                ),
+              ),
+              // 戻るボタンを画像の左上に配置
+              Positioned(
+                left: 25,
+                top: 25,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
     _focusNode.dispose();
@@ -287,12 +354,17 @@ class _GroupChatPageState extends State<GroupChatPage> {
                                     message.imgData == '' && message.fileData == ''
                                         ? Text(message.content)
                                         : message.fileData == ''
-                                        ? Image.memory(
-                                          base64Decode(message.imgData),
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) {
-                                            return const Icon(Icons.error);
+                                        ? GestureDetector(
+                                          onTap: () async {
+                                            _showImageDialog(context, message.imgData);
                                           },
+                                          child: Image.memory(
+                                            base64Decode(message.imgData),
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return const Icon(Icons.error);
+                                            },
+                                          ),
                                         )
                                         : GestureDetector(
                                       onTap: () async {

@@ -2,7 +2,8 @@
     <application
         android:label="labmaidfastapi"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true">
         <service
             android:name=".LocationService"
             android:foregroundServiceType="location"

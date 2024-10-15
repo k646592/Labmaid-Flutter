@@ -37,6 +37,8 @@
     <string>ライブラリにアクセスするよ</string>
     <key>NSCameraUsageDescription</key>
     <string>カメラにアクセスするよ</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>写真ライブラリに画像を保存するための権限が必要です。</string>
 
     <!-- その他の設定 -->
     <key>FLTEnableImpeller</key>
