@@ -16,9 +16,19 @@
         <string>location</string>
     </array>
 
+    <key>NSAppTransportSecurity</key>
+    <dict>
+      <key>NSAllowsArbitraryLoads</key>
+      <true/>
+    </dict>
+
     <!-- マイクの使用許可 -->
     <key>NSMicrophoneUsageDescription</key>
     <string>マイクにアクセスするよ</string>
+
+    <!-- フォルダの使用許可 -->
+    <key>NSDocumentsFolderUsageDescription</key>
+    <string>App needs access to documents folder.</string>
 
     <!-- その他のプライバシーキー -->
     <key>NSLocationUsageDescription</key>

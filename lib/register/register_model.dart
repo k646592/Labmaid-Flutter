@@ -155,7 +155,12 @@ class RegisterModel extends ChangeNotifier {
                  if (response.statusCode == 200) {
                    return response;
                  }
-                 return Future.error(response);
+                 else {
+                   // ユーザーを削除
+                   user.delete();
+                   FirebaseAuth.instance.signOut();
+                   return Future.error(response);
+                 }
         });
 
       }
