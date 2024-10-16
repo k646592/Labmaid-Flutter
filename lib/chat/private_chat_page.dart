@@ -320,6 +320,9 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
                                     bottomRight: const Radius.circular(12),
                                   ),
                                 ),
+                                constraints: BoxConstraints(
+                                  maxWidth: MediaQuery.of(context).size.width * 0.65, // 画面の幅の65%
+                                ),
                                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
