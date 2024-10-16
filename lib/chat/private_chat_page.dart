@@ -32,6 +32,7 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   bool _isExpanded = false;
+  bool _isLoading = true;
   final TextEditingController _messageController = TextEditingController();
   late WebSocketChannel _channel;
   final List<PrivateMessageData> _messages = [];
@@ -88,17 +89,20 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
     });
     _fetchMessageHistory();
     _connectWebSocket();
-    _scrollToBottom();
   }
 
+  // スクロールを最下部にする関数
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
+        // 小さな遅延を追加してmaxScrollExtentが正しく計算されるようにする
+        Future.delayed(Duration(milliseconds: 500), () {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        });
       }
     });
   }
@@ -117,9 +121,13 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
 
       setState(() {
         _messages.addAll(fetchedMessages);
+        _isLoading = false;
+        _scrollToBottom(); // ここでスクロールを呼び出し
       });
-      _scrollToBottom(); // ここでスクロールを呼び出し
     } else {
+      setState(() {
+        _isLoading = false;
+      });
       // エラーハンドリング
       print('Failed to load messages');
     }
@@ -261,7 +269,8 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
           },
         ),
       ),
-      body: Column(
+      body: _isLoading ? const Center(child: CircularProgressIndicator())
+          : Column(
         children: [
           Expanded(
             child: GestureDetector(
@@ -275,7 +284,6 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
                   final message = _messages[index];
                   final isMyMessage = message.userId == widget.myData.id;
                   final userData = isMyMessage ? widget.myData : widget.userData;
-
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                     child: Row(

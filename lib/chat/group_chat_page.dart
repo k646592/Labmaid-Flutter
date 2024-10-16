@@ -32,6 +32,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   bool _isExpanded = false;
+  bool _isLoading = true;
   final TextEditingController _messageController = TextEditingController();
   late WebSocketChannel _channel;
   final List<GroupMessageData> _messages = [];
@@ -114,14 +115,18 @@ class _GroupChatPageState extends State<GroupChatPage> {
     _connectWebSocket();
   }
 
+  // スクロールを最下部にする関数
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
+        // 小さな遅延を追加してmaxScrollExtentが正しく計算されるようにする
+        Future.delayed(Duration(milliseconds: 500), () {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        });
       }
     });
   }
@@ -140,9 +145,13 @@ class _GroupChatPageState extends State<GroupChatPage> {
 
       setState(() {
         _messages.addAll(fetchedMessages);
+        _isLoading = false;
+        _scrollToBottom(); // ここでスクロールを呼び出し
       });
-      _scrollToBottom(); // ここでスクロールを呼び出し
     } else {
+      setState(() {
+        _isLoading = false;
+      });
       // エラーハンドリング
       print('Failed to load messages');
     }
@@ -287,7 +296,8 @@ class _GroupChatPageState extends State<GroupChatPage> {
           },
         ),
       ),
-      body: Column(
+      body: _isLoading ? const Center(child: CircularProgressIndicator())
+          : Column(
         children: [
           Expanded(
             child: GestureDetector(
