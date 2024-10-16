@@ -87,6 +87,7 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
     });
     _fetchMessageHistory();
     _connectWebSocket();
+    _scrollToBottom();
   }
 
   void _scrollToBottom() {
@@ -224,6 +225,7 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
     _focusNode.dispose();
     _messageController.dispose();
     _channel.sink.close();
+    _scrollController.dispose();
     super.dispose();
   }
 
