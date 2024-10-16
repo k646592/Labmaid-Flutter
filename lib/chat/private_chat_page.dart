@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:labmaidfastapi/chat/pdf_viewer.dart';
+import 'package:labmaidfastapi/chat/private_chat_room_info_page.dart';
 import 'package:labmaidfastapi/domain/chat_data.dart';
 import 'package:labmaidfastapi/domain/user_data.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -241,6 +242,13 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
           IconButton(
             onPressed: () async {
               // チャットルームインフォ
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (context) {
+                      return PrivateChatRoomInfo(privateChatroomId: widget.privateChatroomId, userData: widget.userData, myData: widget.myData);
+                    }
+                ),
+              );
 
             },
             icon: const Icon(Icons.info),

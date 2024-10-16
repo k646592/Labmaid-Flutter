@@ -65,33 +65,6 @@ class _MyPageState extends State<MyPage> {
         drawer: const UserDrawer(),
         body: Consumer<MyModel>(builder: (context, model, child) {
 
-          /*
-            final List<Widget> widgets = model.chats.map(
-
-                  (room) => Card(
-                child: ListTile(
-                  leading: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.black,
-                    backgroundImage: room.imgURL != '' ? NetworkImage(room.imgURL) : const NetworkImage('https://www.seekpng.com/png/full/967-9676420_group-icon-org2x-group-icon-orange.png'),
-                  ),
-                  title: Text(room.roomName),
-                  subtitle: Text(room.admin[1]),
-                  trailing: IconButton(
-                    onPressed: () async {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context){
-                          return ChatPage(roomId: room.id, roomName: room.roomName, adminId: room.admin[0], adminName: room.admin[1], imgURL: room.imgURL);
-                        }),
-                      );
-                    },
-                    icon: const Icon(Icons.login_outlined),
-                  ),
-                ),
-              ),
-            ).toList();
-            */
-
           return SingleChildScrollView(
             child: model.myData != null
                 ? Column(
@@ -232,25 +205,6 @@ class _MyPageState extends State<MyPage> {
       ),
     );
   }
-
-  /*
-  Widget chatRoomList(List<ChatRoom> chatRooms, List<Widget> widgets){
-    if(chatRooms.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(
-          color: Colors.blueAccent,
-        ),
-      );
-    }
-    else {
-      return ListView(
-        shrinkWrap: true,
-        children: widgets,
-      );
-    }
-  }
-
-   */
 
   Color groupColor(String group) {
     if(group=='Web班') {

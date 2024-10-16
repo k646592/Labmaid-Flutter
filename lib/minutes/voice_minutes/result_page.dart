@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:labmaidfastapi/domain/memo_data.dart';
 
 import '../../header_footer_drawer/footer.dart';
+import '../minutes_pdf_preview.dart';
 import 'call_chatgpt.dart';
 
 class ResultScreen extends StatelessWidget {
@@ -129,6 +130,21 @@ class ResultScreen extends StatelessWidget {
                 ),
               ),
               actions: [
+                IconButton(
+                  onPressed: () async {
+                    // PDF化してプレビューを表示する処理
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MinutesPdfPreview(
+                          snapshot.data!,
+                          memo.title,
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.picture_as_pdf),
+                ),
                 //保存ボタンの追加
                 IconButton(
                   icon: const Icon(Icons.save),
@@ -145,9 +161,9 @@ class ResultScreen extends StatelessWidget {
                             builder: (context) => const Footer(pageNumber: 3),
                           ),
                         );
-                        const snackBar = SnackBar(
+                        final snackBar = SnackBar(
                             backgroundColor: Colors.green,
-                            content: Text('議事録の登録をしました。'),
+                            content: Text('${memo.title}の議事録の上書きをしました。'),
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       } catch (e) {
@@ -161,7 +177,7 @@ class ResultScreen extends StatelessWidget {
                     else {
                       const snackBar = SnackBar(
                         backgroundColor: Colors.red,
-                        content: Text('議事録が空白のため、登録できません。'),
+                        content: Text('議事録が空白のため、上書きできません。'),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     }

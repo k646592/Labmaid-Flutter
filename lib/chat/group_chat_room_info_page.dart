@@ -8,17 +8,17 @@ import '../domain/user_data.dart';
 
 import 'package:http/http.dart' as http;
 
-class ChatRoomInfo extends StatefulWidget {
+class GroupChatRoomInfo extends StatefulWidget {
   final GroupChatRoomData groupChatRoomData;
   final List<GroupChatUserData> groupChatUsers;
   final UserData myData;
-  const ChatRoomInfo({Key? key,  required this.groupChatRoomData, required this.groupChatUsers, required this.myData}) : super(key: key);
+  const GroupChatRoomInfo({Key? key,  required this.groupChatRoomData, required this.groupChatUsers, required this.myData}) : super(key: key);
 
   @override
-  State<ChatRoomInfo> createState() => _ChatRoomInfoState();
+  State<GroupChatRoomInfo> createState() => _GroupChatRoomInfoState();
 }
 
-class _ChatRoomInfoState extends State<ChatRoomInfo> {
+class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
   List<GroupChatMember> groupChatNotUsers = [];
 
   Future getGroupChatNotUsers(int groupChatRoomId) async {
@@ -169,7 +169,7 @@ class _ChatRoomInfoState extends State<ChatRoomInfo> {
                           : const AssetImage('assets/images/group_default.jpg'),
                     ),
                     title: Text(groupChatUsers[index].name),
-                    subtitle: Text(groupChatUsers[index].group),
+                    subtitle: Text('${groupChatUsers[index].grade} ${groupChatUsers[index].group}'),
                   trailing: groupChatUsers[index].id != myData.id ? 
                     IconButton(
                       icon: const Icon(Icons.delete_outline, color: Colors.red),

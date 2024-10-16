@@ -1,7 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:labmaidfastapi/chat/chat_room_info_page.dart';
+import 'package:labmaidfastapi/chat/group_chat_room_info_page.dart';
 import 'package:labmaidfastapi/chat/pdf_viewer.dart';
 import 'package:labmaidfastapi/domain/chat_data.dart';
 import 'package:labmaidfastapi/domain/user_data.dart';
@@ -272,7 +272,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
               await Navigator.of(context).push(
                 MaterialPageRoute(
                     builder: (context) {
-                      return ChatRoomInfo(groupChatRoomData: widget.groupChatRoomData, groupChatUsers: groupChatUsers, myData: widget.myData);
+                      return GroupChatRoomInfo(groupChatRoomData: widget.groupChatRoomData, groupChatUsers: groupChatUsers, myData: widget.myData);
                     }
                 ),
               );
