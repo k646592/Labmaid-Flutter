@@ -70,7 +70,7 @@ class _MainTextPageState extends State<MainTextPage> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const VoiceMemoPage(),
+                  builder: (context) => VoiceMemoPage(memo: widget.memo,),
                 ),
               );
             },
@@ -94,8 +94,23 @@ class _MainTextPageState extends State<MainTextPage> {
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: () async {
-              // mainTextの更新
-              await updateMainText();
+
+              try {
+                // mainTextの更新
+                await updateMainText();
+
+                const snackBar = SnackBar(
+                  backgroundColor: Colors.green,
+                  content: Text('議事録の登録をしました。'),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              } catch (e) {
+                final snackBar = SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text(e.toString()),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
             },
           ),
         ],

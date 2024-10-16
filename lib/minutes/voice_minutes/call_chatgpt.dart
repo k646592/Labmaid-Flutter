@@ -4,26 +4,12 @@ import 'package:http/http.dart';
 
 import 'apikey_openai.dart';
 
-//変更点
+
 //テキストを与えてChatGPTを呼び出し、要約結果を返す関数
 
 Future<String> sendToChatGPT(String text) async {
   String tempText = '';
   String returnText = '';
-
-  /*
-  List<String> split1500Text(String text) {
-    List<String> result = [];
-    for (int i = 0; i < text.length; i += 1500) {
-      int end = i + 1500;
-      if (end > text.length) {
-        end = text.length;
-      }
-      result.add(text.substring(i, end));
-    }
-    return result;
-  }
-  */
 
   //ChatGPTが2000文字以上は要約してくれないので、1700＋αで分割
   List<String> extractStrings(String text) {

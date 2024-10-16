@@ -47,29 +47,14 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: '',
-    appId: '',
-    messagingSenderId: '',
-    projectId: 'labmaid-fastapi-auth',
-    authDomain: 'labmaid-fastapi-auth.firebaseapp.com',
-    storageBucket: 'labmaid-fastapi-auth.appspot.com',
-    measurementId: 'G-H85X2JEQNT',
+
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: '',
-    appId: '',
-    messagingSenderId: '',
-    projectId: 'labmaid-fastapi-auth',
-    storageBucket: 'labmaid-fastapi-auth.appspot.com',
+
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: '',
-    appId: '',
-    messagingSenderId: '',
-    projectId: 'labmaid-fastapi-auth',
-    storageBucket: 'labmaid-fastapi-auth.appspot.com',
-    iosBundleId: 'com.example.labmaidfastapi',
+
   );
 }

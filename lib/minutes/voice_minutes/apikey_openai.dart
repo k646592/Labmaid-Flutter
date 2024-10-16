@@ -1,3 +1,4 @@
 //openAIのAPIkey、WhisperとChatGPTで共通
-//lineで送ります
+//変更点2
+//新しいapikey
 const openaiApiKey = '';

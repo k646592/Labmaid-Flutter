@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+import '../../domain/memo_data.dart';
 import 'call_chatgpt.dart';
 import 'call_whisper.dart';
+import 'result_page.dart';
 
 //変更点
 //議事録の録音と生成を行うページ
@@ -17,7 +19,8 @@ bool check = true;
 String minutesText = '';
 
 class VoiceMemoPage extends StatefulWidget {
-  const VoiceMemoPage({super.key});
+  final MemoData memo;
+  const VoiceMemoPage({Key? key, required this.memo}) : super(key: key);
 
   @override
   State<VoiceMemoPage> createState() => _VoiceMemoPageState();
@@ -188,8 +191,7 @@ class _VoiceMemoPageState extends State<VoiceMemoPage> {
       String temp = await convertSpeechToText(filePath[i]);
       moziokosi += temp;
     }
-    //分割、要約させたものを返り値とする
-    return processArray(separate(moziokosi));
+    return moziokosi;
   }
 
   @override
@@ -197,30 +199,37 @@ class _VoiceMemoPageState extends State<VoiceMemoPage> {
     return _isWaiting
         ? Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Auto Minutes Maker'),
         leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.of(context).pop();
           },
-          icon: const Icon(
-            Icons.arrow_back_ios,
+        ),
+        backgroundColor: Colors.blue.shade800,
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+        centerTitle: true,
+        elevation: 0.0,
+        title: const Text(
+          'Audio Recorder',
+          style: TextStyle(
+            color: Colors.white,
           ),
         ),
-      ),
+
+      ) ,
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const Text('Web版LabMaidでは利用できません',
-                  style: TextStyle(fontSize: 20)),
-              const SizedBox(height: 30),
               StreamBuilder<int>(
                 stream: _stopWatchTimer.rawTime,
                 initialData: _stopWatchTimer.rawTime.value,
                 builder: (context, snapshot) {
                   final displayTime = StopWatchTimer.getDisplayTime(
+                    milliSecond: false,
                     snapshot.data!,
                   );
                   return Text(
@@ -234,14 +243,7 @@ class _VoiceMemoPageState extends State<VoiceMemoPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    /*
-                          onPressed: () {showDialog<void>(
-                              context: context,
-                              builder: (_) {
-                                return const AlertDialogSample();
-                              });},
 
-                           */
                     onPressed: () async {
                       if (_isRecording) {
                         splitRecording();
@@ -301,15 +303,19 @@ class _VoiceMemoPageState extends State<VoiceMemoPage> {
                     setState(() {
                       _isWaiting = false;
                     });
-                    //議事録を作る
                     await callWhisper(recordNumber).then((value) {
                       setState(() {
-                        //議事録が入る
-                        minutesText = value;
+                        mainText = value;
+                        debugPrint(mainText);
                         _isWaiting = true;
                       });
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ResultScreen(mainText,widget.memo),
+                        ),
+                      );
                     });
-                    print(minutesText);
                   }
                       : null,
                   child: const Text('議事録を作成する')),
@@ -318,11 +324,28 @@ class _VoiceMemoPageState extends State<VoiceMemoPage> {
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     )
-    //議事録生成中の画面
         : Scaffold(
       appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          backgroundColor: Colors.blue.shade800,
+          iconTheme: const IconThemeData(
+            color: Colors.white,
+          ),
+          centerTitle: true,
+          elevation: 0.0,
           automaticallyImplyLeading: false,
-          title: const Text('Call Whisper')),
+        title: const Text(
+          'Call Whisper',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ),
       body: const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -337,3 +360,4 @@ class _VoiceMemoPageState extends State<VoiceMemoPage> {
     );
   }
 }
+
