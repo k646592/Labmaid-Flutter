@@ -96,10 +96,10 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
         // 小さな遅延を追加してmaxScrollExtentが正しく計算されるようにする
-        Future.delayed(Duration(milliseconds: 500), () {
+        Future.delayed(const Duration(milliseconds: 1000), () {
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
-            duration: Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 1000),
             curve: Curves.easeOut,
           );
         });

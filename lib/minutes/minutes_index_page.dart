@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../domain/memo_data.dart';
 import '../door_status/door_status_appbar.dart';
-import '../gemini/gemini_page.dart';
+import '../gemini/gemini_chat_page.dart';
+import '../geo_location/location_member_index.dart';
 import '../header_footer_drawer/drawer.dart';
 import 'minutes_add_page.dart';
 import 'minutes_index_model.dart';
@@ -24,13 +25,27 @@ class MemoListPage extends StatelessWidget {
         appBar: AppBar(
           actions: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(4.0),
+              child: IconButton(
+                icon: const Icon(Icons.location_on),
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const GeoLocationIndexPage()),
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
               child: IconButton(
                 icon: const Icon(Icons.psychology_alt),
                 onPressed: () async {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const GeminiPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const GeminiChatPage()),
                   );
                 },
               ),

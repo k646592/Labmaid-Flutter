@@ -11,7 +11,8 @@ import 'package:labmaidfastapi/door_status/door_status_appbar.dart';
 import 'package:labmaidfastapi/event/event_create_page.dart';
 import 'package:labmaidfastapi/event/event_update_page.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import '../gemini/gemini_page.dart';
+import '../gemini/gemini_chat_page.dart';
+import '../geo_location/location_member_index.dart';
 import '../header_footer_drawer/drawer.dart';
 
 
@@ -316,13 +317,27 @@ class _EventIndexPageState extends State<EventIndexPage> {
           toolbarHeight: 50.0,
           actions: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(4.0),
+              child: IconButton(
+                icon: const Icon(Icons.location_on),
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const GeoLocationIndexPage()),
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
               child: IconButton(
                 icon: const Icon(Icons.psychology_alt),
                 onPressed: () async {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const GeminiPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const GeminiChatPage()),
                   );
                 },
               ),

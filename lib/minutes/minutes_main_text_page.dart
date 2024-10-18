@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:labmaidfastapi/header_footer_drawer/footer.dart';
 import 'package:labmaidfastapi/minutes/minutes_pdf_preview.dart';
 import 'package:labmaidfastapi/minutes/voice_minutes/voice_minutes_page.dart';
 
@@ -43,11 +42,7 @@ class _MainTextPageState extends State<MainTextPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => const Footer(pageNumber: 3),
-              ),
-            );
+            Navigator.of(context).pop();
           },
         ),
         backgroundColor: Colors.blue.shade800,

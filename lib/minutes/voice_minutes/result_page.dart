@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:labmaidfastapi/domain/memo_data.dart';
 
-import '../../header_footer_drawer/footer.dart';
 import '../minutes_pdf_preview.dart';
 import 'call_chatgpt.dart';
 
@@ -156,11 +155,9 @@ class ResultScreen extends StatelessWidget {
                         // mainTextの更新
                         await updateMainText(snapshot.data!, memo.id);
 
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => const Footer(pageNumber: 3),
-                          ),
-                        );
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
                         final snackBar = SnackBar(
                             backgroundColor: Colors.green,
                             content: Text('${memo.title}の議事録の上書きをしました。'),

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
@@ -29,9 +31,37 @@ class _MemoListShow extends State<MemoListShow> {
   // 非選択の色
   final Color _notSelectColor = Colors.amber;
 
+  String mainText = '';
+
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<void> getMinute(MemoData memo) async {
+    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/meetings/${memo.id}');
+    // GETリクエストを送信
+    var response = await http.get(uri);
+
+    // レスポンスのステータスコードを確認
+    if (response.statusCode == 200) {
+      // レスポンスボディをUTF-8でデコード
+      var responseBody = utf8.decode(response.bodyBytes);
+
+      // JSONデータをデコード
+      var responseData = jsonDecode(responseBody);
+
+      // main_textデータを取得
+      mainText = responseData['main_text'];
+
+      // mainTextを利用する処理
+      print(mainText);
+
+      // 取得したデータを使用する
+    } else {
+      print('リクエストが失敗しました: ${response.statusCode}');
+      // リクエストが失敗した場合の処理
+    }
   }
 
   Future delete(MemoData memo) async {
@@ -343,10 +373,19 @@ class _MemoListShow extends State<MemoListShow> {
           trailing: IconButton(
             icon: const Icon(Icons.login_outlined),
             onPressed: () async {
+              await getMinute(memo);
               // MainText遷移
+              MemoData newMemo = MemoData(
+                  id: memo.id, title: memo.title,
+                  createdAt: memo.createdAt,
+                  team: memo.team, mainText: mainText,
+                  kinds: memo.kinds, userId: memo.userId,
+                  userName: memo.userName
+              );
+
               Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (context) => MainTextPage(memo: memo),
+                      builder: (context) => MainTextPage(memo: newMemo),
                   ),
               );
             },

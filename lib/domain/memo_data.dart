@@ -8,13 +8,13 @@ class MemoData {
   });
 
   final int id;
-  final String title;
+  String title;
   final DateTime createdAt;
-  final String team;
-  final String mainText;
-  final String kinds;
+  String team;
+  String mainText;
+  String kinds;
   final int userId;
-  final String userName;
+  String userName;
 
   //JSONからオブジェクトを作成するファクトリメソッド
   factory MemoData.fromJson(dynamic json) {
