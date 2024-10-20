@@ -50,6 +50,11 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
       _channel.sink.add(json.encode(message));
       _messageController.clear();
       _scrollToBottom();
+      const snackBar = SnackBar(
+        backgroundColor: Colors.green,
+        content: Text('画像の送信をしました。'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 
@@ -71,13 +76,16 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
           _channel.sink.add(json.encode(message));
           _messageController.clear();
           _scrollToBottom();
+          const snackBar = SnackBar(
+            backgroundColor: Colors.green,
+            content: Text('ファイルの送信をしました。'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       }
 
     }
   }
-
-
 
   @override
   void initState() {
@@ -446,11 +454,6 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
                               onPressed: () async {
                                 try {
                                   await _getFileFromGallery();
-                                  const snackBar = SnackBar(
-                                    backgroundColor: Colors.green,
-                                    content: Text('ファイルの送信をしました。'),
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                 } catch (e) {
                                   final snackBar = SnackBar(
                                     backgroundColor: Colors.red,
@@ -465,11 +468,6 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
                               onPressed: () async {
                                 try {
                                   await _getImageFromGallery();
-                                  const snackBar = SnackBar(
-                                    backgroundColor: Colors.green,
-                                    content: Text('画像の送信をしました。'),
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                 } catch (e) {
                                   final snackBar = SnackBar(
                                     backgroundColor: Colors.red,

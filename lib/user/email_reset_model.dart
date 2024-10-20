@@ -12,6 +12,7 @@ class EmailResetModel extends ChangeNotifier {
 
   String userId = '';
   int? id;
+  String initialEmail = '';
 
   void startLoading() {
     isLoading = true;
@@ -28,6 +29,7 @@ class EmailResetModel extends ChangeNotifier {
     final uid = user!.uid;
     userId = uid;
     emailController.text = user.email!;
+    initialEmail = user.email!;
     var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/user_id/$userId');
     var response = await http.get(uri);
     // レスポンスのステータスコードを確認
@@ -55,6 +57,11 @@ class EmailResetModel extends ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     final cred = EmailAuthProvider.credential(email: user!.email!, password: passwordController.text);
     String email = emailController.text;
+
+    if (initialEmail == emailController.text) {
+      throw 'メールアドレスが変更されていません。';
+    }
+
     try {
       await user.reauthenticateWithCredential(cred);
       await user.verifyBeforeUpdateEmail(email);
@@ -62,6 +69,12 @@ class EmailResetModel extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'wrong-password') {
         throw 'パスワードが間違っています';
+      } else if (e.code == 'email-already-in-use') {
+        throw '既に使われているメールアドレスです。';
+      } else if (e.code == 'invalid-email') {
+        throw 'メールアドレスまたはパスワードが間違えています。';
+      } else if (e.code == 'invalid-credential') {
+        throw 'メールアドレスまたはパスワードが間違えています。';
       } else {
         throw '$e';
       }

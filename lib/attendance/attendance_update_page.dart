@@ -270,7 +270,7 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
                               maxLength: 1000,
                               validator: (value) {
                                 if (value == null || value.trim() == "") {
-                                  return "Please enter event description.";
+                                  return "Please enter attendance description.";
                                 }
                                 return null;
                               },
@@ -322,7 +322,7 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
                                     color: Color(0xffb3b9ed),
                                   ),
                                 ),
-                                hintText: "Event Title",
+                                hintText: "Attendance Title",
                                 hintStyle: const TextStyle(
                                   color: Color(0xff626262),
                                   fontSize: 17,
@@ -344,7 +344,7 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
                                   horizontal: 20,
                                 ),
                               ).copyWith(
-                                hintText: "Event Description",
+                                hintText: "Attendance Description",
                               ),
                             ),
                             const SizedBox(
@@ -418,7 +418,7 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
                                                   child: const Text('OK'),
                                                   onPressed: () async {
                                                     //イベント削除
-                                                    await model.deleteEvent(widget.attendance.id);
+                                                    await model.deleteAttendance(widget.attendance.id);
                                                     Navigator.pushReplacement(
                                                       context,
                                                       MaterialPageRoute(
@@ -640,6 +640,8 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
                         // 現在の日時
                         currentTime: selectedStartDate,
 
+                        showSecondsColumn: false,
+
                         // ドラムロールを変化させたときの処理
                         onChanged: (dateTime) {
                         },
@@ -766,6 +768,8 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
                   context,
                   // 現在の日時
                   currentTime: selectedStartDate,
+
+                  showSecondsColumn: false,
                   // 選択できる日時の範囲
 
                   // ドラムロールを変化させたときの処理

@@ -266,7 +266,7 @@ class _CreateAttendancePageState extends State<CreateAttendancePage> {
                               maxLength: 1000,
                               validator: (value) {
                                 if (value == null || value.trim() == "") {
-                                  return "Please enter event description.";
+                                  return "Please enter attendance description.";
                                 }
                                 return null;
                               },
@@ -318,7 +318,7 @@ class _CreateAttendancePageState extends State<CreateAttendancePage> {
                                     color: Color(0xffb3b9ed),
                                   ),
                                 ),
-                                hintText: "Event Title",
+                                hintText: "Attendance Title",
                                 hintStyle: const TextStyle(
                                   color: Color(0xff626262),
                                   fontSize: 17,
@@ -340,7 +340,7 @@ class _CreateAttendancePageState extends State<CreateAttendancePage> {
                                   horizontal: 20,
                                 ),
                               ).copyWith(
-                                hintText: "Event Description",
+                                hintText: "Attendance Description",
                               ),
                             ),
                             const SizedBox(
@@ -436,7 +436,7 @@ class _CreateAttendancePageState extends State<CreateAttendancePage> {
                                   ],
                                 ),
                                 child: const Text(
-                                  'Create Event',
+                                  'Create Attendance',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
@@ -526,9 +526,10 @@ class _CreateAttendancePageState extends State<CreateAttendancePage> {
                     ),
                     borderRadius: BorderRadius.circular(7),
                   ),
-                  child: const Center(
+                  child: const Padding(
+                    padding: EdgeInsets.only(left: 12),
                     child: Text(
-                      '到着予定時刻未定(0:00)',
+                      '到着予定時刻未定',
                       style: TextStyle(
                         fontSize: 17,
                       ),
@@ -557,6 +558,7 @@ class _CreateAttendancePageState extends State<CreateAttendancePage> {
                         context,
                         // 現在の日時
                         currentTime: selectedStartDate,
+                        showSecondsColumn: false,
 
                         // ドラムロールを変化させたときの処理
                         onChanged: (dateTime) {
@@ -684,6 +686,8 @@ class _CreateAttendancePageState extends State<CreateAttendancePage> {
                   context,
                   // 現在の日時
                   currentTime: selectedStartDate,
+
+                  showSecondsColumn: false,
                   // 選択できる日時の範囲
 
                   // ドラムロールを変化させたときの処理

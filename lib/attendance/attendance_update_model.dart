@@ -96,7 +96,7 @@ class UpdateAttendanceModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future deleteEvent(int id) async {
+  Future deleteAttendance(int id) async {
     var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/attendances/$id');
 
     final response = await http.delete(uri);
@@ -106,7 +106,7 @@ class UpdateAttendanceModel extends ChangeNotifier {
       print('Attendance deleted successfully');
     } else {
       // エラー時の処理
-      print('Failed to delete the event');
+      print('Failed to delete the attendance');
     }
     notifyListeners();
   }

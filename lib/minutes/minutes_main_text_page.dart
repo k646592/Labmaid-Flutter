@@ -114,13 +114,16 @@ class _MainTextPageState extends State<MainTextPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Expanded(
-            child: TextField(
-              decoration: const InputDecoration(
-                border: InputBorder.none,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                ),
+                keyboardType: TextInputType.multiline,
+                maxLines: 40,
+                controller: _mainTextController,
               ),
-              keyboardType: TextInputType.multiline,
-              maxLines: 40,
-              controller: _mainTextController,
             ),
           ),
           const SizedBox(height: 50), // 下部に50ピクセルの空白を追加

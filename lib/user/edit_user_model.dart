@@ -1,10 +1,17 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'dart:typed_data';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class EditMyPageModel extends ChangeNotifier {
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import 'package:http/http.dart' as http;
+
+import 'dart:typed_data';
+
+import '../image_size/size_limit.dart';
+
+
+class EditUserModel extends ChangeNotifier {
+
   bool isLoading = false;
 
   void startLoading() {
@@ -14,12 +21,6 @@ class EditMyPageModel extends ChangeNotifier {
 
   void endLoading() {
     isLoading = false;
-    notifyListeners();
-  }
-
-  void fetchUser() async {
-
-
     notifyListeners();
   }
 
@@ -67,16 +68,18 @@ class EditMyPageModel extends ChangeNotifier {
       // エラーハンドリング
       print('Error: $e');
     }
-
-    notifyListeners();
   }
 
   Future updateImage(Uint8List? userImage, int id) async {
 
+    if (!sizeLimit(userImage!)) {
+      throw '画像サイズが2.2Mを超えているため、画像サイズは更新できませんでした。';
+    }
+
     var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/users/image/$id');
     final request = http.MultipartRequest('PATCH', uri);
     Map<String, String> headers = {"Content-type": "multipart/form-data"};
-    final file = http.MultipartFile.fromBytes('file', userImage!, filename: 'update.png');
+    final file = http.MultipartFile.fromBytes('file', userImage, filename: 'update.png');
     request.files.add(file);
     request.headers.addAll(headers);
     final stream = await request.send();
@@ -90,5 +93,6 @@ class EditMyPageModel extends ChangeNotifier {
         });
 
   }
+
 
 }

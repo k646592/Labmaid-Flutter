@@ -46,7 +46,7 @@ class CreateEventModel extends ChangeNotifier {
       throw 'タイトルが入力されていません。';
     }
     if (description == '') {
-      throw '詳細が入力されていません。';
+      description = '詳細なし';
     }
 
     if (start.isAfter(end)) {

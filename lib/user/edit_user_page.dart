@@ -1,8 +1,8 @@
 import 'package:labmaidfastapi/domain/user_data.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:labmaidfastapi/user/edit_user_model.dart';
+import 'package:provider/provider.dart';
 import '../header_footer_drawer/footer.dart';
-import 'edit_user_model.dart';
 import '../pick_export/pick_image_export.dart';
 import 'dart:typed_data';
 import 'dart:convert';
@@ -19,7 +19,7 @@ class _EditMyPageState extends State<EditMyPage> {
   late TextEditingController _nameController;
   late TextEditingController _groupController;
   late TextEditingController _gradeController;
-  late TextEditingController _userImageController;
+  Uint8List? userImage;
 
   @override
   void initState() {
@@ -27,15 +27,21 @@ class _EditMyPageState extends State<EditMyPage> {
     _nameController = TextEditingController(text: widget.myData.name);
     _groupController = TextEditingController(text: widget.myData.group);
     _gradeController = TextEditingController(text: widget.myData.grade);
-    _userImageController = TextEditingController(text: widget.myData.imgData);
+    userImage = base64Decode(widget.myData.imgData);
   }
 
-  Uint8List? imageData;
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _groupController.dispose();
+    _gradeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<EditMyPageModel>(
-      create: (_) => EditMyPageModel()..fetchUser(),
+    return ChangeNotifierProvider<EditUserModel>(
+      create: (_) => EditUserModel(),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -53,15 +59,13 @@ class _EditMyPageState extends State<EditMyPage> {
             color: Colors.white,
           ),
         ),
-        body: Consumer<EditMyPageModel>(builder: (context, model, child) {
-
+        body: Consumer<EditUserModel>(builder: (context, model, child){
           return Stack(
             children: [
               Center(
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      const SizedBox(height: 10,),
                       Container(
                         padding: const EdgeInsets.all(10),
                         alignment: Alignment.center,
@@ -70,17 +74,16 @@ class _EditMyPageState extends State<EditMyPage> {
                         ),
                         child: GestureDetector(
                           onTap: () async {
-                            final _imageData = await PickImage().pickImage();
+                            final imageData = await PickImage().pickImage();
                             setState(() {
-                              imageData = _imageData;
+                              userImage = imageData!;
                             });
                           },
                           child: CircleAvatar(
                             backgroundColor: Colors.grey,
                             radius: 50,
-                            backgroundImage: imageData != null ?
-                            Image.memory(
-                              imageData!,
+                            backgroundImage: userImage != null ? Image.memory(
+                              userImage!,
                               fit: BoxFit.cover,
                               errorBuilder: (c, o, s) {
                                 return const Icon(
@@ -89,18 +92,7 @@ class _EditMyPageState extends State<EditMyPage> {
                                 );
                               },
                             ).image
-                                : _userImageController.text != '' ?
-                            Image.memory(
-                              base64Decode(_userImageController.text),
-                              fit: BoxFit.cover,
-                              errorBuilder: (c, o, s) {
-                                return const Icon(
-                                  Icons.error,
-                                  color: Colors.red,
-                                );
-                              },
-                            ).image
-                                : const AssetImage('assets/images/default.png'),
+                              : const AssetImage('assets/images/default.png'),
                           ),
                         ),
                       ),
@@ -268,14 +260,13 @@ class _EditMyPageState extends State<EditMyPage> {
                           height: 40,
                           child: ElevatedButton(
                             onPressed: () async {
-                              model.startLoading();
                               try {
+                                model.startLoading();
+                                if (userImage != []) {
+                                  await model.updateImage(userImage, widget.myData.id);
+                                }
                                 await model.update(_nameController.text, _groupController.text, _gradeController.text, widget.myData.id);
 
-                                if (imageData != null) {
-                                  await model.updateImage(imageData, widget.myData.id);
-                                }
-                                //ユーザー登録
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
@@ -283,6 +274,11 @@ class _EditMyPageState extends State<EditMyPage> {
                                       const Footer(pageNumber: 5)),
                                       (route) => false,
                                 );
+                                const snackBar = SnackBar(
+                                  backgroundColor: Colors.green,
+                                  content: Text('ユーザデータの更新ができました。'),
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
                               } catch (error) {
                                 final snackBar = SnackBar(
                                   backgroundColor: Colors.red,
@@ -301,18 +297,17 @@ class _EditMyPageState extends State<EditMyPage> {
                   ),
                 ),
               ),
+              if (model.isLoading)
+                Container(
+                  color: Colors.black45,
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
             ],
           );
         }),
       ),
     );
-  }
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _groupController.dispose();
-    _gradeController.dispose();
-    _userImageController.dispose();
-    super.dispose();
   }
 }

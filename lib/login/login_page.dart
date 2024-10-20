@@ -68,19 +68,24 @@ class LoginPage extends StatelessWidget {
                             child: SizedBox(
                               //横長がウィンドウサイズの８割になる設定
                               width: MediaQuery.of(context).size.width * 0.8,
-                              child: TextField(
+                              child: TextFormField(
                                 controller: model.passwordController,
-                                decoration: const InputDecoration(
+                                obscureText: model.isObscure,
+                                decoration: InputDecoration(
                                   labelText: 'Password',
                                   //鍵のアイコン
-                                  icon: Icon(Icons.lock),
+                                  icon: const Icon(Icons.lock),
                                   //目隠しのアイコン
-                                  suffixIcon: Icon(Icons.visibility_off)
+                                    suffixIcon: IconButton(
+                                      icon: Icon(model.isObscure ? Icons.visibility_off : Icons.visibility),
+                                      onPressed: () {
+                                        model.obscureChange();
+                                      },
+                                    ),
                                 ),
                                 onChanged: (text) {
                                   model.setPassword(text);
                                 },
-                                obscureText: true,
                               ),
                             ),
                           ),

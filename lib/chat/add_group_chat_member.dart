@@ -24,11 +24,16 @@ class _ChatMemberAddPage extends State<ChatMemberAddPage> {
   }
 
   Future addMember(List<GroupChatMember> newGroupChatMembers, GroupChatRoomData groupChatRoomData) async {
+
     //　メンバーの追加
     for (int i=0; i<newGroupChatMembers.length; i++) {
       if (newGroupChatMembers[i].join == true) {
         newMember.add(newGroupChatMembers[i].id);
       }
+    }
+
+    if (newMember.isEmpty) {
+      throw '追加するメンバーがいません。';
     }
 
     final url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/add_members/${groupChatRoomData.id}');
@@ -86,7 +91,7 @@ class _ChatMemberAddPage extends State<ChatMemberAddPage> {
                     ),
                   );
 
-                  final snackBar = SnackBar(
+                  const snackBar = SnackBar(
                     backgroundColor: Colors.green,
                     content: Text('新しいメンバーを追加しました'),
                   );

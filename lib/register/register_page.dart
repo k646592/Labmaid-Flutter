@@ -16,7 +16,8 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
 
-  bool _isObscure = true;
+  bool _isConfirmObscure = true;
+  bool _isPassObscure = true;
 
   String _group = '';
   //エラーを表示
@@ -116,13 +117,21 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: SizedBox(
                           //横長がウィンドウサイズの８割になる設定
                           width: MediaQuery.of(context).size.width * 0.8,
-                          child: TextField(
+                          child: TextFormField(
                             controller: model.passwordController,
-                            decoration: const InputDecoration(
+                            obscureText: _isPassObscure,
+                            decoration: InputDecoration(
                               labelText: 'New Password　　※必要',
                               //鍵のアイコン
-                              icon: Icon(Icons.lock),
-
+                              icon: const Icon(Icons.lock),
+                              suffixIcon: IconButton(
+                                  icon: Icon(_isPassObscure ? Icons.visibility_off : Icons.visibility),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isPassObscure = !_isPassObscure;
+                                    });
+                                  },
+                                ),
                             ),
                             onChanged: (text) {
                               model.setPassword(text);
@@ -142,16 +151,16 @@ class _RegisterPageState extends State<RegisterPage> {
                           width: MediaQuery.of(context).size.width * 0.8,
                           child: TextFormField(
                             controller: model.passwordConfirmController,
-                            obscureText: _isObscure,
+                            obscureText: _isConfirmObscure,
                             decoration: InputDecoration(
                                 labelText: 'Password Confirmation',
                                 //鍵のアイコン
                                 icon: const Icon(Icons.lock),
                                 suffixIcon: IconButton(
-                                  icon: Icon(_isObscure ? Icons.visibility_off : Icons.visibility),
+                                  icon: Icon(_isConfirmObscure ? Icons.visibility_off : Icons.visibility),
                                   onPressed: () {
                                     setState(() {
-                                      _isObscure = !_isObscure;
+                                      _isConfirmObscure = !_isConfirmObscure;
                                     });
                                   },
                                 )

@@ -15,6 +15,13 @@ class LoginModel extends ChangeNotifier {
 
   bool isLoading = false;
 
+  bool isObscure = true;
+
+  void obscureChange() {
+    isObscure =! isObscure;
+    notifyListeners();
+  }
+
   void startLoading() {
     isLoading = true;
     notifyListeners();
