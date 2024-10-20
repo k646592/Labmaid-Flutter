@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 
+import '../image_size/size_limit.dart';
 import '../pick_export/pick_image_export.dart';
 import '../save_export/save_image_export.dart';
 
@@ -40,6 +41,9 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
   Future<void> _getImageFromGallery() async {
     final pickedImage = await PickImage().pickImage();
     if (pickedImage != null) {
+      if (!sizeLimit(pickedImage)) {
+        throw '画像サイズが2.2Mを超えているため、画像サイズは更新できませんでした。';
+      }
       String base64Image = base64Encode(pickedImage);
       final message = {
         'content': '',
@@ -61,6 +65,9 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
   Future<void> _getFileFromGallery() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
+      if (!sizeLimit(result.files.first.bytes!)) {
+        throw 'ファイルサイズが2.2Mを超えているため、画像サイズは更新できませんでした。';
+      }
       PlatformFile file = result.files.first;
       if (path.extension(file.name).toLowerCase() != '.pdf') {
         throw '.pdf形式のみ送信できます。';

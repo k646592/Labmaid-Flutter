@@ -9,6 +9,8 @@ import 'dart:typed_data';
 
 import 'package:labmaidfastapi/user/shared_preferences.dart';
 
+import '../image_size/size_limit.dart';
+
 
 class RegisterModel extends ChangeNotifier {
   final emailController = TextEditingController();
@@ -128,6 +130,10 @@ class RegisterModel extends ChangeNotifier {
           imageBytes = await loadImageBytes(imagePath);
         } else {
           imageBytes = userImage;
+        }
+
+        if (!sizeLimit(imageBytes!)) {
+          throw '画像サイズが2.2Mを超えているため、画像サイズは更新できませんでした。';
         }
 
         Map<String, String> headers = {"Content-type": "multipart/form-data"};
