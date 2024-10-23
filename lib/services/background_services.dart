@@ -122,14 +122,20 @@ Future<void> postLocation() async {
     final info = NetworkInfo();
     final wifiBSSID = await info.getWifiBSSID();
 
+    print(firebaseUserId);
+
     if (firebaseUserId != null) {
 
-      if (wifiBSSID == '0:1a:eb:b4:50:90') {
+      // al:0:1a:eb:b4:50:90, al5GHz:0:1a:eb:b4:50:91
+      if (wifiBSSID == '0:1a:eb:b4:50:90' || wifiBSSID == '0:1a:eb:b4:50:91') {
         location = '研究室内';
+      }
+      if (wifiBSSID == 'ac:44:f2:c0:30:70') {
+        location = '第２研究室内';
       }
 
       // サーバに位置情報をPOST
-      var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/update_user_location/$firebaseUserId');
+      var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/update_user_location/$firebaseUserId');
 
       // 送信するデータを作成
       Map<String, dynamic> data = {

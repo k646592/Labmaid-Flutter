@@ -120,7 +120,7 @@ class _GroupChatRoomDeletePage extends State<GroupChatRoomDeletePage> {
   }
 
   void _removeGroup(int groupChatRoomId) async {
-    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/delete_group_chat_room/$groupChatRoomId');
+    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/delete_group_chat_room/$groupChatRoomId');
 
     final response = await http.delete(uri);
 

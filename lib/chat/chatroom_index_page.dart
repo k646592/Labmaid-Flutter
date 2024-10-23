@@ -41,7 +41,7 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
   }
 
   Future<void> getGroupChatRoomList() async {
-    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/get_group_chat_rooms');
+    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/get_group_chat_rooms');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -66,7 +66,7 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
     final currentUser = FirebaseAuth.instance.currentUser;
 
     // MyUser情報を取得
-    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/users/${currentUser!.uid}');
+    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/users/${currentUser!.uid}');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -93,7 +93,7 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
     }
 
     // 個人チャットのユーザを取得する
-    var url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/chat_users/${currentUser.uid}');
+    var url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/chat_users/${currentUser.uid}');
 
     // GETリクエストを送信
     var responseGet = await http.get(url);
@@ -120,7 +120,7 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
     }
 
     // 参加中のグループチャットの一覧を取得
-    var uriEntryGroup = Uri.parse('http://sui.al.kansai-u.ac.jp/api/get_entry_group_chat_room/${myData.id}');
+    var uriEntryGroup = Uri.parse('https://sui.al.kansai-u.ac.jp/api/get_entry_group_chat_room/${myData.id}');
     // GETリクエストを送信
     var responseEntryGroup = await http.get(uriEntryGroup);
 
@@ -145,7 +145,7 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
     }
 
     // 参加していないグループチャット一覧を取得する
-    var uriNotEntryGroup = Uri.parse('http://sui.al.kansai-u.ac.jp/api/get_not_entry_group_chat_room/${myData.id}');
+    var uriNotEntryGroup = Uri.parse('https://sui.al.kansai-u.ac.jp/api/get_not_entry_group_chat_room/${myData.id}');
     // GETリクエストを送信
     var responseNotEntryGroup = await http.get(uriNotEntryGroup);
 
@@ -381,7 +381,7 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
   }
 
   Future createOrGetPrivateChatRoom(int userId) async {
-    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/private_chat_room/${myData.id}/$userId');
+    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/private_chat_room/${myData.id}/$userId');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -405,7 +405,7 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
   }
 
   Future getGroupChatUsers(int groupChatRoomId) async {
-    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/group_chat_room_users/$groupChatRoomId');
+    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/group_chat_room_users/$groupChatRoomId');
 
     // GETリクエストを送信
     var response = await http.get(uri);

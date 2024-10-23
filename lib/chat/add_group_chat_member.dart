@@ -36,7 +36,7 @@ class _ChatMemberAddPage extends State<ChatMemberAddPage> {
       throw '追加するメンバーがいません。';
     }
 
-    final url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/add_members/${groupChatRoomData.id}');
+    final url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/add_members/${groupChatRoomData.id}');
     final response = await http.post(
       url,
       headers: {

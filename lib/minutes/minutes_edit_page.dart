@@ -196,7 +196,7 @@ class _EditMemoPageState extends State<EditMemoPage> {
       throw 'タイトルが入力されていません。';
     }
 
-    final url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/meetings/${widget.memo.id}');
+    final url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/meetings/${widget.memo.id}');
     final response = await http.patch(
       url,
       headers: {

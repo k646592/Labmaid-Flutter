@@ -17,7 +17,7 @@ class UpdateEventModel extends ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     firebaseUserId = user!.uid;
     email = user.email;
-    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/user_name_id/$firebaseUserId');
+    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/user_name_id/$firebaseUserId');
     var response = await http.get(uri);
 
     // レスポンスのステータスコードを確認
@@ -56,7 +56,7 @@ class UpdateEventModel extends ChangeNotifier {
       end = start.add(const Duration(hours: 1));
     }
 
-    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/events/$id');
+    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/events/$id');
 
     // 送信するデータを作成
     Map<String, dynamic> data = {
@@ -97,7 +97,7 @@ class UpdateEventModel extends ChangeNotifier {
   }
 
   Future deleteEvent(int id) async {
-    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/events/$id');
+    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/events/$id');
 
     final response = await http.delete(uri);
 
@@ -116,7 +116,7 @@ class UpdateEventModel extends ChangeNotifier {
       end = start.add(const Duration(hours: 1));
     }
 
-    Uri url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/event_mail');
+    Uri url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/event_mail');
     final response = await http.post(url, body: {'name': name, 'subject': subject(title,unit), 'from_email': email, 'text': textMessages(title,start,end,unit,description)});
 
     if (response.statusCode == 200) {

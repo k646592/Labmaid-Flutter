@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:labmaidfastapi/chat/chatroom_index_page.dart';
-import 'package:labmaidfastapi/location/member_location.dart';
+import 'package:labmaidfastapi/location/member_indoor_location.dart';
 import 'package:labmaidfastapi/minutes/minutes_index_page.dart';
 
 import '../attendance/attendance_page_responsive.dart';

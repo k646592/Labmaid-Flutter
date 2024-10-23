@@ -122,7 +122,7 @@ class RegisterModel extends ChangeNotifier {
 
         //FastAPIに追加
         //Postリクエストを送信するエンドポイントのURL
-        var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/users');
+        var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/users');
         String imagePath = 'assets/images/default.png'; //画像ファイルパス
 
         final request = http.MultipartRequest('POST', uri);

@@ -28,7 +28,7 @@ class GeoLocationIndexPageState extends State<GeoLocationIndexPage> {
   Future<void> fetchLocationMemberList() async {
 
     // 個人チャットのユーザを取得する
-    var url = Uri.parse('http://sui.al.kansai-u.ac.jp/api/users');
+    var url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/users');
 
     // GETリクエストを送信
     var responseGet = await http.get(url);
@@ -58,7 +58,7 @@ class GeoLocationIndexPageState extends State<GeoLocationIndexPage> {
 
   void _connectWebSocket() {
     _channel = WebSocketChannel.connect(
-      Uri.parse('ws://sui.al.kansai-u.ac.jp/api/ws_user_location'),
+      Uri.parse('wss://sui.al.kansai-u.ac.jp/api/ws_user_location'),
     );
     _channel.stream.listen((message) {
       final Map<String, dynamic> data = jsonDecode(message);

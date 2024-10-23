@@ -125,7 +125,7 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
 
   Future<void> _fetchMessageHistory() async {
     final response = await http.get(
-      Uri.parse('http://sui.al.kansai-u.ac.jp/api/private_messages/${widget.privateChatroomId}'),
+      Uri.parse('https://sui.al.kansai-u.ac.jp/api/private_messages/${widget.privateChatroomId}'),
     );
 
     if (response.statusCode == 200) {
@@ -150,7 +150,7 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
 
   void _connectWebSocket() {
     _channel = WebSocketChannel.connect(
-      Uri.parse('ws://sui.al.kansai-u.ac.jp/api/ws_private_message/${widget.privateChatroomId}/${widget.myData.id}'),
+      Uri.parse('wss://sui.al.kansai-u.ac.jp/api/ws_private_message/${widget.privateChatroomId}/${widget.myData.id}'),
     );
     _channel.stream.listen((message) {
       final decodedMessage = json.decode(message);

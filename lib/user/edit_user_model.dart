@@ -37,7 +37,7 @@ class EditUserModel extends ChangeNotifier {
       throw '学年が選択されていません。';
     }
 
-    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/users/$id');
+    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/users/$id');
 
     // 送信するデータを作成
     Map<String, dynamic> data = {
@@ -76,7 +76,7 @@ class EditUserModel extends ChangeNotifier {
       throw '画像サイズが2.2Mを超えているため、画像サイズは更新できませんでした。';
     }
 
-    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/users/image/$id');
+    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/users/image/$id');
     final request = http.MultipartRequest('PATCH', uri);
     Map<String, String> headers = {"Content-type": "multipart/form-data"};
     final file = http.MultipartFile.fromBytes('file', userImage, filename: 'update.png');

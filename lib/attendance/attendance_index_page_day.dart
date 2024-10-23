@@ -197,7 +197,7 @@ class _AttendanceIndexPageDayState extends State<AttendanceIndexPageDay> {
   }
 
   Future<void> _fetchAttendance() async {
-    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/attendances');
+    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/attendances');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -226,7 +226,7 @@ class _AttendanceIndexPageDayState extends State<AttendanceIndexPageDay> {
     final user = FirebaseAuth.instance.currentUser;
     final userId = user!.uid;
 
-    var uriUser = Uri.parse('http://sui.al.kansai-u.ac.jp/api/user_id/$userId');
+    var uriUser = Uri.parse('https://sui.al.kansai-u.ac.jp/api/user_id/$userId');
     var responseUser = await http.get(uriUser);
 
     // レスポンスのステータスコードを確認
@@ -262,7 +262,7 @@ class _AttendanceIndexPageDayState extends State<AttendanceIndexPageDay> {
 
   void _connectWebSocket() {
     _channel = WebSocketChannel.connect(
-      Uri.parse('ws://sui.al.kansai-u.ac.jp/api/ws_attendance_list'),
+      Uri.parse('wss://sui.al.kansai-u.ac.jp/api/ws_attendance_list'),
     );
     _channel.stream.listen((message) {
 

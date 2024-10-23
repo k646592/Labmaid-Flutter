@@ -39,7 +39,7 @@ class _MemoListShow extends State<MemoListShow> {
   }
 
   Future<void> getMinute(MemoData memo) async {
-    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/meetings/${memo.id}');
+    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/meetings/${memo.id}');
     // GETリクエストを送信
     var response = await http.get(uri);
 
@@ -65,7 +65,7 @@ class _MemoListShow extends State<MemoListShow> {
   }
 
   Future delete(MemoData memo) async {
-    var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/meetings/${memo.id}');
+    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/meetings/${memo.id}');
     final response = await http.delete(uri);
 
     if (!mounted) return;
