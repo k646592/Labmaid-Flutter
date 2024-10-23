@@ -4,7 +4,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
-import 'package:wifi_info_flutter/wifi_info_flutter.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 
 import '../user/shared_preferences.dart';
 
@@ -119,13 +119,15 @@ Future<void> postLocation() async {
     String? firebaseUserId = await getUserData();
 
     // wi-fiの取得
-    final WifiInfo _wifiInfo = WifiInfo();
-    final wifiIP = await _wifiInfo.getWifiIP();
+    final info = NetworkInfo();
+    final wifiBSSID = await info.getWifiBSSID();
 
     if (firebaseUserId != null) {
-      if (wifiIP == '192.168.11.107') {
+
+      if (wifiBSSID == '0:1a:eb:b4:50:90') {
         location = '研究室内';
       }
+
       // サーバに位置情報をPOST
       var uri = Uri.parse('http://sui.al.kansai-u.ac.jp/api/update_user_location/$firebaseUserId');
 

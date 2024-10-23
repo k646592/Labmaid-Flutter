@@ -123,6 +123,8 @@ class LoginPage extends StatelessWidget {
                                       error = 'メールアドレスの形をしていません';
                                     } else if (e.code == 'wrong-password') {
                                       error = 'パスワードが間違っています';
+                                    } else if (e.code == 'invalid-credential') {
+                                      error = 'メールアドレスまたはパスワードが間違えています。';
                                     } else {
                                       error = 'ログインエラー';
                                     }

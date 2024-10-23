@@ -63,7 +63,7 @@ dependencies:
   path_provider: ^2.1.4
   stop_watch_timer: ^3.0.2
   shared_preferences: ^2.3.2
-  wifi_info_flutter: ^2.0.2
+  network_info_plus: ^6.1.0
   pdf: ^3.11.1
   printing: ^5.13.3
   image_gallery_saver: ^2.0.3
