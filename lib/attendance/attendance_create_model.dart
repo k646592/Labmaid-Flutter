@@ -54,7 +54,7 @@ class CreateAttendanceModel extends ChangeNotifier {
     }
 
     final now = DateTime.now();
-    final urlUser = Uri.parse('http://sui.al.kansai-u.ac.jp/api/update_user_status/$id');
+    final urlUser = Uri.parse('https://sui.al.kansai-u.ac.jp/api/update_user_status/$id');
     // 送信するデータを作成
     Map<String, dynamic> data = {
       'status': title,

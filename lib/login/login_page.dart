@@ -99,10 +99,10 @@ class LoginPage extends StatelessWidget {
                               //横長がウィンドウサイズの３割になる設定
                               width: MediaQuery.of(context).size.width * 0.5,
                               height: 40,
-                              //変更点
+
                               //Googleのボタンになる
                               child: SignInButton(
-                                Buttons.Google,
+                                Buttons.Email,
                                 onPressed: () async {
                                   model.startLoading();
                                   //追加の処理

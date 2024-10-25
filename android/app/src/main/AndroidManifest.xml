@@ -4,10 +4,6 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">
-        <service
-            android:name=".LocationService"
-            android:foregroundServiceType="location"
-            android:permission="android.permission.FOREGROUND_SERVICE"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -44,6 +40,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Fine location permission -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
 
     <!-- Coarse location permission -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

@@ -119,7 +119,7 @@ class _CreateAttendancePageState extends State<CreateAttendancePage> {
                 child: Column(
                   children: [
                     ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 700),
+                      constraints: const BoxConstraints(maxWidth: 700,),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.85,
                         child: Column(
@@ -515,6 +515,7 @@ class _CreateAttendancePageState extends State<CreateAttendancePage> {
           Row(
             children: [
               Expanded(
+                flex: 7,
                 child: undecided
                     ? Container(
                   padding: const EdgeInsets.all(5.0),
@@ -584,28 +585,27 @@ class _CreateAttendancePageState extends State<CreateAttendancePage> {
                   ),
                 ),
               ),
-              const SizedBox(width: 10,),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.3,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Checkbox(
-                        value: undecided,
-                        onChanged: (value) {
-                          setState(() {
-                            undecided = value!;
-                          });
-                          resetUndecided(undecided);
-                        }
-                    ),
-                    const Text(
-                      '未定',
-                      style: TextStyle(fontSize: 17,),
-                    ),
-                  ],
-                ),
+              Expanded(
+                flex: 3,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Checkbox(
+                          value: undecided,
+                          onChanged: (value) {
+                            setState(() {
+                              undecided = value!;
+                            });
+                            resetUndecided(undecided);
+                          }
+                      ),
+                      const Text(
+                        '未定',
+                        style: TextStyle(fontSize: 17,),
+                      ),
+                    ],
+                  ),
               ),
             ],
           ),

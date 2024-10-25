@@ -7,6 +7,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:labmaidfastapi/domain/user_data.dart';
 import 'package:http/http.dart' as http;
 
+import '../image_size/size_limit.dart';
+
 class AddChatRoomModel extends ChangeNotifier {
   final roomNameController = TextEditingController();
 
@@ -217,6 +219,10 @@ class AddChatRoomModel extends ChangeNotifier {
       imageBytes = await loadImageBytes(imagePath);
     } else {
       imageBytes = image;
+
+      if (!sizeLimit(image)) {
+        throw '画像サイズが2.2Mを超えているため、画像サイズは更新できませんでした。';
+      }
     }
 
     Map<String, String> headers = {"Content-type": "multipart/form-data"};
