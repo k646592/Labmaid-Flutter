@@ -87,35 +87,39 @@ class _GroupChatPageState extends State<GroupChatPage> {
   }
 
   Future<void> _getFileFromGallery() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(withData: true);
+    if (result != null && result.files.isNotEmpty) { // ファイルが選択されているか確認
       PlatformFile file = result.files.first;
-      if (!sizeLimit(result.files.first.bytes!)) {
+
+      if (file.bytes == null) { // ファイルの bytes が null でないことを確認
+        throw 'ファイルの読み込みに失敗しました。';
+      }
+
+      if (!sizeLimit(file.bytes!)) {
         throw 'ファイルサイズが2.2Mを超えているため、画像サイズは更新できませんでした。';
       }
+
       if (path.extension(file.name).toLowerCase() != '.pdf') {
         throw '.pdf形式のみ送信できます。';
       } else {
-        if (file.bytes != null) {
-          String base64File = base64Encode(file.bytes!);
-          final message = {
-            'content': '',
-            'image_data': '',
-            'file_data': base64File,
-            'file_name': file.name,
-          };
-          _channel.sink.add(json.encode(message));
-          _messageController.clear();
-          _scrollToBottom();
-          const snackBar = SnackBar(
-            backgroundColor: Colors.green,
-            content: Text('ファイルの送信をしました。'),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
+        String base64File = base64Encode(file.bytes!);
+        final message = {
+          'content': '',
+          'image_data': '',
+          'file_data': base64File,
+          'file_name': file.name,
+        };
+        _channel.sink.add(json.encode(message));
+        _messageController.clear();
+        _scrollToBottom();
+        const snackBar = SnackBar(
+          backgroundColor: Colors.green,
+          content: Text('ファイルの送信をしました。'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
-
     }
+
   }
 
   @override
@@ -133,16 +137,11 @@ class _GroupChatPageState extends State<GroupChatPage> {
   // スクロールを最下部にする関数
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        // 小さな遅延を追加してmaxScrollExtentが正しく計算されるようにする
-        Future.delayed(const Duration(milliseconds: 1000), () {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 1000),
-            curve: Curves.easeOut,
-          );
-        });
-      }
+      _scrollController.animateTo(
+        _scrollController.position.minScrollExtent,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+      );
     });
   }
 
@@ -161,7 +160,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
       setState(() {
         _messages.addAll(fetchedMessages);
         _isLoading = false;
-        _scrollToBottom(); // ここでスクロールを呼び出し
       });
     } else {
       setState(() {
@@ -181,7 +179,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
       if (decodedMessage['type'] == 'broadcast') {
         final newMessage = GroupMessageData.fromJson(json.decode(decodedMessage['message']));
         setState(() {
-          _messages.add(newMessage);
+          _messages.insert(0, newMessage); // 先頭に newMessage を追加
           _scrollToBottom();
         });
       }
@@ -322,6 +320,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
               child: ListView.builder(
                 controller: _scrollController,
                 itemCount: _messages.length,
+                reverse: true,
                 itemBuilder: (context, index) {
                   final message = _messages[index];
                   final isMyMessage = message.userId == widget.myData.id;

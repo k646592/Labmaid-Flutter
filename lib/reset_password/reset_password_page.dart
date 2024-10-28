@@ -37,77 +37,82 @@ class ResetPasswordPage extends StatelessWidget {
             children: [
               Center(
                 child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 700),
-                        child: SizedBox(
-                          //横長がウィンドウサイズの８割になる設定
-                          width: MediaQuery.of(context).size.width * 0.8,
-                          child: TextField(
-                            controller: model.emailController,
-                            decoration: const InputDecoration(
-                              labelText: 'Your Email',
-                              icon: Icon(Icons.mail),
+                  child: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).unfocus(); // フォーカスを解除
+                    },
+                    child: Column(
+                      children: [
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 700),
+                          child: SizedBox(
+                            //横長がウィンドウサイズの８割になる設定
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            child: TextField(
+                              controller: model.emailController,
+                              decoration: const InputDecoration(
+                                labelText: 'Your Email',
+                                icon: Icon(Icons.mail),
+                              ),
+                              onChanged: (text) {
+                                model.setEmail(text);
+                              },
                             ),
-                            onChanged: (text) {
-                              model.setEmail(text);
-                            },
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 250),
-                        child: SizedBox(
-                          //横長がウィンドウサイズの３割になる設定
-                          width: MediaQuery.of(context).size.width * 0.3,
-                          height: 40,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              model.startLoading();
-                              try {
-                                await model.sendPasswordResetEmail();
-                                final snackBar = SnackBar(
-                                  backgroundColor: Colors.blue,
-                                  content: Text('${model.email}にメールを送信しました'),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                //現在の画面をナビゲーションスタックから取り除き、新しい画面をプッシュできる
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const LoginPage()),
-                                );
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 250),
+                          child: SizedBox(
+                            //横長がウィンドウサイズの３割になる設定
+                            width: MediaQuery.of(context).size.width * 0.3,
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                model.startLoading();
+                                try {
+                                  await model.sendPasswordResetEmail();
+                                  final snackBar = SnackBar(
+                                    backgroundColor: Colors.blue,
+                                    content: Text('${model.email}にメールを送信しました'),
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  //現在の画面をナビゲーションスタックから取り除き、新しい画面をプッシュできる
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const LoginPage()),
+                                  );
 
-                              } on FirebaseAuthException catch (e) {
-                                //ユーザーログインに失敗した場合
-                                if (e.code == 'user-not-found') {
-                                  error = 'ユーザーは存在しません';
-                                }
-                                else if (e.code == 'invalid-email') {
-                                  error = 'メールアドレスの形をしていません';
-                                }
-                                else {
-                                  error = 'メールを送信できません';
-                                }
+                                } on FirebaseAuthException catch (e) {
+                                  //ユーザーログインに失敗した場合
+                                  if (e.code == 'user-not-found') {
+                                    error = 'ユーザーは存在しません';
+                                  }
+                                  else if (e.code == 'invalid-email') {
+                                    error = 'メールアドレスの形をしていません';
+                                  }
+                                  else {
+                                    error = 'メールを送信できません';
+                                  }
 
-                                final snackBar = SnackBar(
-                                  backgroundColor: Colors.red,
-                                  content: Text(error.toString()),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                              } finally {
-                                model.endLoading();
-                              }
-                            },
-                            child: const Text('送信'),
+                                  final snackBar = SnackBar(
+                                    backgroundColor: Colors.red,
+                                    content: Text(error.toString()),
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                } finally {
+                                  model.endLoading();
+                                }
+                              },
+                              child: const Text('送信'),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -62,15 +62,20 @@ class GeminiChatPageState extends State<GeminiChatPage> {
           ),
         ),
       ),
-      body: Chat(
-        theme: const DefaultChatTheme(
-          primaryColor: Colors.lightGreen,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus(); // フォーカスを解除
+        },
+        child: Chat(
+          theme: const DefaultChatTheme(
+            primaryColor: Colors.lightGreen,
+          ),
+          user: _user,
+          messages: _messages,
+          onSendPressed: _handleSendPressed,
+          showUserNames: true,
+          //showUserAvatars: true,
         ),
-        user: _user,
-        messages: _messages,
-        onSendPressed: _handleSendPressed,
-        showUserNames: true,
-        //showUserAvatars: true,
       ),
     );
   }

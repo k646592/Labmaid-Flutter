@@ -60,125 +60,132 @@ class _AddMemoPageState extends State<AddMemoPage> {
       body: Center(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Wrap(
-                  spacing: 10,
+            child: SingleChildScrollView(
+              child: GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).unfocus(); // フォーカスを解除
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    ChoiceChip(
-                      label: const Text("ミーティング"),
-                      selected: _kinds == 'ミーティング',
-                      backgroundColor: Colors.grey,
-                      selectedColor: Colors.purpleAccent[100],
-                      onSelected: (_) {
+                    Wrap(
+                      spacing: 10,
+                      children: [
+                        ChoiceChip(
+                          label: const Text("ミーティング"),
+                          selected: _kinds == 'ミーティング',
+                          backgroundColor: Colors.grey,
+                          selectedColor: Colors.purpleAccent[100],
+                          onSelected: (_) {
+                            setState(() {
+                              _kinds = 'ミーティング';
+                            });
+                          },
+                        ),
+                        ChoiceChip(
+                          label: const Text("その他"),
+                          selected: _kinds == 'その他',
+                          backgroundColor: Colors.grey,
+                          selectedColor: Colors.purpleAccent[100],
+                          onSelected: (_) {
+                            setState(() {
+                              _kinds = 'その他';
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    InputDecorator(
+                      decoration: InputDecoration(
+                        labelText: 'タイトル',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      child: TextField(
+                        controller: _titleController,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    InputDecorator(
+                      decoration: InputDecoration(
+                        labelText: '製作者名',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      child: Text(widget.myData.name),
+                    ),
+                    RadioListTile(
+                      title: const Text('Web班'),
+                      value: 'Web班',
+                      groupValue: _team,
+                      onChanged: (value) {
                         setState(() {
-                          _kinds = 'ミーティング';
+                          _team = value!;
                         });
                       },
                     ),
-                    ChoiceChip(
-                      label: const Text("その他"),
-                      selected: _kinds == 'その他',
-                      backgroundColor: Colors.grey,
-                      selectedColor: Colors.purpleAccent[100],
-                      onSelected: (_) {
+                    RadioListTile(
+                      title: const Text('Net班'),
+                      value: 'Net班',
+                      groupValue: _team,
+                      onChanged: (value) {
                         setState(() {
-                          _kinds = 'その他';
+                          _team = value!;
                         });
                       },
+                    ),
+                    RadioListTile(
+                      title: const Text('機械学習班'),
+                      value: '機械学習班',
+                      groupValue: _team,
+                      onChanged: (value) {
+                        setState(() {
+                          _team = value!;
+                        });
+                      },
+                    ),
+                    RadioListTile(
+                      title: const Text('時間拡大班'),
+                      value: '時間拡大班',
+                      groupValue: _team,
+                      onChanged: (value) {
+                        setState(() {
+                          _team = value!;
+                        });
+                      },
+                    ),
+                    RadioListTile(
+                      title: const Text('All'),
+                      value: 'All',
+                      groupValue: _team,
+                      onChanged: (value) {
+                        setState(() {
+                          _team = value!;
+                        });
+                      },
+                    ),
+                    ElevatedButton(
+                        onPressed: () async {
+                          try{
+                            await addMemo();
+                            Navigator.of(context).pop(true);
+                          } catch(e) {
+                            final snackBar = SnackBar(
+                              backgroundColor: Colors.red,
+                              content: Text(e.toString()),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          }
+                        },
+                        child: const Text('追加する')
                     ),
                   ],
                 ),
-                InputDecorator(
-                  decoration: InputDecoration(
-                    labelText: 'タイトル',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: TextField(
-                    controller: _titleController,
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                InputDecorator(
-                  decoration: InputDecoration(
-                    labelText: '製作者名',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: Text(widget.myData.name),
-                ),
-                RadioListTile(
-                  title: const Text('Web班'),
-                  value: 'Web班',
-                  groupValue: _team,
-                  onChanged: (value) {
-                    setState(() {
-                      _team = value!;
-                    });
-                  },
-                ),
-                RadioListTile(
-                  title: const Text('Net班'),
-                  value: 'Net班',
-                  groupValue: _team,
-                  onChanged: (value) {
-                    setState(() {
-                      _team = value!;
-                    });
-                  },
-                ),
-                RadioListTile(
-                  title: const Text('機械学習班'),
-                  value: '機械学習班',
-                  groupValue: _team,
-                  onChanged: (value) {
-                    setState(() {
-                      _team = value!;
-                    });
-                  },
-                ),
-                RadioListTile(
-                  title: const Text('時間拡大班'),
-                  value: '時間拡大班',
-                  groupValue: _team,
-                  onChanged: (value) {
-                    setState(() {
-                      _team = value!;
-                    });
-                  },
-                ),
-                RadioListTile(
-                  title: const Text('All'),
-                  value: 'All',
-                  groupValue: _team,
-                  onChanged: (value) {
-                    setState(() {
-                      _team = value!;
-                    });
-                  },
-                ),
-                ElevatedButton(
-                    onPressed: () async {
-                      try{
-                        await addMemo();
-                        Navigator.of(context).pop(true);
-                      } catch(e) {
-                        final snackBar = SnackBar(
-                          backgroundColor: Colors.red,
-                          content: Text(e.toString()),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      }
-                    },
-                    child: const Text('追加する')
-                ),
-              ],
+              ),
             ),
           ),
       ),

@@ -28,7 +28,7 @@ class EmailResetModel extends ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     final uid = user!.uid;
     userId = uid;
-    emailController.text = user.email!;
+    emailController.text = '';
     initialEmail = user.email!;
     var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/user_id/$userId');
     var response = await http.get(uri);
@@ -52,6 +52,14 @@ class EmailResetModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool isValidEmail(String email) {
+    // 正規表現パターン
+    String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    RegExp regExp = RegExp(pattern);
+
+    return regExp.hasMatch(email);
+  }
+
   //ユーザ情報更新
   Future<void> updateUserEmail() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -60,6 +68,14 @@ class EmailResetModel extends ChangeNotifier {
 
     if (initialEmail == emailController.text) {
       throw 'メールアドレスが変更されていません。';
+    }
+
+    if (emailController.text == '') {
+      throw 'メールアドレスが入力されていません。';
+    }
+
+    if (!isValidEmail(emailController.text)) {
+      throw 'メールアドレスの形をしていません。';
     }
 
     try {

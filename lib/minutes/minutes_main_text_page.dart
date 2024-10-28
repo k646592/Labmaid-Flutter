@@ -110,24 +110,29 @@ class _MainTextPageState extends State<MainTextPage> {
           ),
         ],
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus(); // フォーカスを解除
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                  ),
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 40,
+                  controller: _mainTextController,
                 ),
-                keyboardType: TextInputType.multiline,
-                maxLines: 40,
-                controller: _mainTextController,
               ),
             ),
-          ),
-          const SizedBox(height: 50), // 下部に50ピクセルの空白を追加
-        ],
+            const SizedBox(height: 50), // 下部に50ピクセルの空白を追加
+          ],
+        ),
       ),
     );
   }
