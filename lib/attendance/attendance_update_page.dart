@@ -681,11 +681,10 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
                   ),
                 ),
               ),
-
               Expanded(
                 flex: 3,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Checkbox(

@@ -17,7 +17,7 @@ Future initializeBackgroundService() async {
     androidConfiguration: AndroidConfiguration(
       onStart: onStart,  // Androidでのバックグラウンド処理
       autoStart: true,
-      isForegroundMode: false,
+      isForegroundMode: true,
     ),
     iosConfiguration: IosConfiguration(
       autoStart: true,
