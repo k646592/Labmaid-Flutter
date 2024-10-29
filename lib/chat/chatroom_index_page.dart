@@ -214,147 +214,153 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
         drawer: const UserDrawer(),
         body: TabBarView(
           children: [
-            userData.isNotEmpty ? ListView.builder(
-              itemCount: userData.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index){
-                return GestureDetector(
-                  onTap: () async {
-                    //個人チャットルーム遷移
-                    await createOrGetPrivateChatRoom(userData[index].id);
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) {
-                            return PrivateChatPage(privateChatroomId: privateChatroomId, userData: userData[index], myData: myData);
-                          }
+            userData.isNotEmpty ? Scrollbar(
+              child: ListView.builder(
+                itemCount: userData.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index){
+                  return GestureDetector(
+                    onTap: () async {
+                      //個人チャットルーム遷移
+                      await createOrGetPrivateChatRoom(userData[index].id);
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) {
+                              return PrivateChatPage(privateChatroomId: privateChatroomId, userData: userData[index], myData: myData);
+                            }
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: Colors.black12),
+                        ),
                       ),
-                    );
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Colors.black12),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.grey,
+                          radius: 50,
+                          backgroundImage: userData[index].imgData != '' ? Image.memory(
+                            base64Decode(userData[index].imgData),
+                            fit: BoxFit.cover,
+                            errorBuilder: (c, o, s) {
+                              return const Icon(
+                                Icons.error,
+                                color: Colors.red,
+                              );
+                            },
+                          ).image
+                              : const AssetImage('assets/images/default.png'),
+                        ),
+                        title: Text(userData[index].name),
+                        subtitle: Text('${userData[index].group}　${userData[index].grade}　${userData[index].status}'),
+                        trailing: const Icon(Icons.input),
                       ),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        radius: 50,
-                        backgroundImage: userData[index].imgData != '' ? Image.memory(
-                          base64Decode(userData[index].imgData),
-                          fit: BoxFit.cover,
-                          errorBuilder: (c, o, s) {
-                            return const Icon(
-                              Icons.error,
-                              color: Colors.red,
-                            );
-                          },
-                        ).image
-                            : const AssetImage('assets/images/default.png'),
-                      ),
-                      title: Text(userData[index].name),
-                      subtitle: Text('${userData[index].group}　${userData[index].grade}　${userData[index].status}'),
-                      trailing: const Icon(Icons.input),
-                    ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             )
             : Center(
               child: CircularProgressIndicator(
                 color: Theme.of(context).primaryColor,
               ),
             ),
-            groupChatData.isNotEmpty ? ListView.builder(
-              itemCount: groupChatData.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index){
-                return GestureDetector(
-                  onTap: () async {
-                    //グループチャットルーム遷移
-                    await getGroupChatUsers(groupChatData[index].id);
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) {
-                            return GroupChatPage(groupChatRoomData: groupChatData[index], myData: myData, groupUsers: groupChatUsers);
-                          }
+            groupChatData.isNotEmpty ? Scrollbar(
+              child: ListView.builder(
+                itemCount: groupChatData.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index){
+                  return GestureDetector(
+                    onTap: () async {
+                      //グループチャットルーム遷移
+                      await getGroupChatUsers(groupChatData[index].id);
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) {
+                              return GroupChatPage(groupChatRoomData: groupChatData[index], myData: myData, groupUsers: groupChatUsers);
+                            }
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: Colors.black12),
+                        ),
                       ),
-                    );
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Colors.black12),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.grey,
+                          radius: 50,
+                          backgroundImage: groupChatData[index].imgData != '' ? Image.memory(
+                            base64Decode(groupChatData[index].imgData),
+                            fit: BoxFit.cover,
+                            errorBuilder: (c, o, s) {
+                              return const Icon(
+                                Icons.error,
+                                color: Colors.red,
+                              );
+                            },
+                          ).image
+                              : const AssetImage('assets/images/group_default.jpg'),
+                        ),
+                        title: Text(groupChatData[index].name),
+                        trailing: const Icon(Icons.input),
                       ),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        radius: 50,
-                        backgroundImage: groupChatData[index].imgData != '' ? Image.memory(
-                          base64Decode(groupChatData[index].imgData),
-                          fit: BoxFit.cover,
-                          errorBuilder: (c, o, s) {
-                            return const Icon(
-                              Icons.error,
-                              color: Colors.red,
-                            );
-                          },
-                        ).image
-                            : const AssetImage('assets/images/group_default.jpg'),
-                      ),
-                      title: Text(groupChatData[index].name),
-                      trailing: const Icon(Icons.input),
-                    ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             )
             : Center(
               child: CircularProgressIndicator(
                 color: Theme.of(context).primaryColor,
               ),
             ),
-            notGroupChatData.isNotEmpty ? ListView.builder(
-              itemCount: notGroupChatData.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index){
-                return GestureDetector(
-                  onTap: () async {
-                    //グループチャットルーム遷移
+            notGroupChatData.isNotEmpty ? Scrollbar(
+              child: ListView.builder(
+                itemCount: notGroupChatData.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index){
+                  return GestureDetector(
+                    onTap: () async {
+                      //グループチャットルーム遷移
 
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Colors.black12),
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: Colors.black12),
+                        ),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.grey,
+                          radius: 50,
+                          backgroundImage: notGroupChatData[index].imgData != '' ? Image.memory(
+                            base64Decode(notGroupChatData[index].imgData),
+                            fit: BoxFit.cover,
+                            errorBuilder: (c, o, s) {
+                              return const Icon(
+                                Icons.error,
+                                color: Colors.red,
+                              );
+                            },
+                          ).image
+                              : const AssetImage('assets/images/group_default.jpg'),
+                        ),
+                        title: Text(notGroupChatData[index].name),
+
                       ),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        radius: 50,
-                        backgroundImage: notGroupChatData[index].imgData != '' ? Image.memory(
-                          base64Decode(notGroupChatData[index].imgData),
-                          fit: BoxFit.cover,
-                          errorBuilder: (c, o, s) {
-                            return const Icon(
-                              Icons.error,
-                              color: Colors.red,
-                            );
-                          },
-                        ).image
-                            : const AssetImage('assets/images/group_default.jpg'),
-                      ),
-                      title: Text(notGroupChatData[index].name),
-
-                    ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             )
             : Center(
               child: CircularProgressIndicator(

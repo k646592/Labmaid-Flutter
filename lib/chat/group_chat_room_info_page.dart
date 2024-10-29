@@ -82,51 +82,53 @@ class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Colors.deepOrange.withOpacity(0.2),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.grey,
-                      radius: 30,
-                      backgroundImage: widget.groupChatRoomData.imgData != '' ? Image.memory(
-                        base64Decode(widget.groupChatRoomData.imgData),
-                        fit: BoxFit.cover,
-                        errorBuilder: (c, o, s) {
-                          return const Icon(
-                            Icons.error,
-                            color: Colors.red,
-                          );
-                        },
-                      ).image
-                          : const AssetImage('assets/images/group_default.jpg'),
-                    ),
-                    const SizedBox(width: 20,),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('ルーム名： ${widget.groupChatRoomData.name}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
+      body: Scrollbar(
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Colors.deepOrange.withOpacity(0.2),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Colors.grey,
+                        radius: 30,
+                        backgroundImage: widget.groupChatRoomData.imgData != '' ? Image.memory(
+                          base64Decode(widget.groupChatRoomData.imgData),
+                          fit: BoxFit.cover,
+                          errorBuilder: (c, o, s) {
+                            return const Icon(
+                              Icons.error,
+                              color: Colors.red,
+                            );
+                          },
+                        ).image
+                            : const AssetImage('assets/images/group_default.jpg'),
+                      ),
+                      const SizedBox(width: 20,),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('ルーム名： ${widget.groupChatRoomData.name}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              memberList(widget.groupChatUsers, widget.myData, widget.groupChatRoomData),
-            ],
+                memberList(widget.groupChatUsers, widget.myData, widget.groupChatRoomData),
+              ],
+            ),
           ),
         ),
       ),
@@ -148,6 +150,7 @@ class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
           ListView.builder(
             itemCount: groupChatUsers.length,
             shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index){
               return groupChatUsers[index].join == true ?
               Container(
@@ -281,7 +284,7 @@ class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
     if (response.statusCode == 200) {
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('あなた(${myData.name}がグループから退会されました。')),
+        SnackBar(content: Text('あなた(${myData.name})がグループから退会されました。')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

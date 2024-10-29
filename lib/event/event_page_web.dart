@@ -64,7 +64,7 @@ class EventPageWeb extends StatelessWidget {
           await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const CreateEventPage(),
+              builder: (context) => CreateEventPage(selectedDate: DateTime.now(),),
               fullscreenDialog: true,
             ),
           );

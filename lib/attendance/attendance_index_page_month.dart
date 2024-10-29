@@ -7,6 +7,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../domain/attendance_data.dart';
+import 'attendance_create_page.dart';
 import 'attendance_update_page.dart';
 
 class AttendanceIndexPageMonth extends StatefulWidget {
@@ -455,8 +456,14 @@ class _AttendanceIndexPageMonthState extends State<AttendanceIndexPageMonth> {
             SizedBox(
               height: 2200,
               child: SfCalendar(
-                onLongPress: (CalendarLongPressDetails details) {
-
+                onLongPress: (CalendarLongPressDetails details) async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CreateAttendancePage(selectedDate: details.date!,),
+                      fullscreenDialog: true,
+                    ),
+                  );
                 },
                 onTap: (CalendarTapDetails details) {
 

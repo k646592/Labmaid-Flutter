@@ -36,88 +36,90 @@ class _PrivateChatRoomInfoState extends State<PrivateChatRoomInfo> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: Column(
-            children: [
-              const Center(
-                child: Text('メンバーリスト',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
+      body: Scrollbar(
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Column(
+              children: [
+                const Center(
+                  child: Text('メンバーリスト',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.grey,
-                    backgroundImage: widget.myData.imgData != '' ? Image.memory(
-                      base64Decode(widget.myData.imgData),
-                      fit: BoxFit.cover,
-                      errorBuilder: (c, o, s) {
-                        return const Icon(
-                          Icons.error,
-                          color: Colors.red,
-                        );
-                      },
-                    ).image
-                        : const AssetImage('assets/images/group_default.jpg'),
-                  ),
-                  title: Text(widget.myData.name),
-                  subtitle: Text('${widget.myData.grade} ${widget.myData.group}'),
-                  trailing: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(widget.myData.status,
-                        style: TextStyle(
-                          color: _attendanceColor(widget.myData.status)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.grey,
+                      backgroundImage: widget.myData.imgData != '' ? Image.memory(
+                        base64Decode(widget.myData.imgData),
+                        fit: BoxFit.cover,
+                        errorBuilder: (c, o, s) {
+                          return const Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          );
+                        },
+                      ).image
+                          : const AssetImage('assets/images/group_default.jpg'),
+                    ),
+                    title: Text(widget.myData.name),
+                    subtitle: Text('${widget.myData.grade} ${widget.myData.group}'),
+                    trailing: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(widget.myData.status,
+                          style: TextStyle(
+                            color: _attendanceColor(widget.myData.status)
+                          ),
                         ),
-                      ),
-                      Text(widget.myData.location,),
-                    ],
+                        Text(widget.myData.location,),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.grey,
-                    backgroundImage: widget.userData.imgData != '' ? Image.memory(
-                      base64Decode(widget.userData.imgData),
-                      fit: BoxFit.cover,
-                      errorBuilder: (c, o, s) {
-                        return const Icon(
-                          Icons.error,
-                          color: Colors.red,
-                        );
-                      },
-                    ).image
-                        : const AssetImage('assets/images/group_default.jpg'),
-                  ),
-                  title: Text(widget.userData.name),
-                  subtitle: Text('${widget.userData.grade} ${widget.userData.group}'),
-                  trailing: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(widget.userData.status,
-                        style: TextStyle(
-                            color: _attendanceColor(widget.userData.status)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.grey,
+                      backgroundImage: widget.userData.imgData != '' ? Image.memory(
+                        base64Decode(widget.userData.imgData),
+                        fit: BoxFit.cover,
+                        errorBuilder: (c, o, s) {
+                          return const Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          );
+                        },
+                      ).image
+                          : const AssetImage('assets/images/group_default.jpg'),
+                    ),
+                    title: Text(widget.userData.name),
+                    subtitle: Text('${widget.userData.grade} ${widget.userData.group}'),
+                    trailing: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(widget.userData.status,
+                          style: TextStyle(
+                              color: _attendanceColor(widget.userData.status)
+                          ),
                         ),
-                      ),
-                      Text(widget.userData.location,),
-                    ],
+                        Text(widget.userData.location,),
+                      ],
+                    ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),

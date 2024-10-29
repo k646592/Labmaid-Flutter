@@ -367,7 +367,7 @@ class _EventIndexPageState extends State<EventIndexPage> {
             await Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const CreateEventPage(),
+                builder: (context) => CreateEventPage(selectedDate: today,),
                 fullscreenDialog: true,
               ),
             );
@@ -541,8 +541,14 @@ class _EventIndexPageState extends State<EventIndexPage> {
                   SizedBox(
                     height: 1800,
                     child: SfCalendar(
-                      onLongPress: (CalendarLongPressDetails details) {
-
+                      onLongPress: (CalendarLongPressDetails details) async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CreateEventPage(selectedDate: details.date!,),
+                            fullscreenDialog: true,
+                          ),
+                        );
                       },
                       onTap: (CalendarTapDetails details) {
 

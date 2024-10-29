@@ -66,7 +66,7 @@ class AttendancePageWeb extends StatelessWidget {
           await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const CreateAttendancePage(),
+              builder: (context) => CreateAttendancePage(selectedDate: DateTime.now(),),
               fullscreenDialog: true,
             ),
           );

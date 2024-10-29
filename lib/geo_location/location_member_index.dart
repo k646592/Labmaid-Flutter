@@ -104,39 +104,41 @@ class GeoLocationIndexPageState extends State<GeoLocationIndexPage> {
         centerTitle: false,
         elevation: 0.0,
       ),
-      body: userData.isNotEmpty ? ListView.builder(
-        itemCount: userData.length,
-        shrinkWrap: true,
-        itemBuilder: (context, index){
-          return Container(
-            decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.black12),
+      body: userData.isNotEmpty ? Scrollbar(
+        child: ListView.builder(
+          itemCount: userData.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index){
+            return Container(
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: Colors.black12),
+                ),
               ),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Colors.grey,
-                radius: 50,
-                backgroundImage: userData[index].imgData != '' ? Image.memory(
-                  base64Decode(userData[index].imgData),
-                  fit: BoxFit.cover,
-                  errorBuilder: (c, o, s) {
-                    return const Icon(
-                      Icons.error,
-                      color: Colors.red,
-                    );
-                  },
-                ).image
-                    : const AssetImage('assets/images/default.png'),
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Colors.grey,
+                  radius: 50,
+                  backgroundImage: userData[index].imgData != '' ? Image.memory(
+                    base64Decode(userData[index].imgData),
+                    fit: BoxFit.cover,
+                    errorBuilder: (c, o, s) {
+                      return const Icon(
+                        Icons.error,
+                        color: Colors.red,
+                      );
+                    },
+                  ).image
+                      : const AssetImage('assets/images/default.png'),
+                ),
+                title: Text(userData[index].name),
+                subtitle: Text('${userData[index].group}　${userData[index].grade}　${userData[index].status}'),
+                trailing: Text(userData[index].location),
               ),
-              title: Text(userData[index].name),
-              subtitle: Text('${userData[index].group}　${userData[index].grade}　${userData[index].status}'),
-              trailing: Text(userData[index].location),
-            ),
-          );
-        },
+            );
+          },
+        ),
       )
           : Center(
         child: CircularProgressIndicator(
