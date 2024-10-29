@@ -610,6 +610,7 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
           Row(
             children: [
               Expanded(
+                flex: 7,
                 child: undecided
                     ? Container(
                   padding: const EdgeInsets.all(5.0),
@@ -680,9 +681,9 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
                   ),
                 ),
               ),
-              const SizedBox(width: 10,),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.3,
+
+              Expanded(
+                flex: 3,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
