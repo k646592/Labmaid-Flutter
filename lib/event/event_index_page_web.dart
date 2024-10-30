@@ -10,6 +10,8 @@ import 'package:labmaidfastapi/domain/event_data.dart';
 import 'package:labmaidfastapi/event/event_update_page.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+import 'event_create_page.dart';
+
 //変更点
 //新規作成
 //Web用に編集したカレンダーウィジェット
@@ -493,7 +495,15 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
                   SizedBox(
                     height: 1800,
                     child: SfCalendar(
-                      onLongPress: (CalendarLongPressDetails details) {},
+                      onLongPress: (CalendarLongPressDetails details) async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CreateEventPage(selectedDate: details.date!,),
+                            fullscreenDialog: true,
+                          ),
+                        );
+                      },
                       onTap: (CalendarTapDetails details) {},
                       dataSource: EventDataSource(events),
                       view: CalendarView.month,
