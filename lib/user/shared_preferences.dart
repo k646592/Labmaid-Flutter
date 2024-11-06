@@ -15,7 +15,7 @@ Future<String?> getUserData() async {
   return null;
 }
 
-Future<void> logout() async {
+Future<void> deleteUserData() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.clear();  // 全てのデータを削除
+  await prefs.remove('firebaseUserId');
 }

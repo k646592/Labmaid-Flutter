@@ -49,12 +49,14 @@ Future<Position?> getCurrentLocation() async {
     permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
       // 位置情報の権限が拒否された場合
+      print('位置情報の権限が拒否されました。');
       return null;
     }
   }
 
   if (permission == LocationPermission.deniedForever) {
     // 永久に拒否されている場合
+    print('位置情報の権限が永久に拒否されています。');
     return null;
   }
 
@@ -122,12 +124,17 @@ Future<void> postLocation() async {
     final info = NetworkInfo();
     final wifiBSSID = await info.getWifiBSSID();
 
+    print(wifiBSSID);
     print(firebaseUserId);
 
     if (firebaseUserId != null) {
 
-      // al:0:1a:eb:b4:50:90, al5GHz:0:1a:eb:b4:50:91
+      // ios版のal:0:1a:eb:b4:50:90, al5GHz:0:1a:eb:b4:50:91
       if (wifiBSSID == '0:1a:eb:b4:50:90' || wifiBSSID == '0:1a:eb:b4:50:91') {
+        location = '研究室内';
+      }
+      // android版のal:00:1a:eb:b4:50:90, al5GHz:00:1a:eb:b4:50:91
+      if (wifiBSSID == '00:1a:eb:b4:50:90' || wifiBSSID == '00:1a:eb:b4:50:91') {
         location = '研究室内';
       }
       if (wifiBSSID == 'ac:44:f2:c0:30:70') {

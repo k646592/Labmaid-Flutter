@@ -106,7 +106,7 @@ class _UpdateAttendancePageState extends State<UpdateAttendancePage> {
             ),
           ),
           title: const Text(
-            "Update Attendance",
+            "Show Attendance",
             style: TextStyle(
               color: Color(0xff626262),
               fontSize: 20.0,

@@ -175,10 +175,10 @@ class UserDrawer extends StatelessWidget {
                                 child: const Text('Cancel')),
                             CupertinoDialogAction(
                               child: const Text('OK'),
-                              onPressed: () {
-                                FirebaseAuth.instance.signOut();
-                                logout();
-                                Navigator.pushAndRemoveUntil(
+                              onPressed: () async {
+                                await deleteUserData();
+                                await FirebaseAuth.instance.signOut();
+                                await Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>

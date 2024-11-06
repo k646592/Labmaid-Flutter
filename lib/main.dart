@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:labmaidfastapi/services/background_services.dart';
+import 'package:network_info_plus/network_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'header_footer_drawer/footer.dart'; // フッターページのインポート
 import 'login/login_page.dart'; // ログインページのインポート
 import 'package:flutter/foundation.dart';
@@ -30,6 +32,8 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    // 位置情報の許可をリクエスト
+    await requestLocationPermission();
     await initializeBackgroundService(); // バックグラウンドサービスの初期化
   }
 
@@ -37,6 +41,30 @@ Future<void> main() async {
   runApp(
     const MyApp()
   );
+}
+
+Future<void> requestLocationPermission() async {
+  // フォアグラウンドの位置情報権限をリクエスト
+  var locationStatus = await Permission.location.status;
+  if (locationStatus.isDenied) {
+    locationStatus = await Permission.location.request();
+  }
+
+  // フォアグラウンド位置情報が許可されている場合のみ、バックグラウンドの権限をリクエスト
+  if (locationStatus.isGranted) {
+    var backgroundStatus = await Permission.locationAlways.status;
+    if (backgroundStatus.isDenied) {
+      backgroundStatus = await Permission.locationAlways.request();
+    }
+
+    if (backgroundStatus.isGranted) {
+      print("バックグラウンドでの位置情報アクセスが許可されました。");
+    } else {
+      print("バックグラウンドでの位置情報アクセスが拒否されました。");
+    }
+  } else {
+    print("位置情報のアクセスが拒否されました。");
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -84,7 +112,7 @@ class MyApp extends StatelessWidget {
 
           // 接続状態が待機中の場合、空のSizedBoxを表示
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const SizedBox();
+            return const CircularProgressIndicator();
           }
           // ユーザーが認証されている場合、フッターページを表示(ログイン維持機能)
           if (snapshot.hasData) {
