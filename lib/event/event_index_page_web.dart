@@ -10,6 +10,7 @@ import 'package:labmaidfastapi/domain/event_data.dart';
 import 'package:labmaidfastapi/event/event_update_page.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+import '../network/url.dart';
 import 'event_create_page.dart';
 
 //変更点
@@ -220,7 +221,7 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
   }
 
   Future<void> _fetchEvent() async {
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/events');
+    var uri = Uri.parse('${httpUrl}events');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -251,7 +252,7 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
     final user = FirebaseAuth.instance.currentUser;
     final userId = user!.uid;
 
-    var uriUser = Uri.parse('https://sui.al.kansai-u.ac.jp/api/user_id/$userId');
+    var uriUser = Uri.parse('${httpUrl}user_id/$userId');
     var responseUser = await http.get(uriUser);
 
     // レスポンスのステータスコードを確認
@@ -290,7 +291,7 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
 
   void _connectWebSocket() {
     _channel = WebSocketChannel.connect(
-      Uri.parse('wss://sui.al.kansai-u.ac.jp/api/ws_event_list'),
+      Uri.parse('${wsUrl}ws_event_list'),
     );
     _channel.stream.listen((message) {
 

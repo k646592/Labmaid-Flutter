@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:labmaidfastapi/domain/user_data.dart';
 import '../domain/memo_data.dart';
+import '../network/url.dart';
 
 
 class MemoListModel extends ChangeNotifier {
@@ -18,7 +19,7 @@ class MemoListModel extends ChangeNotifier {
     final currentUser = FirebaseAuth.instance.currentUser;
     final uid = currentUser!.uid;
 
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/users/$uid');
+    var uri = Uri.parse('${httpUrl}users/$uid');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -40,7 +41,7 @@ class MemoListModel extends ChangeNotifier {
       print('リクエストが失敗しました: ${response.statusCode}');
     }
 
-    var uriMinutes = Uri.parse('https://sui.al.kansai-u.ac.jp/api/meetings');
+    var uriMinutes = Uri.parse('${httpUrl}meetings');
     // GETリクエストを送信
     var responseMinutes = await http.get(uriMinutes);
 

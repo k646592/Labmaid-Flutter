@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../network/url.dart';
+
 class EmailResetModel extends ChangeNotifier {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -30,7 +32,7 @@ class EmailResetModel extends ChangeNotifier {
     userId = uid;
     emailController.text = '';
     initialEmail = user.email!;
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/user_id/$userId');
+    var uri = Uri.parse('${httpUrl}user_id/$userId');
     var response = await http.get(uri);
     // レスポンスのステータスコードを確認
     if (response.statusCode == 200) {
@@ -102,7 +104,7 @@ class EmailResetModel extends ChangeNotifier {
   }
 
   Future<void> updateEmailFastAPI() async {
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/users/email/$id');
+    var uri = Uri.parse('${httpUrl}users/email/$id');
 
     // 送信するデータを作成
     Map<String, dynamic> data = {

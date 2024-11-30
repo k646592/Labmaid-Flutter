@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:labmaidfastapi/attendance/attendance_create_page.dart';
 import 'package:labmaidfastapi/attendance/attendance_index_page_day.dart';
 import 'package:labmaidfastapi/attendance/attendance_index_page_month.dart';
 
@@ -83,24 +82,6 @@ class _AttendanceHomePageState extends State<AttendanceHomePage> {
           ),
         ),
         drawer: const UserDrawer(),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.amber
-          ,
-          onPressed: () async {
-            //画面遷移
-            await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CreateAttendancePage(selectedDate: DateTime.now(),),
-                fullscreenDialog: true,
-              ),
-            );
-          },
-          child: const Icon(
-            Icons.add,
-            color: Colors.black,
-          ),
-        ),
         body: const TabBarView(
           children: [
             AttendanceManagementPage(),

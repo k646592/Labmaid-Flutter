@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../domain/attendance_data.dart';
+import '../network/url.dart';
 
 class AttendanceIndexPageDay extends StatefulWidget {
 
@@ -197,7 +198,7 @@ class _AttendanceIndexPageDayState extends State<AttendanceIndexPageDay> {
   }
 
   Future<void> _fetchAttendance() async {
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/attendances');
+    var uri = Uri.parse('${httpUrl}attendances');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -226,7 +227,7 @@ class _AttendanceIndexPageDayState extends State<AttendanceIndexPageDay> {
     final user = FirebaseAuth.instance.currentUser;
     final userId = user!.uid;
 
-    var uriUser = Uri.parse('https://sui.al.kansai-u.ac.jp/api/user_id/$userId');
+    var uriUser = Uri.parse('${httpUrl}user_id/$userId');
     var responseUser = await http.get(uriUser);
 
     // レスポンスのステータスコードを確認
@@ -262,7 +263,7 @@ class _AttendanceIndexPageDayState extends State<AttendanceIndexPageDay> {
 
   void _connectWebSocket() {
     _channel = WebSocketChannel.connect(
-      Uri.parse('wss://sui.al.kansai-u.ac.jp/api/ws_attendance_list'),
+      Uri.parse('${wsUrl}ws_attendance_list'),
     );
     _channel.stream.listen((message) {
 

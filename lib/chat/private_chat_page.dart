@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 
 import '../image_size/size_limit.dart';
+import '../network/url.dart';
 import '../pick_export/pick_image_export.dart';
 import '../save_export/save_image_export.dart';
 
@@ -123,7 +124,7 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
 
   Future<void> _fetchMessageHistory() async {
     final response = await http.get(
-      Uri.parse('https://sui.al.kansai-u.ac.jp/api/private_messages/${widget.privateChatroomId}'),
+      Uri.parse('${httpUrl}private_messages/${widget.privateChatroomId}'),
     );
 
     if (response.statusCode == 200) {
@@ -147,7 +148,7 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
 
   void _connectWebSocket() {
     _channel = WebSocketChannel.connect(
-      Uri.parse('wss://sui.al.kansai-u.ac.jp/api/ws_private_message/${widget.privateChatroomId}/${widget.myData.id}'),
+      Uri.parse('${wsUrl}ws_private_message/${widget.privateChatroomId}/${widget.myData.id}'),
     );
     _channel.stream.listen((message) {
       final decodedMessage = json.decode(message);

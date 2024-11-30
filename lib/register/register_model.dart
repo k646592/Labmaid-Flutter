@@ -10,6 +10,7 @@ import 'dart:typed_data';
 import 'package:labmaidfastapi/user/shared_preferences.dart';
 
 import '../image_size/size_limit.dart';
+import '../network/url.dart';
 
 
 class RegisterModel extends ChangeNotifier {
@@ -122,7 +123,7 @@ class RegisterModel extends ChangeNotifier {
 
         //FastAPIに追加
         //Postリクエストを送信するエンドポイントのURL
-        var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/users');
+        var uri = Uri.parse('${httpUrl}users');
         String imagePath = 'assets/images/default.png'; //画像ファイルパス
 
         final request = http.MultipartRequest('POST', uri);

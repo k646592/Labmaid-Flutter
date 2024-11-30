@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
+import '../network/url.dart';
 import '../user/shared_preferences.dart';
 
 Future initializeBackgroundService() async {
@@ -140,9 +141,12 @@ Future<void> postLocation() async {
       if (wifiBSSID == 'ac:44:f2:c0:30:70') {
         location = '第２研究室内';
       }
+      if (wifiBSSID == '18:c2:bf:8f:d9:1c') {
+        location = '榎原先生の自室';
+      }
 
       // サーバに位置情報をPOST
-      var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/update_user_location/$firebaseUserId');
+      var uri = Uri.parse('${httpUrl}update_user_location/$firebaseUserId');
 
       // 送信するデータを作成
       Map<String, dynamic> data = {

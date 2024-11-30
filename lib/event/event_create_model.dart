@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import '../network/url.dart';
+
 class CreateEventModel extends ChangeNotifier {
 
   String? userId;
@@ -17,7 +19,7 @@ class CreateEventModel extends ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     userId = user!.uid;
     email = user.email;
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/user_name_id/$userId');
+    var uri = Uri.parse('${httpUrl}user_name_id/$userId');
     var response = await http.get(uri);
 
     // レスポンスのステータスコードを確認
@@ -53,7 +55,7 @@ class CreateEventModel extends ChangeNotifier {
       end = start.add(const Duration(hours: 1));
     }
 
-    final url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/events');
+    final url = Uri.parse('${httpUrl}events');
     final response = await http.post(
       url,
       headers: {
@@ -88,7 +90,7 @@ class CreateEventModel extends ChangeNotifier {
       end = start.add(const Duration(hours: 1));
     }
 
-    Uri url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/mail');
+    Uri url = Uri.parse('${httpUrl}mail');
     final response = await http.post(url, body: {'name': name, 'subject': subject(title,unit), 'from_email': email, 'text': textMessages(title,start,end,unit,description)});
 
     if (response.statusCode == 200) {

@@ -8,6 +8,8 @@ import '../domain/user_data.dart';
 
 import 'package:http/http.dart' as http;
 
+import '../network/url.dart';
+
 class GroupChatRoomInfo extends StatefulWidget {
   final GroupChatRoomData groupChatRoomData;
   final List<GroupChatUserData> groupChatUsers;
@@ -22,7 +24,7 @@ class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
   List<GroupChatMember> groupChatNotUsers = [];
 
   Future getGroupChatNotUsers(int groupChatRoomId) async {
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/get_users_not_in_group/$groupChatRoomId');
+    var uri = Uri.parse('${httpUrl}get_users_not_in_group/$groupChatRoomId');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -259,7 +261,7 @@ class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
 
   void _removeMemberFromGroup(GroupChatUserData user, GroupChatRoomData groupChatRoomData) async {
     // サーバーやデータベースとの通信を行い、ユーザーをグループから削除
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/group_member_update/${groupChatRoomData.id}/${user.id}');
+    var uri = Uri.parse('${httpUrl}group_member_update/${groupChatRoomData.id}/${user.id}');
 
     final response = await http.patch(uri);
 
@@ -277,7 +279,7 @@ class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
 
   void _exitMeFromGroup(UserData myData, GroupChatRoomData groupChatRoomData) async {
     // サーバーやデータベースとの通信を行い、ユーザーをグループから削除
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/group_member_update/${groupChatRoomData.id}/${myData.id}');
+    var uri = Uri.parse('${httpUrl}group_member_update/${groupChatRoomData.id}/${myData.id}');
 
     final response = await http.patch(uri);
 

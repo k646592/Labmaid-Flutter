@@ -5,6 +5,7 @@ import '../domain/user_data.dart';
 import 'package:http/http.dart' as http;
 
 import '../header_footer_drawer/footer.dart';
+import '../network/url.dart';
 
 class ChatMemberAddPage extends StatefulWidget {
   final GroupChatRoomData groupChatRoomData;
@@ -36,7 +37,7 @@ class _ChatMemberAddPage extends State<ChatMemberAddPage> {
       throw '追加するメンバーがいません。';
     }
 
-    final url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/add_members/${groupChatRoomData.id}');
+    final url = Uri.parse('${httpUrl}add_members/${groupChatRoomData.id}');
     final response = await http.post(
       url,
       headers: {

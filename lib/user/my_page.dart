@@ -186,13 +186,7 @@ class _MyPageState extends State<MyPage> {
                     ],
                   ),
                 ),
-                /*
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.95,
-                  child: chatRoomList(model.chat, widgets),
-                ),
 
-                 */
               ],
             )
                 : const Center(

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../domain/user_data.dart';
+import '../network/url.dart';
 
 class GeoLocationIndexPage extends StatefulWidget {
   const GeoLocationIndexPage({Key? key}) : super(key: key);
@@ -27,8 +28,8 @@ class GeoLocationIndexPageState extends State<GeoLocationIndexPage> {
 
   Future<void> fetchLocationMemberList() async {
 
-    // 個人チャットのユーザを取得する
-    var url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/users');
+    // ユーザを取得する
+    var url = Uri.parse('${httpUrl}users');
 
     // GETリクエストを送信
     var responseGet = await http.get(url);
@@ -58,7 +59,7 @@ class GeoLocationIndexPageState extends State<GeoLocationIndexPage> {
 
   void _connectWebSocket() {
     _channel = WebSocketChannel.connect(
-      Uri.parse('wss://sui.al.kansai-u.ac.jp/api/ws_user_location'),
+      Uri.parse('${wsUrl}ws_user_location'),
     );
     _channel.stream.listen((message) {
       final Map<String, dynamic> data = jsonDecode(message);

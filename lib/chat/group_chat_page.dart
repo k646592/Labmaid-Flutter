@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 
 import '../image_size/size_limit.dart';
+import '../network/url.dart';
 import '../pick_export/pick_image_export.dart';
 import '../save_export/save_image_export.dart';
 
@@ -41,7 +42,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
   List<GroupChatUserData> groupChatUsers = [];
 
   Future getGroupChatUsers(int groupChatRoomId) async {
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/group_chat_room_users/$groupChatRoomId');
+    var uri = Uri.parse('${httpUrl}group_chat_room_users/$groupChatRoomId');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -148,7 +149,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
 
   Future<void> _fetchMessageHistory() async {
     final response = await http.get(
-      Uri.parse('https://sui.al.kansai-u.ac.jp/api/group_messages/${widget.groupChatRoomData.id}'),
+      Uri.parse('${httpUrl}group_messages/${widget.groupChatRoomData.id}'),
     );
 
     if (response.statusCode == 200) {
@@ -172,7 +173,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
 
   void _connectWebSocket() {
     _channel = WebSocketChannel.connect(
-      Uri.parse('wss://sui.al.kansai-u.ac.jp/api/ws_group_message/${widget.groupChatRoomData.id}/${widget.myData.id}'),
+      Uri.parse('${wsUrl}ws_group_message/${widget.groupChatRoomData.id}/${widget.myData.id}'),
     );
     _channel.stream.listen((message) {
       final decodedMessage = json.decode(message);

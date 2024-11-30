@@ -6,6 +6,7 @@ import 'package:labmaidfastapi/minutes/minutes_pdf_preview.dart';
 import 'package:labmaidfastapi/minutes/voice_minutes/voice_minutes_page.dart';
 
 import '../domain/memo_data.dart';
+import '../network/url.dart';
 
 class MainTextPage extends StatefulWidget {
   final MemoData memo;
@@ -138,7 +139,7 @@ class _MainTextPageState extends State<MainTextPage> {
   }
 
   Future updateMainText() async {
-    final url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/update_main_text/${widget.memo.id}');
+    final url = Uri.parse('${httpUrl}update_main_text/${widget.memo.id}');
     final response = await http.patch(
       url,
       headers: {

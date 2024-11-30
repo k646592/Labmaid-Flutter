@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:labmaidfastapi/domain/memo_data.dart';
 
+import '../../network/url.dart';
 import '../minutes_pdf_preview.dart';
 import 'call_chatgpt.dart';
 
@@ -202,7 +203,7 @@ class ResultScreen extends StatelessWidget {
   }
 
   Future updateMainText(String text, int id) async {
-    final url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/update_main_text/$id');
+    final url = Uri.parse('${httpUrl}update_main_text/$id');
     final response = await http.patch(
       url,
       headers: {

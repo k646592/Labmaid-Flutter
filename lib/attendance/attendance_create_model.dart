@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:labmaidfastapi/network/url.dart';
 
 class CreateAttendanceModel extends ChangeNotifier {
 
@@ -17,7 +18,7 @@ class CreateAttendanceModel extends ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     userId = user!.uid;
     email = user.email;
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/user_name_id/$userId');
+    var uri = Uri.parse('${httpUrl}user_name_id/$userId');
     var response = await http.get(uri);
 
     // レスポンスのステータスコードを確認
@@ -54,7 +55,7 @@ class CreateAttendanceModel extends ChangeNotifier {
     }
 
     final now = DateTime.now();
-    final urlUser = Uri.parse('https://sui.al.kansai-u.ac.jp/api/update_user_status/$id');
+    final urlUser = Uri.parse('${httpUrl}update_user_status/$id');
     // 送信するデータを作成
     Map<String, dynamic> data = {
       'status': title,
@@ -66,7 +67,7 @@ class CreateAttendanceModel extends ChangeNotifier {
       // 他のヘッダーを必要に応じて追加
     };
 
-    final url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/attendances');
+    final url = Uri.parse('${httpUrl}attendances');
     final response = await http.post(
       url,
       headers: {
@@ -122,7 +123,7 @@ class CreateAttendanceModel extends ChangeNotifier {
       end = start.add(const Duration(hours: 1));
     }
 
-    Uri url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/mail');
+    Uri url = Uri.parse('${httpUrl}mail');
     final response = await http.post(url, body: {'name': name, 'subject': subject(title), 'from_email': email, 'text': textMessages(title,start,end,description, undecided)});
 
     if (response.statusCode == 200) {

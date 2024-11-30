@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:labmaidfastapi/domain/user_data.dart';
 
+import '../network/url.dart';
+
 class MyModel extends ChangeNotifier {
 
   UserData? myData;
@@ -13,7 +15,7 @@ class MyModel extends ChangeNotifier {
     final currentUser = FirebaseAuth.instance.currentUser;
     final uid = currentUser!.uid;
 
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/users/$uid');
+    var uri = Uri.parse('${httpUrl}users/$uid');
 
     // GETリクエストを送信
     var response = await http.get(uri);

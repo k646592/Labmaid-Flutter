@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:http/http.dart' as http;
 
+import '../network/url.dart';
+
 class DoorStatusAppbar extends StatefulWidget {
   const DoorStatusAppbar({Key? key}) : super(key: key);
   @override
@@ -17,7 +19,7 @@ class _DoorStatusAppbarState extends State<DoorStatusAppbar> {
     super.initState();
     _fetchDoorStatus();
     _channel = WebSocketChannel.connect(
-      Uri.parse('wss://sui.al.kansai-u.ac.jp/api/ws_door_status'),
+      Uri.parse('${wsUrl}ws_door_status'),
     );
 
   }
@@ -44,7 +46,7 @@ class _DoorStatusAppbarState extends State<DoorStatusAppbar> {
 
   Future<void> _fetchDoorStatus() async {
     final response = await http.get(
-      Uri.parse('https://sui.al.kansai-u.ac.jp/api/door_status'),
+      Uri.parse('${httpUrl}door_status'),
     );
 
     if (response.statusCode == 200) {

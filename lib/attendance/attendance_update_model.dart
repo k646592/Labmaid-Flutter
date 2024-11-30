@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import '../network/url.dart';
+
 class UpdateAttendanceModel extends ChangeNotifier {
 
   String? firebaseUserId;
@@ -17,7 +19,7 @@ class UpdateAttendanceModel extends ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     firebaseUserId = user!.uid;
     email = user.email;
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/user_name_id/$firebaseUserId');
+    var uri = Uri.parse('${httpUrl}user_name_id/$firebaseUserId');
     var response = await http.get(uri);
 
     // レスポンスのステータスコードを確認
@@ -56,7 +58,7 @@ class UpdateAttendanceModel extends ChangeNotifier {
       end = start.add(const Duration(hours: 1));
     }
 
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/attendances/$id');
+    var uri = Uri.parse('${httpUrl}attendances/$id');
 
     // 送信するデータを作成
     Map<String, dynamic> data = {
@@ -97,7 +99,7 @@ class UpdateAttendanceModel extends ChangeNotifier {
   }
 
   Future deleteAttendance(int id) async {
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/attendances/$id');
+    var uri = Uri.parse('${httpUrl}attendances/$id');
 
     final response = await http.delete(uri);
 
@@ -116,7 +118,7 @@ class UpdateAttendanceModel extends ChangeNotifier {
       end = start.add(const Duration(hours: 1));
     }
 
-    Uri url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/mail');
+    Uri url = Uri.parse('${httpUrl}mail');
     final response = await http.post(url, body: {'name': name, 'subject': subject(title), 'from_email': email, 'text': textMessages(title,start,end,description, undecided)});
 
     if (response.statusCode == 200) {

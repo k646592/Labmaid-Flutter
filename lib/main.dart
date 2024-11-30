@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:labmaidfastapi/services/background_services.dart';
-import 'package:network_info_plus/network_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'header_footer_drawer/footer.dart'; // フッターページのインポート
 import 'login/login_page.dart'; // ログインページのインポート

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import '../domain/memo_data.dart';
 import '../header_footer_drawer/footer.dart';
+import '../network/url.dart';
 
 class EditMemoPage extends StatefulWidget {
   final MemoData memo;
@@ -203,7 +204,7 @@ class _EditMemoPageState extends State<EditMemoPage> {
       throw 'タイトルが入力されていません。';
     }
 
-    final url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/meetings/${widget.memo.id}');
+    final url = Uri.parse('${httpUrl}meetings/${widget.memo.id}');
     final response = await http.patch(
       url,
       headers: {

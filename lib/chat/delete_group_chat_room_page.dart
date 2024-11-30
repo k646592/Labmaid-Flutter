@@ -6,6 +6,8 @@ import 'package:labmaidfastapi/header_footer_drawer/footer.dart';
 import '../domain/chat_data.dart';
 import 'package:http/http.dart' as http;
 
+import '../network/url.dart';
+
 class GroupChatRoomDeletePage extends StatefulWidget {
   final List<GroupChatRoomData> groupChatRoomList;
   const GroupChatRoomDeletePage({Key? key, required this.groupChatRoomList}) : super(key: key);
@@ -120,7 +122,7 @@ class _GroupChatRoomDeletePage extends State<GroupChatRoomDeletePage> {
   }
 
   void _removeGroup(int groupChatRoomId) async {
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/delete_group_chat_room/$groupChatRoomId');
+    var uri = Uri.parse('${httpUrl}delete_group_chat_room/$groupChatRoomId');
 
     final response = await http.delete(uri);
 

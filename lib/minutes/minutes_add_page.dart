@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:labmaidfastapi/domain/user_data.dart';
 
+import '../network/url.dart';
+
 
 class AddMemoPage extends StatefulWidget {
   final UserData myData;
@@ -197,7 +199,7 @@ class _AddMemoPageState extends State<AddMemoPage> {
       throw 'タイトルが入力されていません。';
     }
 
-    final url = Uri.parse('https://sui.al.kansai-u.ac.jp/api/meetings');
+    final url = Uri.parse('${httpUrl}meetings');
     final response = await http.post(
       url,
       headers: {

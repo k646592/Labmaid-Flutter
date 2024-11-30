@@ -2,10 +2,13 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:labmaidfastapi/board/board_index_page.dart';
+import 'package:labmaidfastapi/board/board_input_page.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:http/http.dart' as http;
 
 import '../domain/user_data.dart';
+import '../network/url.dart';
 
 class AttendanceManagementPage extends StatefulWidget {
   const AttendanceManagementPage({Key? key}) : super(key: key);
@@ -15,6 +18,7 @@ class AttendanceManagementPage extends StatefulWidget {
 }
 
 class _AttendanceManagementPage extends State<AttendanceManagementPage> {
+  final ScrollController _scrollController = ScrollController();
   late WebSocketChannel _channel;
   final user = FirebaseAuth.instance.currentUser;
 
@@ -34,12 +38,13 @@ class _AttendanceManagementPage extends State<AttendanceManagementPage> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _channel.sink.close();
     super.dispose();
   }
 
   Future<void> _fetchAttendanceUserList() async {
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/users_attendance');
+    var uri = Uri.parse('${httpUrl}users_attendance');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -67,7 +72,7 @@ class _AttendanceManagementPage extends State<AttendanceManagementPage> {
   }
 
   Future<void> _fetchMyUserData() async {
-    var uriUser = Uri.parse('https://sui.al.kansai-u.ac.jp/api/user_id/$firebaseUserId');
+    var uriUser = Uri.parse('${httpUrl}user_id/$firebaseUserId');
     var responseUser = await http.get(uriUser);
 
     // レスポンスのステータスコードを確認
@@ -93,7 +98,7 @@ class _AttendanceManagementPage extends State<AttendanceManagementPage> {
   }
 
   Future attendanceUpdate(String updateStatus) async {
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/update_user_status/$userId');
+    var uri = Uri.parse('${httpUrl}update_user_status/$userId');
 
     // 送信するデータを作成
     Map<String, dynamic> data = {
@@ -128,7 +133,7 @@ class _AttendanceManagementPage extends State<AttendanceManagementPage> {
 
   void _connectWebSocket() {
     _channel = WebSocketChannel.connect(
-      Uri.parse('wss://sui.al.kansai-u.ac.jp/api/ws_user_status'),
+      Uri.parse('${wsUrl}ws_user_status'),
     );
     _channel.stream.listen((message) {
       final Map<String, dynamic> data = jsonDecode(message);
@@ -146,331 +151,342 @@ class _AttendanceManagementPage extends State<AttendanceManagementPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            margin: const EdgeInsets.all(4.0),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.95,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await attendanceUpdate('出席');
-                        const snackBar = SnackBar(
-                          backgroundColor: Colors.green,
-                          content: Text(
-                            "出席しました",
-                            style: TextStyle(
-                              color: Colors.black,
+    return Scrollbar(
+      controller: _scrollController,
+      thumbVisibility: true,
+      child: CustomScrollView(
+        controller: _scrollController,
+        slivers: <Widget>[
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  margin: const EdgeInsets.all(4.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await attendanceUpdate('出席');
+                              const snackBar = SnackBar(
+                                backgroundColor: Colors.green,
+                                content: Text(
+                                  "出席しました",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.green[400],
+                            ),
+                            child: const FittedBox(
+                              child: Text(
+                                '出席',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
                             ),
                           ),
-                        );
-                        //model.fetchAttendanceList();状態の更新 websocketで更新する
-                        ScaffoldMessenger.of(context).
-                        showSnackBar(snackBar);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.green[400],
-                      ),
-                      child: const FittedBox(
-                        child: Text(
-                          '出席',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await attendanceUpdate('一時退席');
-                        const snackBar = SnackBar(
-                          backgroundColor: Colors.yellow,
-                          content: Text(
-                            "一時退席しました",
-                            style: TextStyle(
-                              color: Colors.black,
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await attendanceUpdate('一時退席');
+                              const snackBar = SnackBar(
+                                backgroundColor: Colors.yellow,
+                                content: Text(
+                                  "一時退席しました",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              );
+                              //model.fetchAttendanceList();
+                              ScaffoldMessenger.of(context).
+                              showSnackBar(snackBar);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white, backgroundColor: Colors.yellow,
+                            ),
+                            child: const FittedBox(
+                              child: Text(
+                                '一時退席',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
                             ),
                           ),
-                        );
-                        //model.fetchAttendanceList();
-                        ScaffoldMessenger.of(context).
-                        showSnackBar(snackBar);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: Colors.yellow,
-                      ),
-                      child: const FittedBox(
-                        child: Text(
-                          '一時退席',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await attendanceUpdate('帰宅');
-                        const snackBar = SnackBar(
-                          backgroundColor: Colors.grey,
-                          content: Text(
-                            "帰宅しました",
-                            style: TextStyle(
-                              color: Colors.black,
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await attendanceUpdate('帰宅');
+                              const snackBar = SnackBar(
+                                backgroundColor: Colors.grey,
+                                content: Text(
+                                  "帰宅しました",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              );
+                              //model.fetchAttendanceList();
+                              ScaffoldMessenger.of(context).
+                              showSnackBar(snackBar);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white, backgroundColor: Colors.grey,
+                            ),
+                            child: const FittedBox(
+                              child: Text(
+                                '帰宅',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
                             ),
                           ),
-                        );
-                        //model.fetchAttendanceList();
-                        ScaffoldMessenger.of(context).
-                        showSnackBar(snackBar);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: Colors.grey,
-                      ),
-                      child: const FittedBox(
-                        child: Text(
-                          '帰宅',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
-                      ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(
-                    width: 5,
+                ),
+                Container(
+                  margin: const EdgeInsets.all(4.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await attendanceUpdate('欠席');
+                              const snackBar = SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text(
+                                  "欠席しました",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              );
+                              //model.fetchAttendanceList();
+                              ScaffoldMessenger.of(context).
+                              showSnackBar(snackBar);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white, backgroundColor: Colors.red,
+                            ),
+                            child: const FittedBox(
+                              child: Text(
+                                '欠席',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await attendanceUpdate('未出席');
+                              const snackBar = SnackBar(
+                                backgroundColor: Colors.blue,
+                                content: Text(
+                                  "未出席になりました",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              );
+                              //model.fetchAttendanceList();
+                              ScaffoldMessenger.of(context).
+                              showSnackBar(snackBar);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white, backgroundColor: Colors.blue,
+                            ),
+                            child: const FittedBox(
+                              child: Text(
+                                '未出席',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await attendanceUpdate('授業中');
+                              const snackBar = SnackBar(
+                                backgroundColor: Colors.purple,
+                                content: Text(
+                                  "授業中になりました",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              );
+                              //model.fetchAttendanceList();
+                              ScaffoldMessenger.of(context).
+                              showSnackBar(snackBar);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white, backgroundColor: Colors.purple,
+                            ),
+                            child: const FittedBox(
+                              child: Text(
+                                '授業中',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.98,
+                  child: Container(
+                    margin: const EdgeInsets.all(2.0),
+                    child: Row(
+                        children: [
+                          Container(
+                            width: 100,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.black45,
+                              ),
+                            ),
+                            child: const Text('Net班'),  //グループ名
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: groupAttendanceUser(users, 'Network班'),
+                            ),
+                          ),
+                        ]
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.98,
+                  child: Container(
+                    margin: const EdgeInsets.all(2.0),
+                    child: Row(
+                        children: [
+                          Container(
+                            width: 100,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.black45,
+                              ),
+                            ),
+                            child: const Text('Grid班'),  //グループ名
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: groupAttendanceUser(users, 'Grid班'),
+                            ),
+                          ),
+                        ]
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.98,
+                  child: Container(
+                    margin: const EdgeInsets.all(2.0),
+                    child: Row(
+                        children: [
+                          Container(
+                            width: 100,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.black45,
+                              ),
+                            ),
+                            child: const Text('Web班'),  //グループ名
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: groupAttendanceUser(users, 'Web班'),
+                            ),
+                          ),
+                        ]
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.98,
+                  child: Container(
+                    margin: const EdgeInsets.all(2.0),
+                    child: Row(
+                        children: [
+                          Container(
+                            width: 100,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.black45,
+                              ),
+                            ),
+                            child: const Text('教員'),  //グループ名
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: groupAttendanceUser(users, '教員'),
+                            ),
+                          ),
+                        ]
+                    ),
+                  ),
+                ),
+                const InputBoardPage(),
+              ],
             ),
           ),
-          Container(
-            margin: const EdgeInsets.all(4.0),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.95,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await attendanceUpdate('欠席');
-                        const snackBar = SnackBar(
-                          backgroundColor: Colors.red,
-                          content: Text(
-                            "欠席しました",
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                        );
-                        //model.fetchAttendanceList();
-                        ScaffoldMessenger.of(context).
-                        showSnackBar(snackBar);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: Colors.red,
-                      ),
-                      child: const FittedBox(
-                        child: Text(
-                          '欠席',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await attendanceUpdate('未出席');
-                        const snackBar = SnackBar(
-                          backgroundColor: Colors.blue,
-                          content: Text(
-                            "未出席になりました",
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                        );
-                        //model.fetchAttendanceList();
-                        ScaffoldMessenger.of(context).
-                        showSnackBar(snackBar);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: Colors.blue,
-                      ),
-                      child: const FittedBox(
-                        child: Text(
-                          '未出席',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await attendanceUpdate('授業中');
-                        const snackBar = SnackBar(
-                          backgroundColor: Colors.purple,
-                          content: Text(
-                            "授業中になりました",
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                        );
-                        //model.fetchAttendanceList();
-                        ScaffoldMessenger.of(context).
-                        showSnackBar(snackBar);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: Colors.purple,
-                      ),
-                      child: const FittedBox(
-                        child: Text(
-                          '授業中',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.98,
-            child: Container(
-              margin: const EdgeInsets.all(2.0),
-              child: Row(
-                  children: [
-                    Container(
-                      width: 100,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Colors.black45,
-                        ),
-                      ),
-                      child: const Text('Net班'),  //グループ名
-                    ),
-                    Expanded(
-                      child: Row(
-                        children: groupAttendanceUser(users, 'Network班'),
-                      ),
-                    ),
-                  ]
-              ),
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.98,
-            child: Container(
-              margin: const EdgeInsets.all(2.0),
-              child: Row(
-                  children: [
-                    Container(
-                      width: 100,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Colors.black45,
-                        ),
-                      ),
-                      child: const Text('Grid班'),  //グループ名
-                    ),
-                    Expanded(
-                      child: Row(
-                        children: groupAttendanceUser(users, 'Grid班'),
-                      ),
-                    ),
-                  ]
-              ),
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.98,
-            child: Container(
-              margin: const EdgeInsets.all(2.0),
-              child: Row(
-                  children: [
-                    Container(
-                      width: 100,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Colors.black45,
-                        ),
-                      ),
-                      child: const Text('Web班'),  //グループ名
-                    ),
-                    Expanded(
-                      child: Row(
-                        children: groupAttendanceUser(users, 'Web班'),
-                      ),
-                    ),
-                  ]
-              ),
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.98,
-            child: Container(
-              margin: const EdgeInsets.all(2.0),
-              child: Row(
-                  children: [
-                    Container(
-                      width: 100,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Colors.black45,
-                        ),
-                      ),
-                      child: const Text('教員'),  //グループ名
-                    ),
-                    Expanded(
-                      child: Row(
-                        children: groupAttendanceUser(users, '教員'),
-                      ),
-                    ),
-                  ]
-              ),
-            ),
+          const SliverToBoxAdapter(
+            child: IndexBoardPage()
           ),
         ],
       ),

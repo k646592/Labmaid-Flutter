@@ -4,8 +4,6 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
-import 'package:network_info_plus/network_info_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'package:labmaidfastapi/domain/event_data.dart';
@@ -16,6 +14,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../gemini/gemini_chat_page.dart';
 import '../geo_location/location_member_index.dart';
 import '../header_footer_drawer/drawer.dart';
+import '../network/url.dart';
 
 
 class EventIndexPage extends StatefulWidget {
@@ -220,7 +219,7 @@ class _EventIndexPageState extends State<EventIndexPage> {
   }
 
   Future<void> _fetchEvent() async {
-    var uri = Uri.parse('https://sui.al.kansai-u.ac.jp/api/events');
+    var uri = Uri.parse('${httpUrl}events');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -251,7 +250,7 @@ class _EventIndexPageState extends State<EventIndexPage> {
     final user = FirebaseAuth.instance.currentUser;
     final userId = user!.uid;
 
-    var uriUser = Uri.parse('https://sui.al.kansai-u.ac.jp/api/user_id/$userId');
+    var uriUser = Uri.parse('${httpUrl}user_id/$userId');
     var responseUser = await http.get(uriUser);
 
     // レスポンスのステータスコードを確認
@@ -289,7 +288,7 @@ class _EventIndexPageState extends State<EventIndexPage> {
 
   void _connectWebSocket() {
     _channel = WebSocketChannel.connect(
-      Uri.parse('wss://sui.al.kansai-u.ac.jp/api/ws_event_list'),
+      Uri.parse('${wsUrl}ws_event_list'),
     );
     _channel.stream.listen((message) {
 
@@ -361,24 +360,6 @@ class _EventIndexPageState extends State<EventIndexPage> {
           ),
         ),
         drawer: const UserDrawer(),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.amber
-          ,
-          onPressed: () async {
-            //画面遷移
-            await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CreateEventPage(selectedDate: today,),
-                fullscreenDialog: true,
-              ),
-            );
-          },
-          child: const Icon(
-            Icons.add,
-            color: Colors.black,
-          ),
-        ),
 
         body: TabBarView(
           children: [

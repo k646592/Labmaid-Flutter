@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:labmaidfastapi/door_status/door_status_appbar.dart';
-import 'package:labmaidfastapi/event/event_create_page.dart';
 import '../attendance/attendance_management_page_web.dart';
 import '../gemini/gemini_chat_page.dart';
 import '../geo_location/location_member_index.dart';
@@ -56,24 +55,6 @@ class EventPageWeb extends StatelessWidget {
         ],
       ),
       drawer: const UserDrawer(),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.amber
-        ,
-        onPressed: () async {
-          //画面遷移
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CreateEventPage(selectedDate: DateTime.now(),),
-              fullscreenDialog: true,
-            ),
-          );
-        },
-        child: const Icon(
-          Icons.add,
-          color: Colors.black,
-        ),
-      ),
       body: Row(
         children: [
           //Web用のカレンダーUI
