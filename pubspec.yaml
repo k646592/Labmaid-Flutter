@@ -99,6 +99,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   assets:
+    - assets/images/al_logo_cleaned.png
     - assets/images/default.png
     - assets/images/group_default.jpg
     - assets/images/flutter_haikei.png

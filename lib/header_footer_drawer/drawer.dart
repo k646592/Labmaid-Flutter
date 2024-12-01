@@ -143,7 +143,7 @@ class UserDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: const Icon(Icons.poll),
-                title: const Text('Pole Manege'),
+                title: const Text('Pole Manage'),
                 onTap: () => _PolelaunchUrl(),
               ),
 

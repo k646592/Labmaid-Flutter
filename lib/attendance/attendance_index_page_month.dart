@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:intl/intl.dart';
 
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -503,22 +504,70 @@ class _AttendanceIndexPageMonthState extends State<AttendanceIndexPageMonth> {
                         ),
                       );
                     },
-                    child: Container(
+                    child: Tooltip(
                       decoration: BoxDecoration(
-                        color: _isTitleToColorBox(appointment.title),
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                          color: _isTitleToColorBorder(appointment.title),
-                          width: 1.0,
-                        ),
+                        color: Colors.black45,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 2.0),
-                        child: Text('${appointment.userName}：${appointment.title}',
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
+                      richMessage: WidgetSpan(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${appointment.userName}：${appointment.title}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text('詳細：${appointment.description}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              appointment.title == '遅刻'
+                                  ? appointment.undecided
+                                  ? const Text('到着時刻未定',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              )
+                                  : Text(
+                                '${DateFormat.Hm('ja').format(appointment.start)}頃到着予定',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              ) : appointment.title == '早退'
+                                  ? Text(
+                                  '${DateFormat.Hm('ja').format(appointment.start)}頃早退予定',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              )
+                                  : const SizedBox(),
+                            ],
+                          )),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: _isTitleToColorBox(appointment.title),
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                            color: _isTitleToColorBorder(appointment.title),
+                            width: 1.0,
+                          ),
+                        ),
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 2.0),
+                          child: Text('${appointment.userName}：${appointment.title}',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                       ),

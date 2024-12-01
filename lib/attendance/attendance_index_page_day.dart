@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'dart:convert';
 
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../domain/attendance_data.dart';
 import '../network/url.dart';
+import 'attendance_update_page.dart';
 
 class AttendanceIndexPageDay extends StatefulWidget {
 
@@ -317,24 +319,84 @@ class _AttendanceIndexPageDayState extends State<AttendanceIndexPageDay> {
                   final bool isEndAppointment = !isTimeslotAppointment &&
                       _isEndOfAppointmentView(
                           appointment, details.date, _controllerDay.view);
-                  return Container(
-                    margin: EdgeInsets.fromLTRB(isStartAppointment ? 0 : 0, 0,
-                        isEndAppointment ? 0 : 0, 0),
-                    decoration: BoxDecoration(
-                      color: _isTitleToColorBox(appointment.title),
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(
-                        color: _isTitleToColorBorder(appointment.title),
-                        width: 1.0,
+                  return GestureDetector(
+                    onTap: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              UpdateAttendancePage(attendance: appointment, currentUserId: id!,),
+                          fullscreenDialog: true,
+                        ),
+                      );
+                    },
+                    child: Tooltip(
+                      decoration: BoxDecoration(
+                        color: Colors.black45,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ),
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 2.0),
-                      child: Text('${appointment.userName}：${appointment.title}',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 13,
+                      richMessage: WidgetSpan(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${appointment.userName}：${appointment.title}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text('詳細：${appointment.description}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              appointment.title == '遅刻'
+                                  ? appointment.undecided
+                                  ? const Text('到着時刻未定',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              )
+                                  : Text(
+                                '${DateFormat.Hm('ja').format(appointment.start)}頃到着予定',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              ) : appointment.title == '早退'
+                                  ? Text(
+                                '${DateFormat.Hm('ja').format(appointment.start)}頃早退予定',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              )
+                                  : const SizedBox(),
+                            ],
+                          )),
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(isStartAppointment ? 0 : 0, 0,
+                            isEndAppointment ? 0 : 0, 0),
+                        decoration: BoxDecoration(
+                          color: _isTitleToColorBox(appointment.title),
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                            color: _isTitleToColorBorder(appointment.title),
+                            width: 1.0,
+                          ),
+                        ),
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 2.0),
+                          child: Text('${appointment.userName}：${appointment.title}',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                            ),
+                          ),
                         ),
                       ),
                     ),

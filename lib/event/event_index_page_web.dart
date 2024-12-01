@@ -544,26 +544,55 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
                               ),
                             );
                           },
-                          child: Container(
+                          //Tooltip
+                          //対象のwidgetをTooltipでラップする
+                          //Webではマウスオーバーで表示される
+                          //iosでは長押しで表示される
+                          //WidgetSpanというのを使えばwidgetを入れ込める
+                          child: Tooltip(
                             decoration: BoxDecoration(
-                              color: _isTitleToColorBox(
-                                  appointment.title, appointment.unit),
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                color: _isTitleToColorBorder(
-                                    appointment.title, appointment.unit),
-                                width: 1.0,
-                              ),
+                              color: Colors.black45,
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 2.0),
-                              child: Text(
-                                displayTitle(appointment.title,
+                            richMessage: WidgetSpan(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _titleToolchip(appointment.title, appointment.unit),
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.white,
+                                      ),
+                                    ),
+                                    Text('詳細：${appointment.description}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: _isTitleToColorBox(
+                                    appointment.title, appointment.unit),
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: _isTitleToColorBorder(
+                                      appointment.title, appointment.unit),
+                                  width: 1.0,
+                                ),
+                              ),
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 2.0),
+                                child: Text(displayTitle(appointment.title,
                                     appointment.unit, appointment.start),
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 12,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ),
                             ),
@@ -595,7 +624,8 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
                             child: Text(
                               details.date.day.toString(),
                               style: const TextStyle(
-                                  color: Colors.white),
+                                  color: Colors.white,
+                              ),
                             ),
                           )
                               : Text(
@@ -659,31 +689,72 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
                             !isTimeslotAppointment &&
                                 _isEndOfAppointmentView(appointment,
                                     details.date, _controllerWeek.view);
-                        return Container(
-                          margin: EdgeInsets.fromLTRB(
-                              isStartAppointment ? 0 : 0,
-                              0,
-                              isEndAppointment ? 0 : 0,
-                              0),
-                          decoration: BoxDecoration(
-                            color: _isTitleToColorBox(
-                                appointment.title, appointment.unit),
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                              color: _isTitleToColorBorder(
-                                  appointment.title, appointment.unit),
-                              width: 1.0,
+                        return GestureDetector(
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UpdateEventPage(
+                                  event: appointment,
+                                  content:
+                                  titleToContent(appointment.title),
+                                ),
+                                fullscreenDialog: true,
+                              ),
+                            );
+                          },
+                          //Tooltip
+                          //対象のwidgetをTooltipでラップする
+                          //Webではマウスオーバーで表示される
+                          //iosでは長押しで表示される
+                          //WidgetSpanというのを使えばwidgetを入れ込める
+                          child: Tooltip(
+                            decoration: BoxDecoration(
+                              color: Colors.black45,
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          ),
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 2.0),
-                            child: Text(
-                              displayTitle(appointment.title,
-                                  appointment.unit, appointment.start),
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 13,
+                            richMessage: WidgetSpan(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _titleToolchip(appointment.title, appointment.unit),
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Text('詳細：${appointment.description}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                            child: Container(
+                              margin: EdgeInsets.fromLTRB(isStartAppointment ? 0 : 0, 0,
+                                  isEndAppointment ? 0 : 0, 0),
+                              decoration: BoxDecoration(
+                                color: _isTitleToColorBox(
+                                    appointment.title, appointment.unit),
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: _isTitleToColorBorder(
+                                      appointment.title, appointment.unit),
+                                  width: 1.0,
+                                ),
+                              ),
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 2.0),
+                                child: Text(displayTitle(appointment.title,
+                                    appointment.unit, appointment.start),
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -731,31 +802,72 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
                             !isTimeslotAppointment &&
                                 _isEndOfAppointmentView(appointment,
                                     details.date, _controllerDay.view);
-                        return Container(
-                          margin: EdgeInsets.fromLTRB(
-                              isStartAppointment ? 0 : 0,
-                              0,
-                              isEndAppointment ? 0 : 0,
-                              0),
-                          decoration: BoxDecoration(
-                            color: _isTitleToColorBox(
-                                appointment.title, appointment.unit),
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                              color: _isTitleToColorBorder(
-                                  appointment.title, appointment.unit),
-                              width: 1.0,
+                        return GestureDetector(
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UpdateEventPage(
+                                  event: appointment,
+                                  content:
+                                  titleToContent(appointment.title),
+                                ),
+                                fullscreenDialog: true,
+                              ),
+                            );
+                          },
+                          //Tooltip
+                          //対象のwidgetをTooltipでラップする
+                          //Webではマウスオーバーで表示される
+                          //iosでは長押しで表示される
+                          //WidgetSpanというのを使えばwidgetを入れ込める
+                          child: Tooltip(
+                            decoration: BoxDecoration(
+                              color: Colors.black45,
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          ),
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 2.0),
-                            child: Text(
-                              displayTitle(appointment.title,
-                                  appointment.unit, appointment.start),
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 13,
+                            richMessage: WidgetSpan(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _titleToolchip(appointment.title, appointment.unit),
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Text('詳細：${appointment.description}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                            child: Container(
+                              margin: EdgeInsets.fromLTRB(isStartAppointment ? 0 : 0, 0,
+                                  isEndAppointment ? 0 : 0, 0),
+                              decoration: BoxDecoration(
+                                color: _isTitleToColorBox(
+                                    appointment.title, appointment.unit),
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: _isTitleToColorBorder(
+                                      appointment.title, appointment.unit),
+                                  width: 1.0,
+                                ),
+                              ),
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 2.0),
+                                child: Text(displayTitle(appointment.title,
+                                    appointment.unit, appointment.start),
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -785,6 +897,14 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
       return '${DateFormat.Hm('ja').format(start)} $unitミーティング';
     } else {
       return '${DateFormat.Hm('ja').format(start)} $title';
+    }
+  }
+
+  String _titleToolchip(String title, String unit) {
+    if (title == 'ミーティング') {
+      return '$unitミーティング';
+    } else {
+      return title;
     }
   }
 
