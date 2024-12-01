@@ -69,7 +69,7 @@
 1. リポジトリをクローンします。
    ```bash
    git clone https://github.com/k646592/Labmaid-Flutter.git
-   cd fastAPI-backend
+   cd Labmaid-Flutter
 
 
 ## 今後の課題
