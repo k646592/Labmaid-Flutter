@@ -65,10 +65,12 @@ class GeoLocationIndexPageState extends State<GeoLocationIndexPage> {
       final Map<String, dynamic> data = jsonDecode(message);
       final int id = data['user_id'];
       final String location = data['now_location'];
+      final String status = data['status'];
       for(int i=0; i<userData.length; i++) {
         if(userData[i].id == id) {
           setState(() {
             userData[i].location = location;
+            userData[i].status = status;
           });
         }
       }
