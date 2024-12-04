@@ -247,177 +247,179 @@ class _IndexBoardPage extends State<IndexBoardPage> {
   @override
   Widget build(BuildContext context) {
     return userId == null ? const Center(child: CircularProgressIndicator())
-        : SizedBox(
-      height: MediaQuery.of(context).size.height // 画面全体の高さ
-          - AppBar().preferredSize.height // AppBar の高さ
-          - MediaQuery.of(context).padding.top // ステータスバーの高さ
-          - kBottomNavigationBarHeight, // ボトムナビゲーションバーの高さ（必要に応じて）
-      width: MediaQuery.of(context).size.width * 0.98,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 4.0),
-        padding: const EdgeInsets.only(left: 8.0,right: 8.0,top: 1.0,bottom: 1.0),
-        child: Scrollbar(
-          controller: _scrollController,
-          child: (_isLoading && boards.isEmpty)
-              ? const Center(child: CircularProgressIndicator())
-              : ListView.builder(
+        : SelectionArea(
+          child: SizedBox(
+                height: MediaQuery.of(context).size.height // 画面全体の高さ
+            - AppBar().preferredSize.height // AppBar の高さ
+            - MediaQuery.of(context).padding.top // ステータスバーの高さ
+            - kBottomNavigationBarHeight, // ボトムナビゲーションバーの高さ（必要に応じて）
+                width: MediaQuery.of(context).size.width * 0.98,
+                child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 4.0),
+          padding: const EdgeInsets.only(left: 8.0,right: 8.0,top: 1.0,bottom: 1.0),
+          child: Scrollbar(
             controller: _scrollController,
-            itemCount: boards.length + 1, // ローディング表示分+1
-            itemBuilder: (context, index) {
-              if (index == boards.length) {
-                // ローディング表示
-                return _isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : const SizedBox.shrink();
-              }
-              final board = boards[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    side: const BorderSide(
-                      color: Colors.black, // 枠線の色
-                      width: 1.0,         // 枠線の太さ
+            child: (_isLoading && boards.isEmpty)
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+              controller: _scrollController,
+              itemCount: boards.length + 1, // ローディング表示分+1
+              itemBuilder: (context, index) {
+                if (index == boards.length) {
+                  // ローディング表示
+                  return _isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : const SizedBox.shrink();
+                }
+                final board = boards[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      side: const BorderSide(
+                        color: Colors.black, // 枠線の色
+                        width: 1.0,         // 枠線の太さ
+                      ),
                     ),
-                  ),
-                  color:  userId == board.userId ? Colors.amber : _groupColor(board.group),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                '${board.userName} To ${_groupName(board.group)}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.0,
-                                ),
-                                overflow: TextOverflow.visible, // はみ出す場合は改行
-                                softWrap: true, // 自動で改行を許可
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.topRight,
-                              child: Text(
-                                DateFormat('yyyy年MM月dd日 HH:mm').format(board.createdAt),
-                                style: const TextStyle(
-                                  fontSize: 12.0,
-                                  color: Colors.black,
-                                ),
-                                overflow: TextOverflow.visible, // はみ出す場合は改行
-                                softWrap: true, // 自動で改行を許可
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 5.0),
-                        Text(
-                          board.content,
-                          style: const TextStyle(fontSize: 14.0),
-                        ),
-                        const SizedBox(height: 5.0),
-                        board.userId == userId
-                            ? _buttonDelete(board.id, board.acknowledgements)
-                            : _buttonRow(board.group, board.id, userId!, board.isAcknowledged, board.acknowledgements),
-                        //　コメント入力欄
-                        if (boards[index].commentDisplay)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16.0),
-                            child: Column(
-                              children: [
-                                TextField(
-                                  controller: _formController,
-                                  maxLines: 2,
-                                  decoration: const InputDecoration(
-                                    filled: true, // 背景を塗りつぶす
-                                    fillColor: Colors.white, // 背景色を白に設定
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.black, // 枠線の色を黒に設定
-                                        width: 1.0, // 枠線の太さを設定
-                                      ),
-                                    ),
-                                    labelText: '返信を入力',
+                    color:  userId == board.userId ? Colors.amber : _groupColor(board.group),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  '${board.userName} To ${_groupName(board.group)}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16.0,
                                   ),
+                                  overflow: TextOverflow.visible, // はみ出す場合は改行
+                                  softWrap: true, // 自動で改行を許可
                                 ),
-                                const SizedBox(height: 8.0),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    FilledButton(
-                                      onPressed: () async {
-                                        // フォームの内容を送信
-                                        try {
-                                          //掲示板追加
-                                          await addComment(_formController.text, board.group, userId!);
-
-                                          const snackBar = SnackBar(
-                                            backgroundColor: Colors.green,
-                                            content: Text('掲示板を投稿しました。'),
-                                          );
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-                                          commentDisplayBool(board.id, false);
-                                          toggleForm('');
-                                        } catch (e) {
-                                          final snackBar = SnackBar(
-                                            backgroundColor: Colors.red,
-                                            content: Text(e.toString()),
-                                          );
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                        }
-
-                                      },
-                                      style: FilledButton.styleFrom(
-                                        backgroundColor: Colors.teal, // 背景色: 黄緑色
-                                        foregroundColor: Colors.white, // 文字色: 白
-                                      ),
-                                      child: const Text(
-                                        '送信',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ),
-                                    FilledButton(
-                                      onPressed: () {
-                                        commentDisplayBool(board.id, false);
-                                      },
-                                      style: FilledButton.styleFrom(
-                                        backgroundColor: Colors.white, // 背景色: 白
-                                        foregroundColor: Colors.black, // 文字色: 黒
-                                        side: const BorderSide(       // 枠線の設定
-                                          color: Colors.black, // 枠線の色: 黒
-                                          width: 1.0,         // 枠線の太さ
-                                        ),
-                                      ),
-                                      child: const Text(
-                                        '閉じる',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                              ),
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: Text(
+                                  DateFormat('yyyy年MM月dd日 HH:mm').format(board.createdAt),
+                                  style: const TextStyle(
+                                    fontSize: 12.0,
+                                    color: Colors.black,
+                                  ),
+                                  overflow: TextOverflow.visible, // はみ出す場合は改行
+                                  softWrap: true, // 自動で改行を許可
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                      ],
+                          const SizedBox(height: 5.0),
+                          Text(
+                            board.content,
+                            style: const TextStyle(fontSize: 14.0),
+                          ),
+                          const SizedBox(height: 5.0),
+                          board.userId == userId
+                              ? _buttonDelete(board.id, board.acknowledgements)
+                              : _buttonRow(board.group, board.id, userId!, board.isAcknowledged, board.acknowledgements),
+                          //　コメント入力欄
+                          if (boards[index].commentDisplay)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16.0),
+                              child: Column(
+                                children: [
+                                  TextField(
+                                    controller: _formController,
+                                    maxLines: 2,
+                                    decoration: const InputDecoration(
+                                      filled: true, // 背景を塗りつぶす
+                                      fillColor: Colors.white, // 背景色を白に設定
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Colors.black, // 枠線の色を黒に設定
+                                          width: 1.0, // 枠線の太さを設定
+                                        ),
+                                      ),
+                                      labelText: '返信を入力',
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8.0),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      FilledButton(
+                                        onPressed: () async {
+                                          // フォームの内容を送信
+                                          try {
+                                            //掲示板追加
+                                            await addComment(_formController.text, board.group, userId!);
+
+                                            const snackBar = SnackBar(
+                                              backgroundColor: Colors.green,
+                                              content: Text('掲示板を投稿しました。'),
+                                            );
+                                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                                            commentDisplayBool(board.id, false);
+                                            toggleForm('');
+                                          } catch (e) {
+                                            final snackBar = SnackBar(
+                                              backgroundColor: Colors.red,
+                                              content: Text(e.toString()),
+                                            );
+                                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                          }
+
+                                        },
+                                        style: FilledButton.styleFrom(
+                                          backgroundColor: Colors.teal, // 背景色: 黄緑色
+                                          foregroundColor: Colors.white, // 文字色: 白
+                                        ),
+                                        child: const Text(
+                                          '送信',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                      FilledButton(
+                                        onPressed: () {
+                                          commentDisplayBool(board.id, false);
+                                        },
+                                        style: FilledButton.styleFrom(
+                                          backgroundColor: Colors.white, // 背景色: 白
+                                          foregroundColor: Colors.black, // 文字色: 黒
+                                          side: const BorderSide(       // 枠線の設定
+                                            color: Colors.black, // 枠線の色: 黒
+                                            width: 1.0,         // 枠線の太さ
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          '閉じる',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-      ),
-    );
+                ),
+              ),
+        );
   }
 
   Widget _buttonDelete (int id, int acknowledgements) {
@@ -604,12 +606,12 @@ class _IndexBoardPage extends State<IndexBoardPage> {
             children: [
               GestureDetector(
                 onTap: () async {
+                  resetIsAcknowledgement(id);
                   if (isAcknowledged == false) {
                     await addAcknowledgement(userId, id);
                   } else {
                     await deleteAcknowledgement(userId, id);
                   }
-                  resetIsAcknowledgement(id);
                 },
                 onLongPress: () async {
                   // 長押しでモーダル表示

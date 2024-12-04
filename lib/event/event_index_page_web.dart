@@ -505,7 +505,8 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
                           ),
                         );
                       },
-                      onTap: (CalendarTapDetails details) {},
+                      onTap: (CalendarTapDetails details) {
+                      },
                       dataSource: EventDataSource(events),
                       view: CalendarView.month,
                       controller: _controller,

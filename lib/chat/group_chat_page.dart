@@ -351,75 +351,77 @@ class _GroupChatPageState extends State<GroupChatPage> {
                           const SizedBox(width: 8),
                         ],
                         Flexible(
-                          child: Column(
-                            crossAxisAlignment: isMyMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                            children: [
-                              if (!isMyMessage)
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 4, bottom: 2),
-                                  child: Text(
-                                    userData.name,
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          child: SelectionArea(
+                            child: Column(
+                              crossAxisAlignment: isMyMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                              children: [
+                                if (!isMyMessage)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 4, bottom: 2),
+                                    child: Text(
+                                      userData.name,
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                                    ),
                                   ),
-                                ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: isMyMessage ? Colors.blue[100] : Colors.grey[300],
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(isMyMessage ? 12 : 0),
-                                    topRight: Radius.circular(isMyMessage ? 0 : 12),
-                                    bottomLeft: const Radius.circular(12),
-                                    bottomRight: const Radius.circular(12),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: isMyMessage ? Colors.blue[100] : Colors.grey[300],
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(isMyMessage ? 12 : 0),
+                                      topRight: Radius.circular(isMyMessage ? 0 : 12),
+                                      bottomLeft: const Radius.circular(12),
+                                      bottomRight: const Radius.circular(12),
+                                    ),
                                   ),
-                                ),
-                                constraints: BoxConstraints(
-                                  maxWidth: MediaQuery.of(context).size.width * 0.65, // 画面の幅の65%
-                                ),
-                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    message.imgData == '' && message.fileData == ''
-                                        ? Text(message.content)
-                                        : message.fileData == ''
-                                        ? GestureDetector(
-                                          onTap: () async {
-                                            _showImageDialog(context, message.imgData);
-                                          },
-                                          child: Image.memory(
-                                            base64Decode(message.imgData),
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) {
-                                              return const Icon(Icons.error);
+                                  constraints: BoxConstraints(
+                                    maxWidth: MediaQuery.of(context).size.width * 0.65, // 画面の幅の65%
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      message.imgData == '' && message.fileData == ''
+                                          ? Text(message.content)
+                                          : message.fileData == ''
+                                          ? GestureDetector(
+                                            onTap: () async {
+                                              _showImageDialog(context, message.imgData);
                                             },
-                                          ),
-                                        )
-                                        : GestureDetector(
-                                      onTap: () async {
-                                        await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => PdfViewScreen(
-                                              pdfData: message.fileData,
-                                              pdfName: message.fileName,
+                                            child: Image.memory(
+                                              base64Decode(message.imgData),
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (context, error, stackTrace) {
+                                                return const Icon(Icons.error);
+                                              },
                                             ),
-                                          ),
-                                        );
-                                      },
-                                      child: ListTile(
-                                        leading: Icon(switchIcon(message.fileName)),
-                                        title: Text(message.fileName),
+                                          )
+                                          : GestureDetector(
+                                        onTap: () async {
+                                          await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => PdfViewScreen(
+                                                pdfData: message.fileData,
+                                                pdfName: message.fileName,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: ListTile(
+                                          leading: Icon(switchIcon(message.fileName)),
+                                          title: Text(message.fileName),
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      '${DateFormat.yMMMd('ja').format(message.sentAt).toString()}(${DateFormat.E('ja').format(message.sentAt)})ー${DateFormat.Hm('ja').format(message.sentAt)}',
-                                      style: TextStyle(fontSize: 10, color: Colors.grey[600]),
-                                    ),
-                                  ],
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        '${DateFormat.yMMMd('ja').format(message.sentAt).toString()}(${DateFormat.E('ja').format(message.sentAt)})ー${DateFormat.Hm('ja').format(message.sentAt)}',
+                                        style: TextStyle(fontSize: 10, color: Colors.grey[600]),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                         if (isMyMessage) ...[
