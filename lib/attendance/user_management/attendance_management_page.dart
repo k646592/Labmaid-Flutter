@@ -2,22 +2,22 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+//import 'package:labmaidfastapi/board/board_index_page.dart';
+//import 'package:labmaidfastapi/board/board_input_page.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:http/http.dart' as http;
 
-import '../board/board_index_page.dart';
-import '../board/board_input_page.dart';
-import '../domain/user_data.dart';
-import '../network/url.dart';
+import '../../domain/user_data.dart';
+import '../../network/url.dart';
 
-class AttendanceManagementPageWeb extends StatefulWidget {
-  const AttendanceManagementPageWeb({Key? key}) : super(key: key);
+class AttendanceManagementPage extends StatefulWidget {
+  const AttendanceManagementPage({Key? key}) : super(key: key);
 
   @override
-  State<AttendanceManagementPageWeb> createState() => _AttendanceManagementPageWeb();
+  State<AttendanceManagementPage> createState() => _AttendanceManagementPage();
 }
 
-class _AttendanceManagementPageWeb extends State<AttendanceManagementPageWeb> {
+class _AttendanceManagementPage extends State<AttendanceManagementPage> {
   final ScrollController _scrollController = ScrollController();
   late WebSocketChannel _channel;
   final user = FirebaseAuth.instance.currentUser;
@@ -181,9 +181,7 @@ class _AttendanceManagementPageWeb extends State<AttendanceManagementPageWeb> {
                                   ),
                                 ),
                               );
-                              //model.fetchAttendanceList();状態の更新 websocketで更新する
-                              ScaffoldMessenger.of(context).
-                              showSnackBar(snackBar);
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             },
                             style: ElevatedButton.styleFrom(
                               foregroundColor: Colors.white,
@@ -375,121 +373,123 @@ class _AttendanceManagementPageWeb extends State<AttendanceManagementPageWeb> {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 5,
-                        ),
                       ],
                     ),
                   ),
                 ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.all(2.0),
-                        child: Column(
-                            children: [
-                              Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(
-                                    color: Colors.black45,
-                                  ),
-                                ),
-                                child: const Text('Net班'),  //グループ名
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.98,
+                  child: Container(
+                    margin: const EdgeInsets.all(2.0),
+                    child: Row(
+                        children: [
+                          Container(
+                            width: 100,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.black45,
                               ),
-                              SizedBox(
-                                child: Column(
-                                  children: groupAttendanceUser(users, 'Network班'),
-                                ),
-                              ),
-                            ]
-                        ),
-                      ),
+                            ),
+                            child: const Text('Net班'),  //グループ名
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: groupAttendanceUser(users, 'Network班'),
+                            ),
+                          ),
+                        ]
                     ),
-                    Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.all(2.0),
-                        child: Column(
-                            children: [
-                              Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(
-                                    color: Colors.black45,
-                                  ),
-                                ),
-                                child: const Text('Grid班'),  //グループ名
-                              ),
-                              SizedBox(
-                                child: Column(
-                                  children: groupAttendanceUser(users, 'Grid班'),
-                                ),
-                              ),
-                            ]
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.all(2.0),
-                        child: Column(
-                            children: [
-                              Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(
-                                    color: Colors.black45,
-                                  ),
-                                ),
-                                child: const Text('Web班'),  //グループ名
-                              ),
-                              SizedBox(
-                                child: Column(
-                                  children: groupAttendanceUser(users, 'Web班'),
-                                ),
-                              ),
-                            ]
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.all(2.0),
-                        child: Column(
-                            children: [
-                              Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(
-                                    color: Colors.black45,
-                                  ),
-                                ),
-                                child: const Text('教員'),  //グループ名
-                              ),
-                              SizedBox(
-                                child: Column(
-                                  children: groupAttendanceUser(users, '教員'),
-                                ),
-                              ),
-                            ]
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-                const InputBoardPage(),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.98,
+                  child: Container(
+                    margin: const EdgeInsets.all(2.0),
+                    child: Row(
+                        children: [
+                          Container(
+                            width: 100,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.black45,
+                              ),
+                            ),
+                            child: const Text('Grid班'),  //グループ名
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: groupAttendanceUser(users, 'Grid班'),
+                            ),
+                          ),
+                        ]
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.98,
+                  child: Container(
+                    margin: const EdgeInsets.all(2.0),
+                    child: Row(
+                        children: [
+                          Container(
+                            width: 100,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.black45,
+                              ),
+                            ),
+                            child: const Text('Web班'),  //グループ名
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: groupAttendanceUser(users, 'Web班'),
+                            ),
+                          ),
+                        ]
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.98,
+                  child: Container(
+                    margin: const EdgeInsets.all(2.0),
+                    child: Row(
+                        children: [
+                          Container(
+                            width: 100,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.black45,
+                              ),
+                            ),
+                            child: const Text('教員'),  //グループ名
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: groupAttendanceUser(users, '教員'),
+                            ),
+                          ),
+                        ]
+                    ),
+                  ),
+                ),
+                //const InputBoardPage(),
               ],
             ),
           ),
-          const SliverToBoxAdapter(
-              child: IndexBoardPage()
+          /*const SliverToBoxAdapter(
+            child: IndexBoardPage()
           ),
+
+           */
         ],
       ),
     );
@@ -499,16 +499,18 @@ class _AttendanceManagementPageWeb extends State<AttendanceManagementPageWeb> {
     List<Widget> index = users
         .where((user) => user.group.contains(group))  // フィルタリング
         .map(
-          (user) => Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: _attendanceColor(user.status),
-              border: Border.all(
-                color: Colors.black45,
-              ),
+          (user) => Expanded(
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: _attendanceColor(user.status),
+            border: Border.all(
+              color: Colors.black45,
             ),
-            child: FittedBox(child: Text(user.name)),
           ),
+          child: FittedBox(child: Text(user.name)),
+        ),
+      ),
     ).toList();
     return index;
   }

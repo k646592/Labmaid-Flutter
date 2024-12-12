@@ -7,10 +7,11 @@ import 'package:intl/intl.dart';
 
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import '../domain/attendance_data.dart';
-import '../network/url.dart';
-import 'attendance_create_page.dart';
-import 'attendance_update_page.dart';
+import '../../domain/attendance_data.dart';
+import '../../network/url.dart';
+import '../create/attendance_create_dialog.dart';
+import '../create/attendance_create_page.dart';
+import '../update/attendance_update_page.dart';
 
 class AttendanceIndexPageMonth extends StatefulWidget {
 
@@ -30,6 +31,8 @@ class _AttendanceIndexPageMonthState extends State<AttendanceIndexPageMonth> {
 
   List<AttendanceData> attendances = [];
   int? id;
+  String? name;
+  String? email;
 
   bool _isDisposed = false;
   int selectedMonth = DateTime.now().month;
@@ -238,8 +241,11 @@ class _AttendanceIndexPageMonthState extends State<AttendanceIndexPageMonth> {
   Future<void> _fetchMyUserData() async {
     final user = FirebaseAuth.instance.currentUser;
     final userId = user!.uid;
+    setState(() {
+      email = user.email;
+    });
 
-    var uriUser = Uri.parse('${httpUrl}user_id/$userId');
+    var uriUser = Uri.parse('${httpUrl}user_name_id/$userId');
     var responseUser = await http.get(uriUser);
 
     // レスポンスのステータスコードを確認
@@ -253,6 +259,7 @@ class _AttendanceIndexPageMonthState extends State<AttendanceIndexPageMonth> {
       // 必要なデータを取得
       setState(() {
         id = responseData['id'];
+        name = responseData['name'];
       });
 
       // 取得したデータを使用する
@@ -290,6 +297,20 @@ class _AttendanceIndexPageMonthState extends State<AttendanceIndexPageMonth> {
         setState(() {
           attendances.removeWhere((attendance) => attendance.id == messageData['id']);
         });
+      } else if (messageData['action'] == 'update') {
+        for (int i=0; i<attendances.length; i++) {
+          if (attendances[i].id == messageData['id']) {
+            setState(() {
+              attendances[i].title = messageData['title'] as String;
+              attendances[i].description = messageData['description'] as String;
+              attendances[i].start = DateTime.parse(messageData['start'] as String);
+              attendances[i].end = DateTime.parse(messageData['end'] as String);
+              attendances[i].undecided = messageData['undecided'] as bool;
+              attendances[i].mailSend = messageData['mail_send'] as bool;
+            });
+            break;
+          }
+        }
       }
     });
   }
@@ -469,6 +490,13 @@ class _AttendanceIndexPageMonthState extends State<AttendanceIndexPageMonth> {
                 },
                 onTap: (CalendarTapDetails details) {
 
+                  AttendanceDialogUtils.showCustomDialog(
+                    context: context,
+                    selectedDate: details.date!,
+                    userId: id!,
+                    name: name!,
+                    email: email!,
+                  );
                 },
                 dataSource: AttendanceDataSource(attendances),
                 view: CalendarView.month,
@@ -907,6 +935,7 @@ class AttendanceDataSource extends CalendarDataSource {
     }
     return attendanceData;
   }
+
 }
 
 

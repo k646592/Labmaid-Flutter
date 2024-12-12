@@ -1,29 +1,28 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'dart:convert';
 
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import '../domain/attendance_data.dart';
-import '../network/url.dart';
-import 'attendance_update_page.dart';
+import '../../domain/attendance_data.dart';
+import '../../network/url.dart';
+import '../update/attendance_update_page.dart';
 
-class AttendanceIndexPageWeek extends StatefulWidget {
+class AttendanceIndexPageDay extends StatefulWidget {
 
-  const AttendanceIndexPageWeek({Key? key}) : super(key: key);
+  const AttendanceIndexPageDay({Key? key}) : super(key: key);
 
 
   @override
-  _AttendanceIndexPageWeekState createState() => _AttendanceIndexPageWeekState();
+  _AttendanceIndexPageDayState createState() => _AttendanceIndexPageDayState();
 }
 
 
-class _AttendanceIndexPageWeekState extends State<AttendanceIndexPageWeek> {
-  final CalendarController _controllerWeek = CalendarController();
+class _AttendanceIndexPageDayState extends State<AttendanceIndexPageDay> {
+  final CalendarController _controllerDay = CalendarController();
   late CalendarHeaderStyle _headerStyle;
   late WebSocketChannel _channel;
 
@@ -185,7 +184,7 @@ class _AttendanceIndexPageWeekState extends State<AttendanceIndexPageWeek> {
 
   @override
   void initState() {
-    _controllerWeek.displayDate = DateTime(today.year, today.month, today.day, 0, 0, 0, 0);
+    _controllerDay.displayDate = DateTime(today.year, today.month, today.day, 0, 0, 0, 0);
     _headerStyle = headerStyle(DateTime.now());
     _fetchAttendance();
     _fetchMyUserData();
@@ -281,6 +280,20 @@ class _AttendanceIndexPageWeekState extends State<AttendanceIndexPageWeek> {
         setState(() {
           attendances.removeWhere((attendance) => attendance.id == messageData['id']);
         });
+      } else if (messageData['action'] == 'update') {
+        for (int i=0; i<attendances.length; i++) {
+          if (attendances[i].id == messageData['id']) {
+            setState(() {
+              attendances[i].title = messageData['title'] as String;
+              attendances[i].description = messageData['description'] as String;
+              attendances[i].start = DateTime.parse(messageData['start'] as String);
+              attendances[i].end = DateTime.parse(messageData['end'] as String);
+              attendances[i].undecided = messageData['undecided'] as bool;
+              attendances[i].mailSend = messageData['mail_send'] as bool;
+            });
+            break;
+          }
+        }
       }
     });
   }
@@ -295,8 +308,8 @@ class _AttendanceIndexPageWeekState extends State<AttendanceIndexPageWeek> {
               height: 1100,
               child: SfCalendar(
                 dataSource: AttendanceDataSource(attendances),
-                view: CalendarView.week,
-                controller: _controllerWeek,
+                view: CalendarView.day,
+                controller: _controllerDay,
                 cellEndPadding: 0,
                 headerDateFormat: 'yyyy年　MM月',
                 showNavigationArrow: true,
@@ -314,12 +327,12 @@ class _AttendanceIndexPageWeekState extends State<AttendanceIndexPageWeek> {
                     CalendarAppointmentDetails details) {
                   final AttendanceData appointment = details.appointments.first;
                   final bool isTimeslotAppointment = _isTimeslotAppointmentView(
-                      appointment, _controllerWeek.view);
+                      appointment, _controllerDay.view);
                   final bool isStartAppointment = !isTimeslotAppointment &&
                       _isStartOfAppointmentView(appointment, details.date);
                   final bool isEndAppointment = !isTimeslotAppointment &&
                       _isEndOfAppointmentView(
-                          appointment, details.date, _controllerWeek.view);
+                          appointment, details.date, _controllerDay.view);
                   return GestureDetector(
                     onTap: () async {
                       await Navigator.push(
@@ -403,7 +416,6 @@ class _AttendanceIndexPageWeekState extends State<AttendanceIndexPageWeek> {
                     ),
                   );
                 },
-
               ),
             ),
           ],

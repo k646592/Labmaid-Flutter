@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:labmaidfastapi/door_status/door_status_appbar.dart';
-import '../attendance/attendance_management_page_web.dart';
+import '../attendance/user_management/attendance_management_page_web.dart';
 import '../gemini/gemini_chat_page.dart';
 import '../geo_location/location_member_index.dart';
 import '../header_footer_drawer/drawer.dart';
-import 'event_index_page_web.dart';
+import 'index/event_index_page_web.dart';
 
 //変更点
 //新規作成

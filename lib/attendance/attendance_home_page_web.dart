@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:labmaidfastapi/attendance/attendance_index_page_day.dart';
-import 'package:labmaidfastapi/attendance/attendance_index_page_month.dart';
+import 'package:labmaidfastapi/attendance/index/attendance_index_page_day.dart';
+import 'package:labmaidfastapi/attendance/index/attendance_index_page_month.dart';
 
-import 'attendance_index_page_week.dart';
+import 'index/attendance_index_page_week.dart';
 
 class AttendanceHomePageWeb extends StatefulWidget {
   const AttendanceHomePageWeb({

@@ -4,12 +4,12 @@ class EventData {
     required this.unit, required this.description, required this.mailSend, required this.userId, required this.userName,
 });
   final int id;
-  final String title;
-  final DateTime start;
-  final DateTime end;
-  final String unit;
-  final String description;
-  final bool mailSend;
+  String title;
+  DateTime start;
+  DateTime end;
+  String unit;
+  String description;
+  bool mailSend;
   final int userId;
   final String userName;
 

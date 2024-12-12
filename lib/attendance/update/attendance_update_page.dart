@@ -4,8 +4,8 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../domain/attendance_data.dart';
-import '../header_footer_drawer/footer.dart';
+import '../../domain/attendance_data.dart';
+import '../../header_footer_drawer/footer.dart';
 import 'attendance_update_model.dart';
 
 class UpdateAttendancePage extends StatefulWidget {

@@ -4,12 +4,12 @@ class AttendanceData {
     required this.description, required this.mailSend, required this.undecided, required this.userId, required this.userName,
   });
   final int id;
-  final String title;
-  final DateTime start;
-  final DateTime end;
-  final String description;
-  final bool mailSend;
-  final bool undecided;
+  String title;
+  DateTime start;
+  DateTime end;
+  String description;
+  bool mailSend;
+  bool undecided;
   final int userId;
   final String userName;
 

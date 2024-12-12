@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:labmaidfastapi/attendance/attendance_index_page_day.dart';
-import 'package:labmaidfastapi/attendance/attendance_index_page_month.dart';
+import 'package:labmaidfastapi/attendance/index/attendance_index_page_day.dart';
+import 'package:labmaidfastapi/attendance/index/attendance_index_page_month.dart';
 
 import '../door_status/door_status_appbar.dart';
 import '../gemini/gemini_chat_page.dart';
 import '../geo_location/location_member_index.dart';
 import '../header_footer_drawer/drawer.dart';
-import 'attendance_index_page_week.dart';
-import 'attendance_management_page.dart';
+import 'index/attendance_index_page_week.dart';
+import 'user_management/attendance_management_page.dart';
 
 class AttendanceHomePage extends StatefulWidget {
   const AttendanceHomePage({

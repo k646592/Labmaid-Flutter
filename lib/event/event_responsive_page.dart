@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../widget/responsive_widget.dart';
-import 'event_index_page.dart';
+import 'index/event_index_page.dart';
 import 'event_page_web.dart';
 
 //変更点

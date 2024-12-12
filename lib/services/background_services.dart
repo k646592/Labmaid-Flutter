@@ -135,6 +135,7 @@ Future<void> postLocation() async {
         location = '研究室内';
       }
       // android版のal:00:1a:eb:b4:50:90, al5GHz:00:1a:eb:b4:50:91
+      // al: 00:1a:eb:b4:50:80
       if (wifiBSSID == '00:1a:eb:b4:50:90' || wifiBSSID == '00:1a:eb:b4:50:91') {
         location = '研究室内';
       }

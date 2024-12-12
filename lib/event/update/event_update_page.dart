@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:labmaidfastapi/domain/event_data.dart';
 import 'package:provider/provider.dart';
 
+import '../../header_footer_drawer/footer.dart';
 import 'event_update_model.dart';
 
 class UpdateEventPage extends StatefulWidget {
@@ -649,7 +650,11 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
                                                   if (_mailSend == true) {
                                                     await model.sendEmail(_titleController.text, selectedStartDate, selectedEndDate, _unit, _descriptionController.text);
                                                   }
-                                                  Navigator.of(context).pop();
+                                                  Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => const Footer(pageNumber: 0)),
+                                                  );
                                                   const snackBar = SnackBar(
                                                     backgroundColor: Colors.green,
                                                     content: Text('イベントの編集をしました。'),

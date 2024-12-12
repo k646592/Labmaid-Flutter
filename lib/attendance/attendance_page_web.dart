@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:labmaidfastapi/attendance/attendance_home_page_web.dart';
-import 'package:labmaidfastapi/attendance/attendance_management_page_web.dart';
+import 'package:labmaidfastapi/attendance/user_management/attendance_management_page_web.dart';
 import 'package:labmaidfastapi/door_status/door_status_appbar.dart';
 import '../gemini/gemini_chat_page.dart';
 import '../geo_location/location_member_index.dart';
