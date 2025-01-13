@@ -1,1 +1,1 @@
-const geminiApiKey = '';
+const geminiApiKey = 'AIzaSyDpr6uCIbqtkO_1jrVUUhhpaLSuR122Paw';

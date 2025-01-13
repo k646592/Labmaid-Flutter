@@ -124,6 +124,7 @@ Future<void> postLocation() async {
     // wi-fiの取得
     final info = NetworkInfo();
     final wifiBSSID = await info.getWifiBSSID();
+    final wifiSSID = await info.getWifiName();
 
     print(wifiBSSID);
     print(firebaseUserId);
@@ -131,18 +132,18 @@ Future<void> postLocation() async {
     if (firebaseUserId != null) {
 
       // ios版のal:0:1a:eb:b4:50:90, al5GHz:0:1a:eb:b4:50:91
-      if (wifiBSSID == '0:1a:eb:b4:50:90' || wifiBSSID == '0:1a:eb:b4:50:91') {
+      if (wifiBSSID == '0:1a:eb:b4:50:80' || wifiBSSID == '0:1a:eb:b4:50:91' || wifiSSID == 'al' || wifiSSID == 'al5GHz') {
         location = '研究室内';
       }
       // android版のal:00:1a:eb:b4:50:90, al5GHz:00:1a:eb:b4:50:91
       // al: 00:1a:eb:b4:50:80
-      if (wifiBSSID == '00:1a:eb:b4:50:90' || wifiBSSID == '00:1a:eb:b4:50:91') {
+      if (wifiBSSID == '00:1a:eb:b4:50:80' || wifiBSSID == '00:1a:eb:b4:50:91' || wifiSSID == '"al"' || wifiSSID == '"al5gHz') {
         location = '研究室内';
       }
-      if (wifiBSSID == 'ac:44:f2:c0:30:70') {
+      if (wifiBSSID == 'ac:44:f2:c0:30:70' || wifiSSID == 'al2') {
         location = '第２研究室内';
       }
-      if (wifiBSSID == '18:c2:bf:8f:d9:1c') {
+      if (wifiBSSID == '18:c2:bf:8f:d9:1c' || wifiSSID == 'WLAN-11n' || wifiSSID == '"WLAN-11n"') {
         location = '榎原先生の自室';
       }
 

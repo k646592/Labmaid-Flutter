@@ -10,7 +10,7 @@ class AttendanceData {
   String description;
   bool mailSend;
   bool undecided;
-  final int userId;
+  final String userId;
   final String userName;
 
   //JSONからオブジェクトを作成するファクトリメソッド
@@ -23,7 +23,7 @@ class AttendanceData {
       description: json['description'] as String,
       mailSend: json['mail_send'] as bool,
       undecided: json['undecided'] as bool,
-      userId: json['user_id'] as int,
+      userId: json['user_id'] as String,
       userName: json['user_name'] as String,
     );
   }

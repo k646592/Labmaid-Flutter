@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../door_status/door_status_appbar.dart';
 import '../gemini/gemini_chat_page.dart';
 import 'my_model.dart';
-import 'dart:convert';
 import '../header_footer_drawer/drawer.dart';
 
 class MyPage extends StatefulWidget {
@@ -77,8 +76,8 @@ class _MyPageState extends State<MyPage> {
                       CircleAvatar(
                         backgroundColor: Colors.grey,
                         radius: 50,
-                        backgroundImage: model.myData!.imgData != '' ? Image.memory(
-                          base64Decode(model.myData!.imgData),
+                        backgroundImage: model.myData!.imageURL != '' ? Image.network(
+                          model.myData!.imageURL,
                           fit: BoxFit.cover,
                           errorBuilder: (c, o, s) {
                             return const Icon(

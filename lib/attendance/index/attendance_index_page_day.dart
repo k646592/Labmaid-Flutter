@@ -27,7 +27,7 @@ class _AttendanceIndexPageDayState extends State<AttendanceIndexPageDay> {
   late WebSocketChannel _channel;
 
   List<AttendanceData> attendances = [];
-  int? id;
+  String? userId;
 
   bool _isDisposed = false;
   int selectedMonth = DateTime.now().month;
@@ -170,7 +170,7 @@ class _AttendanceIndexPageDayState extends State<AttendanceIndexPageDay> {
     } else {
       return const CalendarHeaderStyle(
           textAlign: TextAlign.center,
-          backgroundColor: Colors.indigo,
+          backgroundColor: Color.fromARGB(255, 100, 100, 200),
           textStyle: TextStyle(
             fontSize: 25,
             fontStyle: FontStyle.normal,
@@ -227,29 +227,9 @@ class _AttendanceIndexPageDayState extends State<AttendanceIndexPageDay> {
 
   Future<void> _fetchMyUserData() async {
     final user = FirebaseAuth.instance.currentUser;
-    final userId = user!.uid;
-
-    var uriUser = Uri.parse('${httpUrl}user_id/$userId');
-    var responseUser = await http.get(uriUser);
-
-    // レスポンスのステータスコードを確認
-    if (responseUser.statusCode == 200) {
-      // レスポンスボディをUTF-8でデコード
-      var responseBody = utf8.decode(responseUser.bodyBytes);
-
-      // JSONデータをデコード
-      var responseData = jsonDecode(responseBody);
-
-      // 必要なデータを取得
-      setState(() {
-        id = responseData['id'];
-      });
-
-      // 取得したデータを使用する
-    } else {
-      // リクエストが失敗した場合の処理
-      print('リクエストが失敗しました: ${responseUser.statusCode}');
-    }
+    setState(() {
+      userId = user!.uid;
+    });
   }
 
   void viewChanged(ViewChangedDetails viewChangedDetails) {
@@ -339,7 +319,7 @@ class _AttendanceIndexPageDayState extends State<AttendanceIndexPageDay> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              UpdateAttendancePage(attendance: appointment, currentUserId: id!,),
+                              UpdateAttendancePage(attendance: appointment, currentUserId: userId!,),
                           fullscreenDialog: true,
                         ),
                       );
@@ -589,11 +569,11 @@ class _AttendanceIndexPageDayState extends State<AttendanceIndexPageDay> {
 
   Color _isTitleToColorBox(String title) {
     if (title == '遅刻') {
-      return Colors.orange.shade300;
+      return Colors.orange.withOpacity(0.4);
     } else if (title == '欠席') {
-      return Colors.red.shade300;
+      return Colors.red.withOpacity(0.4);
     } else {
-      return Colors.grey.shade400;
+      return Colors.grey.withOpacity(0.4);
     }
 
   }

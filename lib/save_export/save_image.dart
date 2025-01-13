@@ -1,7 +1,7 @@
-import 'dart:typed_data';
+
 
 class SaveImage {
-  Future<void> saveImage(Uint8List image) async {
+  Future<void> saveImage(String imageURL) async {
     return;
   }
 }

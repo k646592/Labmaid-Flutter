@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import '../domain/chat_data.dart';
-import '../domain/user_data.dart';
+import '../../domain/chat_data.dart';
 import 'package:http/http.dart' as http;
 
-import '../header_footer_drawer/footer.dart';
-import '../network/url.dart';
+import '../../header_footer_drawer/footer.dart';
+import '../../network/url.dart';
 
 class ChatMemberAddPage extends StatefulWidget {
   final GroupChatRoomData groupChatRoomData;
@@ -18,7 +17,7 @@ class ChatMemberAddPage extends StatefulWidget {
 }
 
 class _ChatMemberAddPage extends State<ChatMemberAddPage> {
-  List<int> newMember = [];
+  List<String> newMember = [];
 
   void itemChange(bool val, int index, List<GroupChatMember> memberList) {
     memberList[index].join = val;
@@ -127,9 +126,9 @@ class _ChatMemberAddPage extends State<ChatMemberAddPage> {
                 leading: CircleAvatar(
                   backgroundColor: Colors.grey,
                   radius: 20,
-                  backgroundImage: widget.groupChatNotUsers[index].imgData != ''
-                      ? Image.memory(
-                    base64Decode(widget.groupChatNotUsers[index].imgData),
+                  backgroundImage: widget.groupChatNotUsers[index].imageURL != ''
+                      ? Image.network(
+                    widget.groupChatNotUsers[index].imageURL,
                     fit: BoxFit.cover,
                     errorBuilder: (c, o, s) {
                       return const Icon(Icons.error, color: Colors.red);

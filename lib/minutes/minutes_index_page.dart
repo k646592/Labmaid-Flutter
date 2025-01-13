@@ -62,21 +62,11 @@ class MemoListPage extends StatelessWidget {
         drawer: const UserDrawer(),
         body: Consumer<MemoListModel>(builder: (context, model, child) {
 
-          List<MemoData> memoList (String team, String kinds) {
-            // teamとkindsが一致するMemoDataオブジェクトをフィルタリング
-            List<MemoData> filteredMemoList = model.memoList.where((memo) => memo.team == team && memo.kinds == kinds).toList();
-
-            // createdAtで降順に並び替え（新しい日付が先になるように）
-            filteredMemoList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-
-            return filteredMemoList;
-          }
-
           // ListView(children: widgets)
           return ListView.builder(
             itemCount: groupColorList.length,
             itemBuilder: (BuildContext context, int index) =>
-                _buildList(groupColorList[index], memoList(groupColorList[index].group, 'ミーティング'), memoList(groupColorList[index].group, 'その他'), context),
+                _buildList(groupColorList[index], context, model),
           );
         }),
 
@@ -110,7 +100,7 @@ class MemoListPage extends StatelessWidget {
     );
   }
 
-  Widget _buildList(GroupColor list, List<MemoData> memoList1, List<MemoData> memoList2, BuildContext context) {
+  Widget _buildList(GroupColor list, BuildContext context, MemoListModel model) {
     return ExpansionTile(
       collapsedBackgroundColor: list.color,
       backgroundColor: list.color,
@@ -122,10 +112,12 @@ class MemoListPage extends StatelessWidget {
       children: [
         ListTile(
           title: TextButton(
-            onPressed: () {
-              Navigator.push(context,
+            onPressed: () async {
+              //memolist取得(ミーティング)
+              await model.memoGetList(list.group, 'ミーティング');
+              await Navigator.push(context,
                 MaterialPageRoute(
-                  builder: (context) => MemoListShow(memoList: memoList1),
+                  builder: (context) => MemoListShow(memoList: model.memoList),
                   fullscreenDialog: true,
                 ),
               );
@@ -143,10 +135,12 @@ class MemoListPage extends StatelessWidget {
         ),
         ListTile(
           title: TextButton(
-            onPressed: () {
+            onPressed: () async {
+              //memolist取得(その他)
+              await model.memoGetList(list.group, 'その他');
               Navigator.push(context,
                 MaterialPageRoute(
-                  builder: (context) => MemoListShow(memoList: memoList2),
+                  builder: (context) => MemoListShow(memoList: model.memoList),
                   fullscreenDialog: true,
                 ),
               );

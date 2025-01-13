@@ -84,7 +84,7 @@ class MyApp extends StatelessWidget {
         Locale('ja', ''), // 日本語
       ],
       locale: const Locale('ja'), // デフォルトロケールを日本語に設定
-      title: 'Flutter Demo', // アプリのタイトル
+      title: 'Labmaid', // アプリのタイトル
       debugShowCheckedModeBanner: false,
       // デバッグモードのバナーを非表示
       //テーマを白にして、マテリアルデザイン３を適応しています

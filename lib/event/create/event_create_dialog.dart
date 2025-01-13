@@ -12,7 +12,7 @@ class EventDialogUtils {
   static void showCustomDialog({
     required BuildContext context,
     required DateTime selectedDate,
-    required int userId,
+    required String userId,
     required String name,
     required String email,
   }) {
@@ -34,7 +34,7 @@ class EventDialogUtils {
 
 class EventDialog extends StatefulWidget {
   final DateTime selectedDate;
-  final int userId;
+  final String userId;
   final String name;
   final String email;
 

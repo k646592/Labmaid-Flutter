@@ -44,7 +44,6 @@ dependencies:
   http: ^1.2.2
   image_picker: ^1.1.2
   universal_platform: ^1.1.0
-  image_picker_web: ^4.0.0
   url_launcher: ^6.3.0
   intl: ^0.19.0
   syncfusion_flutter_calendar: ^26.1.42
@@ -66,10 +65,10 @@ dependencies:
   network_info_plus: ^6.1.0
   pdf: ^3.11.1
   printing: ^5.13.3
-  image_downloader_web: ^2.0.6
   saver_gallery: ^4.0.0
   permission_handler: ^11.3.1
-
+  dio: ^5.7.0
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +80,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+  flutter_launcher_icons: ^0.14.2
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/labmaid_1024.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -99,7 +105,13 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   assets:
-    - assets/images/al_logo_cleaned.png
+    - assets/images/labmaid_1024.png
+    - assets/images/labmaid.png
+    - assets/images/labmaid2.png
+    - assets/images/labmaid_favicon.png
+    - assets/images/labmaid_touka.png
+    - assets/images/labmaid2_touka.png
+    - assets/images/labmaid_favicon_touka.png
     - assets/images/default.png
     - assets/images/group_default.jpg
     - assets/images/flutter_haikei.png

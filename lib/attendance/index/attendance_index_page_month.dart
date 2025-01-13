@@ -30,9 +30,9 @@ class _AttendanceIndexPageMonthState extends State<AttendanceIndexPageMonth> {
   late WebSocketChannel _channel;
 
   List<AttendanceData> attendances = [];
-  int? id;
   String? name;
   String? email;
+  String? userId;
 
   bool _isDisposed = false;
   int selectedMonth = DateTime.now().month;
@@ -175,7 +175,7 @@ class _AttendanceIndexPageMonthState extends State<AttendanceIndexPageMonth> {
     } else {
       return const CalendarHeaderStyle(
           textAlign: TextAlign.center,
-          backgroundColor: Colors.indigo,
+          backgroundColor: Color.fromARGB(255, 100, 100, 200),
           textStyle: TextStyle(
             fontSize: 25,
             fontStyle: FontStyle.normal,
@@ -240,12 +240,12 @@ class _AttendanceIndexPageMonthState extends State<AttendanceIndexPageMonth> {
 
   Future<void> _fetchMyUserData() async {
     final user = FirebaseAuth.instance.currentUser;
-    final userId = user!.uid;
     setState(() {
+      userId = user!.uid;
       email = user.email;
     });
 
-    var uriUser = Uri.parse('${httpUrl}user_name_id/$userId');
+    var uriUser = Uri.parse('${httpUrl}get_user_name/$userId');
     var responseUser = await http.get(uriUser);
 
     // レスポンスのステータスコードを確認
@@ -257,10 +257,11 @@ class _AttendanceIndexPageMonthState extends State<AttendanceIndexPageMonth> {
       var responseData = jsonDecode(responseBody);
 
       // 必要なデータを取得
-      setState(() {
-        id = responseData['id'];
-        name = responseData['name'];
-      });
+      if (mounted) {
+        setState(() {
+          name = responseData['name'];
+        });
+      }
 
       // 取得したデータを使用する
     } else {
@@ -493,7 +494,7 @@ class _AttendanceIndexPageMonthState extends State<AttendanceIndexPageMonth> {
                   AttendanceDialogUtils.showCustomDialog(
                     context: context,
                     selectedDate: details.date!,
-                    userId: id!,
+                    userId: userId!,
                     name: name!,
                     email: email!,
                   );
@@ -527,7 +528,7 @@ class _AttendanceIndexPageMonthState extends State<AttendanceIndexPageMonth> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              UpdateAttendancePage(attendance: appointment, currentUserId: id!,),
+                              UpdateAttendancePage(attendance: appointment, currentUserId: userId!,),
                           fullscreenDialog: true,
                         ),
                       );
@@ -869,11 +870,11 @@ class _AttendanceIndexPageMonthState extends State<AttendanceIndexPageMonth> {
 
   Color _isTitleToColorBox(String title) {
     if (title == '遅刻') {
-      return Colors.orange.shade300;
+      return Colors.orange.withOpacity(0.4);
     } else if (title == '欠席') {
-      return Colors.red.shade300;
+      return Colors.red.withOpacity(0.4);
     } else {
-      return Colors.grey.shade400;
+      return Colors.grey.withOpacity(0.4);
     }
 
   }

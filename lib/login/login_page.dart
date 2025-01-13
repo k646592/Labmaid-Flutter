@@ -50,10 +50,11 @@ class LoginPage extends StatelessWidget {
                             child: Column(
                               children: [
                                 const SizedBox(
-                                    height: 70,
+                                    height: 200, // 高さを大きく
+                                    width: 200,  // 幅を指定
                                     child: Image(
                                         image: AssetImage(
-                                            'assets/images/al_logo_cleaned.png'))),
+                                            'assets/images/labmaid_touka.png'))),
                                 const SizedBox(height: 30),
                                 const Text(
                                   'ログイン',

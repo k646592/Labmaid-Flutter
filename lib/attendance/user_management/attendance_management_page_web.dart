@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:http/http.dart' as http;
 
-//import '../../board/board_index_page.dart';
-//import '../../board/board_input_page.dart';
+import '../../board/board_index_page.dart';
+import '../../board/board_input_page.dart';
 import '../../domain/user_data.dart';
 import '../../network/url.dart';
 
@@ -25,13 +25,13 @@ class _AttendanceManagementPageWeb extends State<AttendanceManagementPageWeb> {
   List<UserAttendanceData> users = [];
 
   late String firebaseUserId;
-  late int userId;
 
   @override
   void initState() {
-    firebaseUserId = user!.uid;
+    setState(() {
+      firebaseUserId = user!.uid;
+    });
     _fetchAttendanceUserList();
-    _fetchMyUserData();
     _connectWebSocket();
     super.initState();
   }
@@ -71,34 +71,8 @@ class _AttendanceManagementPageWeb extends State<AttendanceManagementPageWeb> {
     }
   }
 
-  Future<void> _fetchMyUserData() async {
-    var uriUser = Uri.parse('${httpUrl}user_id/$firebaseUserId');
-    var responseUser = await http.get(uriUser);
-
-    // レスポンスのステータスコードを確認
-    if (responseUser.statusCode == 200) {
-      // レスポンスボディをUTF-8でデコード
-      var responseBody = utf8.decode(responseUser.bodyBytes);
-
-      // JSONデータをデコード
-      var responseData = jsonDecode(responseBody);
-
-      // 必要なデータを取得
-      if (mounted) {
-        setState(() {
-          userId = responseData['id'];
-        });
-      }
-
-      // 取得したデータを使用する
-    } else {
-      // リクエストが失敗した場合の処理
-      print('リクエストが失敗しました: ${responseUser.statusCode}');
-    }
-  }
-
   Future attendanceUpdate(String updateStatus) async {
-    var uri = Uri.parse('${httpUrl}update_user_status/$userId');
+    var uri = Uri.parse('${httpUrl}update_user_status/$firebaseUserId');
 
     // 送信するデータを作成
     Map<String, dynamic> data = {
@@ -136,8 +110,9 @@ class _AttendanceManagementPageWeb extends State<AttendanceManagementPageWeb> {
       Uri.parse('${wsUrl}ws_user_status'),
     );
     _channel.stream.listen((message) {
+      if (!mounted) return;
       final Map<String, dynamic> data = jsonDecode(message);
-      final int id = data['user_id'];
+      final String id = data['user_id'];
       final String status = data['status'];
       for(int i=0; i<users.length; i++) {
         if(users[i].id == id) {
@@ -481,16 +456,13 @@ class _AttendanceManagementPageWeb extends State<AttendanceManagementPageWeb> {
                     ),
                   ],
                 ),
-                //const InputBoardPage(),
+                const InputBoardPage(),
               ],
             ),
           ),
-          /*
           const SliverToBoxAdapter(
               child: IndexBoardPage()
           ),
-
-           */
         ],
       ),
     );

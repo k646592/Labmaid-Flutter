@@ -21,10 +21,11 @@ class _IndexBoardPage extends State<IndexBoardPage> {
   bool _isLoading = false; // データを読み込んでいるか
   bool _hasMore = true; // もっとデータがあるかどうか
 
+  Map<int, bool> _processingAcknowledgement = {};
+
   final user = FirebaseAuth.instance.currentUser;
 
-  late String firebaseUserId;
-  int? userId;
+  String? firebaseUserId;
 
   late WebSocketChannel _channel;
 
@@ -35,45 +36,53 @@ class _IndexBoardPage extends State<IndexBoardPage> {
   final TextEditingController _formController = TextEditingController();
 
   void toggleForm(String initialText) {
-    setState(() {
-      _formController.text = initialText;
-    });
+    if (mounted) {
+      setState(() {
+        _formController.text = initialText;
+      });
+    }
   }
 
   void resetCommentDisplay(int id) {
-    setState(() {
-      for (int i = 0; i < boards.length; i++) {
-        if (boards[i].id != id) {
-          boards[i].commentDisplay = false;
+    if (mounted) {
+      setState(() {
+        for (int i = 0; i < boards.length; i++) {
+          if (boards[i].id != id) {
+            boards[i].commentDisplay = false;
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   void resetIsAcknowledgement(int boardId) {
-    setState(() {
-      for (int i = 0; i < boards.length; i++) {
-        if (boards[i].id == boardId) {
-          boards[i].isAcknowledged = ! boards[i].isAcknowledged;
+    if (mounted) {
+      setState(() {
+        for (int i = 0; i < boards.length; i++) {
+          if (boards[i].id == boardId) {
+            boards[i].isAcknowledged = ! boards[i].isAcknowledged;
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   void commentDisplayBool(int id, bool display) {
-    setState(() {
-      for (int i = 0; i < boards.length; i++) {
-        if (boards[i].id == id) {
-          boards[i].commentDisplay = display;
+    if (mounted) {
+      setState(() {
+        for (int i = 0; i < boards.length; i++) {
+          if (boards[i].id == id) {
+            boards[i].commentDisplay = display;
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   @override
   void initState() {
     firebaseUserId = user!.uid;
-    _fetchMyUserData();
+    _fetchBoard();
     _connectWebSocket();
     _connectWebSocketAcknowledgement();
     // スクロール位置のリスナーを設定
@@ -96,11 +105,13 @@ class _IndexBoardPage extends State<IndexBoardPage> {
   }
 
   Future<void> _fetchBoard() async {
-    setState(() {
-      _isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
 
-    var uri = Uri.parse('${httpUrl}boards/$userId/?page=$_page');
+    var uri = Uri.parse('${httpUrl}boards/$firebaseUserId/?page=$_page');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -122,45 +133,21 @@ class _IndexBoardPage extends State<IndexBoardPage> {
       }
 
       // データが空でない限り、次のページがあるとみなす
-      setState(() {
-        _isLoading = false;
-        _hasMore = body.isNotEmpty; // 次のページが存在するか
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _hasMore = body.isNotEmpty; // 次のページが存在するか
+        });
+      }
     } else {
       // リクエストが失敗した場合の処理
       print('リクエストが失敗しました: ${response.statusCode}');
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _fetchMyUserData() async {
-    var uriUser = Uri.parse('${httpUrl}user_id/$firebaseUserId');
-    var responseUser = await http.get(uriUser);
-
-    // レスポンスのステータスコードを確認
-    if (responseUser.statusCode == 200) {
-      // レスポンスボディをUTF-8でデコード
-      var responseBody = utf8.decode(responseUser.bodyBytes);
-
-      // JSONデータをデコード
-      var responseData = jsonDecode(responseBody);
-
-      // 必要なデータを取得
       if (mounted) {
         setState(() {
-          userId = responseData['id'];
+          _isLoading = false;
         });
       }
-
-      // 取得したデータを使用する
-    } else {
-      // リクエストが失敗した場合の処理
-      print('リクエストが失敗しました: ${responseUser.statusCode}');
     }
-
-    _fetchBoard();
   }
 
   Future<void> _fetchAcknowledge(int boardId) async {
@@ -184,7 +171,6 @@ class _IndexBoardPage extends State<IndexBoardPage> {
           // 新しいデータを追加
           acknowledgementUsers.clear();
           acknowledgementUsers.addAll(body.map((dynamic json) => AcknowledgementData.fromJson(json)).toList());
-
         });
       }
 
@@ -200,6 +186,8 @@ class _IndexBoardPage extends State<IndexBoardPage> {
       Uri.parse('${wsUrl}ws_board_list'),
     );
     _channel.stream.listen((message) {
+      // ウィジェットがまだツリーにあるか確認
+      if (!mounted) return;
 
       // JSONデータをデコード
       var messageData = jsonDecode(message);
@@ -221,6 +209,8 @@ class _IndexBoardPage extends State<IndexBoardPage> {
       Uri.parse('${wsUrl}ws_acknowledgement_list'),
     );
     _channel.stream.listen((message) {
+      // ウィジェットがまだツリーにあるか確認
+      if (!mounted) return;
 
       // JSONデータをデコード
       var messageData = jsonDecode(message);
@@ -246,7 +236,7 @@ class _IndexBoardPage extends State<IndexBoardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return userId == null ? const Center(child: CircularProgressIndicator())
+    return firebaseUserId == null ? const Center(child: CircularProgressIndicator())
         : SelectionArea(
           child: SizedBox(
                 height: MediaQuery.of(context).size.height // 画面全体の高さ
@@ -282,7 +272,7 @@ class _IndexBoardPage extends State<IndexBoardPage> {
                         width: 1.0,         // 枠線の太さ
                       ),
                     ),
-                    color:  userId == board.userId ? Colors.amber : _groupColor(board.group),
+                    color:  firebaseUserId == board.userId ? Colors.amber : _groupColor(board.group),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Column(
@@ -322,9 +312,9 @@ class _IndexBoardPage extends State<IndexBoardPage> {
                             style: const TextStyle(fontSize: 14.0),
                           ),
                           const SizedBox(height: 5.0),
-                          board.userId == userId
+                          board.userId == firebaseUserId
                               ? _buttonDelete(board.id, board.acknowledgements)
-                              : _buttonRow(board.group, board.id, userId!, board.isAcknowledged, board.acknowledgements),
+                              : _buttonRow(board.group, board.id, firebaseUserId!, board.isAcknowledged, board.acknowledgements),
                           //　コメント入力欄
                           if (boards[index].commentDisplay)
                             Padding(
@@ -355,7 +345,7 @@ class _IndexBoardPage extends State<IndexBoardPage> {
                                           // フォームの内容を送信
                                           try {
                                             //掲示板追加
-                                            await addComment(_formController.text, board.group, userId!);
+                                            await addComment(_formController.text, board.group, firebaseUserId!);
 
                                             const snackBar = SnackBar(
                                               backgroundColor: Colors.green,
@@ -495,7 +485,22 @@ class _IndexBoardPage extends State<IndexBoardPage> {
                                 itemCount: acknowledgementUsers.length,
                                 itemBuilder: (context, index) {
                                   return ListTile(
-                                    leading: const Icon(Icons.person),
+                                    leading: acknowledgementUsers[index].imageURL == ''
+                                        ? const Icon(Icons.person)
+                                    : CircleAvatar(
+                                      backgroundColor: Colors.grey,
+                                      radius: 15,
+                                      backgroundImage: Image.network(
+                                        acknowledgementUsers[index].imageURL,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (c, o, s) {
+                                          return const Icon(
+                                            Icons.error,
+                                            color: Colors.red,
+                                          );
+                                        },
+                                      ).image,
+                                    ),
                                     title: Text(acknowledgementUsers[index].userName),
                                   );
                                 },
@@ -524,7 +529,7 @@ class _IndexBoardPage extends State<IndexBoardPage> {
     );
   }
 
-  Widget _buttonRow (String group, int id, int userId, bool isAcknowledged, int acknowledgements) {
+  Widget _buttonRow (String group, int id, String userId, bool isAcknowledged, int acknowledgements) {
     return Column(
       children: [
         Wrap(
@@ -606,11 +611,36 @@ class _IndexBoardPage extends State<IndexBoardPage> {
             children: [
               GestureDetector(
                 onTap: () async {
-                  resetIsAcknowledgement(id);
-                  if (isAcknowledged == false) {
-                    await addAcknowledgement(userId, id);
-                  } else {
-                    await deleteAcknowledgement(userId, id);
+                  if (_processingAcknowledgement[id] == true) {
+                    return;
+                  }
+
+                  try {
+                    // 処理開始をマーク
+                    if (mounted) {
+                      setState(() {
+                        _processingAcknowledgement[id] = true;
+                      });
+                    }
+
+                    if (isAcknowledged == false) {
+                      final success = await addAcknowledgement(userId, id);
+                      if (success) {
+                        resetIsAcknowledgement(id); // 成功した場合のみ実行
+                      }
+                    } else {
+                      final success = await deleteAcknowledgement(userId, id);
+                      if (success) {
+                        resetIsAcknowledgement(id); // 成功した場合のみ実行
+                      }
+                    }
+                  } finally {
+                    // 処理完了後にフラグをリセット
+                    if (mounted) {
+                      setState(() {
+                        _processingAcknowledgement[id] = false;
+                      });
+                    }
                   }
                 },
                 onLongPress: () async {
@@ -621,31 +651,48 @@ class _IndexBoardPage extends State<IndexBoardPage> {
                     builder: (BuildContext context) {
                       return Container(
                         padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                              '了解したユーザー',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                '了解したユーザー',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8.0),
-                            if (acknowledgementUsers.isEmpty)
-                              const Text('まだ了解したユーザーはいません'),
-                            if (acknowledgementUsers.isNotEmpty)
-                              ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: acknowledgementUsers.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    leading: const Icon(Icons.person),
-                                    title: Text(acknowledgementUsers[index].userName),
-                                  );
-                                },
-                              ),
-                          ],
+                              const SizedBox(height: 8.0),
+                              if (acknowledgementUsers.isEmpty)
+                                const Text('まだ了解したユーザーはいません'),
+                              if (acknowledgementUsers.isNotEmpty)
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: acknowledgementUsers.length,
+                                  itemBuilder: (context, index) {
+                                    return ListTile(
+                                      leading: acknowledgementUsers[index].imageURL == ''
+                                          ? const Icon(Icons.person)
+                                          : CircleAvatar(
+                                        backgroundColor: Colors.grey,
+                                        radius: 15,
+                                        backgroundImage: Image.network(
+                                          acknowledgementUsers[index].imageURL,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (c, o, s) {
+                                            return const Icon(
+                                              Icons.error,
+                                              color: Colors.red,
+                                            );
+                                          },
+                                        ).image,
+                                      ),
+                                      title: Text(acknowledgementUsers[index].userName),
+                                    );
+                                  },
+                                ),
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -693,7 +740,7 @@ class _IndexBoardPage extends State<IndexBoardPage> {
     }
   }
 
-  Future addComment(String content, String group, int userId) async {
+  Future addComment(String content, String group, String userId) async {
 
     if (content =='') {
       throw '内容が入力されていません。';
@@ -728,7 +775,7 @@ class _IndexBoardPage extends State<IndexBoardPage> {
 
   }
 
-  Future addAcknowledgement(int userId, int boardId) async {
+  Future addAcknowledgement(String userId, int boardId) async {
 
     final now = DateTime.now();
 
@@ -750,10 +797,11 @@ class _IndexBoardPage extends State<IndexBoardPage> {
       // POSTリクエストが成功した場合
       final responseData = jsonDecode(response.body);
       print('Response data: $responseData');
-
+      return true; // 成功を返す
     } else {
       // POSTリクエストが失敗した場合
       print('Request failed with status: ${response.statusCode}');
+      return false; // 失敗を返す
     }
 
   }
@@ -772,7 +820,7 @@ class _IndexBoardPage extends State<IndexBoardPage> {
     }
   }
 
-  Future deleteAcknowledgement(int userId, int boardId) async {
+  Future deleteAcknowledgement(String userId, int boardId) async {
     var uri = Uri.parse('${httpUrl}acknowledgements/$boardId/$userId');
 
     final response = await http.delete(uri);
@@ -780,9 +828,11 @@ class _IndexBoardPage extends State<IndexBoardPage> {
     if (response.statusCode == 200) {
       // 成功時の処理
       print('Acknowledgement deleted successfully');
+      return true; // 成功を返す
     } else {
       // エラー時の処理
       print('Failed to delete the attendance');
+      return false; // 失敗を返す
     }
   }
 

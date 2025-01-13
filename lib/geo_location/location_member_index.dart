@@ -123,8 +123,8 @@ class GeoLocationIndexPageState extends State<GeoLocationIndexPage> {
                 leading: CircleAvatar(
                   backgroundColor: Colors.grey,
                   radius: 50,
-                  backgroundImage: userData[index].imgData != '' ? Image.memory(
-                    base64Decode(userData[index].imgData),
+                  backgroundImage: userData[index].imageURL != '' ? Image.network(
+                    userData[index].imageURL,
                     fit: BoxFit.cover,
                     errorBuilder: (c, o, s) {
                       return const Icon(

@@ -1,10 +1,12 @@
-import 'package:image_downloader_web/image_downloader_web.dart';
-import 'dart:typed_data';
+import 'package:url_launcher/url_launcher.dart';
 
 class SaveImage {
-  Future<void> saveImage(Uint8List image) async {
-    await WebImageDownloader.downloadImageFromUInt8List(
-        uInt8List: image,
-    );
+  Future<void> saveImage(String imageURL) async {
+    if (await canLaunch(imageURL)) {
+      await launch(imageURL);
+    } else {
+      throw 'Could not open the image URL';
+    }
+
   }
 }

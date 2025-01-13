@@ -9,7 +9,7 @@ class BoardData {
   final String content;
   final DateTime createdAt;
   final String group;
-  final int userId;
+  final String userId;
   final String userName;
   int acknowledgements;
   bool isAcknowledged;
@@ -22,7 +22,7 @@ class BoardData {
       content: json['content'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       group: json['group'] as String,
-      userId: json['user_id'] as int,
+      userId: json['user_id'] as String,
       userName: json['user_name'] as String,
       isAcknowledged: json['is_acknowledged'] as bool,
       acknowledgements: json['acknowledgements'] as int,
@@ -34,22 +34,25 @@ class BoardData {
 class AcknowledgementData {
   AcknowledgementData({
     required this.userId, required this.userName,
-    required this.createdAt, required this.imgData,
+    required this.createdAt, required this.imageURL, required this.imageName,
   });
 
-  final int userId;
+  final String userId;
   final String userName;
   final DateTime createdAt;
-  String imgData;
+  final String imageURL;
+  final String imageName;
+
 
 
   //JSONからオブジェクトを作成するファクトリメソッド
   factory AcknowledgementData.fromJson(dynamic json) {
     return AcknowledgementData(
         createdAt: DateTime.parse(json['created_at'] as String),
-        userId: json['user_id'] as int,
+        userId: json['user_id'] as String,
         userName: json['user_name'] as String,
-        imgData: json['bytes_data'] as String,
+        imageURL: json['image_url'] as String,
+        imageName: json['image_name'] as String,
     );
   }
 }

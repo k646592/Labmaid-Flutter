@@ -1,19 +1,19 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:labmaidfastapi/chat/add_group_chat_member.dart';
+import 'package:labmaidfastapi/chat/group/add_group_chat_member.dart';
 import 'package:labmaidfastapi/header_footer_drawer/footer.dart';
-import '../domain/chat_data.dart';
-import '../domain/user_data.dart';
+import '../../domain/chat_data.dart';
+import '../../domain/user_data.dart';
 
 import 'package:http/http.dart' as http;
 
-import '../network/url.dart';
+import '../../network/url.dart';
 
 class GroupChatRoomInfo extends StatefulWidget {
   final GroupChatRoomData groupChatRoomData;
   final List<GroupChatUserData> groupChatUsers;
-  final UserData myData;
+  final GroupChatUserData myData;
   const GroupChatRoomInfo({Key? key,  required this.groupChatRoomData, required this.groupChatUsers, required this.myData}) : super(key: key);
 
   @override
@@ -102,8 +102,8 @@ class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
                       CircleAvatar(
                         backgroundColor: Colors.grey,
                         radius: 30,
-                        backgroundImage: widget.groupChatRoomData.imgData != '' ? Image.memory(
-                          base64Decode(widget.groupChatRoomData.imgData),
+                        backgroundImage: widget.groupChatRoomData.imageURL != '' ? Image.network(
+                          widget.groupChatRoomData.imageURL,
                           fit: BoxFit.cover,
                           errorBuilder: (c, o, s) {
                             return const Icon(
@@ -137,7 +137,7 @@ class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
     );
   }
 
-  Widget memberList(List<GroupChatUserData> groupChatUsers, UserData myData, GroupChatRoomData groupChatRoomData) {
+  Widget memberList(List<GroupChatUserData> groupChatUsers, GroupChatUserData myData, GroupChatRoomData groupChatRoomData) {
     if(groupChatUsers.isNotEmpty){
       return Column(
         children: [
@@ -161,8 +161,8 @@ class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
                     leading: CircleAvatar(
                       radius: 30,
                       backgroundColor: Colors.grey,
-                      backgroundImage: groupChatUsers[index].imgData != '' ? Image.memory(
-                        base64Decode(groupChatUsers[index].imgData),
+                      backgroundImage: groupChatUsers[index].imageURL != '' ? Image.network(
+                        groupChatUsers[index].imageURL,
                         fit: BoxFit.cover,
                         errorBuilder: (c, o, s) {
                           return const Icon(
@@ -277,7 +277,7 @@ class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
     }
   }
 
-  void _exitMeFromGroup(UserData myData, GroupChatRoomData groupChatRoomData) async {
+  void _exitMeFromGroup(GroupChatUserData myData, GroupChatRoomData groupChatRoomData) async {
     // サーバーやデータベースとの通信を行い、ユーザーをグループから削除
     var uri = Uri.parse('${httpUrl}group_member_update/${groupChatRoomData.id}/${myData.id}');
 

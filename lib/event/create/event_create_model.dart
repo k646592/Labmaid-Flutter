@@ -12,14 +12,13 @@ class CreateEventModel extends ChangeNotifier {
 
   String? userId;
   String? email;
-  int? id;
   String name = '';
 
   Future fetchUser() async {
     final user = FirebaseAuth.instance.currentUser;
     userId = user!.uid;
     email = user.email;
-    var uri = Uri.parse('${httpUrl}user_name_id/$userId');
+    var uri = Uri.parse('${httpUrl}get_user_name/$userId');
     var response = await http.get(uri);
 
     // レスポンスのステータスコードを確認
@@ -31,7 +30,6 @@ class CreateEventModel extends ChangeNotifier {
       var responseData = jsonDecode(responseBody);
 
       // 必要なデータを取得
-      id = responseData['id'];
       name = responseData['name'];
 
       // 取得したデータを使用する
@@ -67,7 +65,7 @@ class CreateEventModel extends ChangeNotifier {
         'end': end.toIso8601String(),
         'unit': unit,
         'description': description,
-        'user_id': id,
+        'user_id': userId,
         'mail_send': mailSend,
       }),
 

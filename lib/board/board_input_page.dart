@@ -17,15 +17,15 @@ class _InputBoardPage extends State<InputBoardPage> {
   final user = FirebaseAuth.instance.currentUser;
 
   late String firebaseUserId;
-  late int userId;
 
   String _group = 'All';
 
   @override
   void initState() {
     _contentController = TextEditingController();
-    firebaseUserId = user!.uid;
-    _fetchMyUserData();
+    setState(() {
+      firebaseUserId = user!.uid;
+    });
     super.initState();
   }
 
@@ -33,32 +33,6 @@ class _InputBoardPage extends State<InputBoardPage> {
   void dispose() {
 
     super.dispose();
-  }
-
-  Future<void> _fetchMyUserData() async {
-    var uriUser = Uri.parse('${httpUrl}user_id/$firebaseUserId');
-    var responseUser = await http.get(uriUser);
-
-    // レスポンスのステータスコードを確認
-    if (responseUser.statusCode == 200) {
-      // レスポンスボディをUTF-8でデコード
-      var responseBody = utf8.decode(responseUser.bodyBytes);
-
-      // JSONデータをデコード
-      var responseData = jsonDecode(responseBody);
-
-      // 必要なデータを取得
-      if (mounted) {
-        setState(() {
-          userId = responseData['id'];
-        });
-      }
-
-      // 取得したデータを使用する
-    } else {
-      // リクエストが失敗した場合の処理
-      print('リクエストが失敗しました: ${responseUser.statusCode}');
-    }
   }
 
 
@@ -130,7 +104,7 @@ class _InputBoardPage extends State<InputBoardPage> {
                       onPressed: () async {
                         try {
                           //掲示板追加
-                          await addBoard(_contentController.text, _group, userId);
+                          await addBoard(_contentController.text, _group, firebaseUserId);
 
                           _contentController.clear();
 
@@ -173,7 +147,7 @@ class _InputBoardPage extends State<InputBoardPage> {
     );
   }
 
-  Future addBoard(String content, String group, int userId) async {
+  Future addBoard(String content, String group, String userId) async {
 
     if (content =='') {
       throw '内容が入力されていません。';

@@ -12,14 +12,13 @@ class UpdateAttendanceModel extends ChangeNotifier {
 
   String? firebaseUserId;
   String? email;
-  int? userId;
   String name = '';
 
   Future fetchUser() async {
     final user = FirebaseAuth.instance.currentUser;
     firebaseUserId = user!.uid;
     email = user.email;
-    var uri = Uri.parse('${httpUrl}user_name_id/$firebaseUserId');
+    var uri = Uri.parse('${httpUrl}get_user_name/$firebaseUserId');
     var response = await http.get(uri);
 
     // レスポンスのステータスコードを確認
@@ -31,7 +30,6 @@ class UpdateAttendanceModel extends ChangeNotifier {
       var responseData = jsonDecode(responseBody);
 
       // 必要なデータを取得
-      userId = responseData['id'];
       name = responseData['name'];
 
       // 取得したデータを使用する
@@ -42,8 +40,6 @@ class UpdateAttendanceModel extends ChangeNotifier {
 
     notifyListeners();
   }
-
-
 
   Future updateAttendance(int id, String title, DateTime start, DateTime end, String description, bool mailSend, bool undecided) async {
 
@@ -68,7 +64,6 @@ class UpdateAttendanceModel extends ChangeNotifier {
       'undecided': undecided,
       'start': start.toIso8601String(),
       'end': end.toIso8601String(),
-      'user_id': userId,
       // 他のキーと値を追加
     };
 

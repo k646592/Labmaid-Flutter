@@ -43,10 +43,10 @@ class ResetPasswordPage extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.topRight,
                         child: SizedBox(
-                            height: 50,
+                            height: 70,
                             child: Image(
                                 image: AssetImage(
-                                    'assets/images/al_logo_cleaned.png'))),
+                                    'assets/images/labmaid2_touka.png'))),
                       ),
                     ),
                     Padding(

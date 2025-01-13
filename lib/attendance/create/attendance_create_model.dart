@@ -11,14 +11,13 @@ class CreateAttendanceModel extends ChangeNotifier {
 
   String? userId;
   String? email;
-  int? id;
   String name = '';
 
   Future fetchUser() async {
     final user = FirebaseAuth.instance.currentUser;
     userId = user!.uid;
     email = user.email;
-    var uri = Uri.parse('${httpUrl}user_name_id/$userId');
+    var uri = Uri.parse('${httpUrl}get_user_name/$userId');
     var response = await http.get(uri);
 
     // レスポンスのステータスコードを確認
@@ -30,7 +29,6 @@ class CreateAttendanceModel extends ChangeNotifier {
       var responseData = jsonDecode(responseBody);
 
       // 必要なデータを取得
-      id = responseData['id'];
       name = responseData['name'];
 
       // 取得したデータを使用する
@@ -55,7 +53,7 @@ class CreateAttendanceModel extends ChangeNotifier {
     }
 
     final now = DateTime.now();
-    final urlUser = Uri.parse('${httpUrl}update_user_status/$id');
+    final urlUser = Uri.parse('${httpUrl}update_user_status/$userId');
     // 送信するデータを作成
     Map<String, dynamic> data = {
       'status': title,
@@ -78,7 +76,7 @@ class CreateAttendanceModel extends ChangeNotifier {
         'start': start.toIso8601String(),
         'end': end.toIso8601String(),
         'description': description,
-        'user_id': id,
+        'user_id': userId,
         'mail_send': mailSend,
         'undecided': undecided,
       }),

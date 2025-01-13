@@ -1,7 +1,7 @@
-import 'dart:typed_data';
+import 'package:labmaidfastapi/domain/pick_image_data.dart';
 
 class PickImage {
-  Future<Uint8List?> pickImage() async {
+  Future<PickedImage?> pickImage() async {
     return null;
   }
 }

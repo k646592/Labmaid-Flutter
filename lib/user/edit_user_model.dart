@@ -4,10 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:labmaidfastapi/domain/pick_image_data.dart';
 
-import 'dart:typed_data';
-
-import '../image_size/size_limit.dart';
 import '../network/url.dart';
 
 
@@ -26,7 +24,7 @@ class EditUserModel extends ChangeNotifier {
   }
 
   //ユーザ情報更新
-  Future update(String name, String group, String grade, int id) async {
+  Future update(String name, String group, String grade, String id) async {
 
     if(name == ''){
       throw '名前が入力されていません。';
@@ -71,16 +69,12 @@ class EditUserModel extends ChangeNotifier {
     }
   }
 
-  Future updateImage(Uint8List? userImage, int id) async {
-
-    if (!sizeLimit(userImage!)) {
-      throw '画像サイズが2.2Mを超えているため、画像サイズは更新できませんでした。';
-    }
+  Future updateImage(PickedImage? userImage, String id) async {
 
     var uri = Uri.parse('${httpUrl}users/image/$id');
     final request = http.MultipartRequest('PATCH', uri);
     Map<String, String> headers = {"Content-type": "multipart/form-data"};
-    final file = http.MultipartFile.fromBytes('file', userImage, filename: 'update.png');
+    final file = http.MultipartFile.fromBytes('image', userImage!.bytes, filename: userImage.fileName);
     request.files.add(file);
     request.headers.addAll(headers);
     final stream = await request.send();

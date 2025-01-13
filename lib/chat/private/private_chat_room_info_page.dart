@@ -1,7 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import '../domain/user_data.dart';
+import '../../domain/user_data.dart';
 
 class PrivateChatRoomInfo extends StatefulWidget {
   final int privateChatroomId;
@@ -56,8 +54,8 @@ class _PrivateChatRoomInfoState extends State<PrivateChatRoomInfo> {
                     leading: CircleAvatar(
                       radius: 30,
                       backgroundColor: Colors.grey,
-                      backgroundImage: widget.myData.imgData != '' ? Image.memory(
-                        base64Decode(widget.myData.imgData),
+                      backgroundImage: widget.myData.imageURL != '' ? Image.network(
+                        widget.myData.imageURL,
                         fit: BoxFit.cover,
                         errorBuilder: (c, o, s) {
                           return const Icon(
@@ -90,8 +88,8 @@ class _PrivateChatRoomInfoState extends State<PrivateChatRoomInfo> {
                     leading: CircleAvatar(
                       radius: 30,
                       backgroundColor: Colors.grey,
-                      backgroundImage: widget.userData.imgData != '' ? Image.memory(
-                        base64Decode(widget.userData.imgData),
+                      backgroundImage: widget.userData.imageURL != '' ? Image.network(
+                        widget.myData.imageURL,
                         fit: BoxFit.cover,
                         errorBuilder: (c, o, s) {
                           return const Icon(

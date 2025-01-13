@@ -13,7 +13,7 @@ class MemoData {
   String team;
   String mainText;
   String kinds;
-  final int userId;
+  final String userId;
   String userName;
 
   //JSONからオブジェクトを作成するファクトリメソッド
@@ -25,7 +25,7 @@ class MemoData {
       team: json['team'] as String,
       mainText: json['main_text'] as String,
       kinds: json['kinds'] as String,
-      userId: json['user_id'] as int,
+      userId: json['user_id'] as String,
       userName: json['user_name'] as String,
     );
   }

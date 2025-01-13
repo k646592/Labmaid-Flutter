@@ -10,7 +10,7 @@ class EventData {
   String unit;
   String description;
   bool mailSend;
-  final int userId;
+  final String userId;
   final String userName;
 
   //JSONからオブジェクトを作成するファクトリメソッド
@@ -23,7 +23,7 @@ class EventData {
         unit: json['unit'] as String,
         description: json['description'] as String,
         mailSend: json['mail_send'] as bool,
-        userId: json['user_id'] as int,
+        userId: json['user_id'] as String,
         userName: json['user_name'] as String,
     );
   }

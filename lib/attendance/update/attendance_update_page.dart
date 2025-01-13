@@ -10,7 +10,7 @@ import 'attendance_update_model.dart';
 
 class UpdateAttendancePage extends StatefulWidget {
   final bool withDuration;
-  final int currentUserId;
+  final String currentUserId;
   final AttendanceData attendance;
 
   const UpdateAttendancePage({Key? key, required this.attendance, required this.currentUserId, this.withDuration = false})

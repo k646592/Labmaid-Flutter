@@ -2,15 +2,17 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:labmaidfastapi/chat/delete_group_chat_room_page.dart';
-import 'package:labmaidfastapi/chat/group_chat_page.dart';
-import 'package:labmaidfastapi/chat/private_chat_page.dart';
+import 'package:intl/intl.dart';
+import 'package:labmaidfastapi/chat/group/delete_group_chat_room_page.dart';
+import 'package:labmaidfastapi/chat/group/group_chat_page.dart';
+import 'package:labmaidfastapi/chat/private/private_chat_page.dart';
 import '../domain/chat_data.dart';
 import '../domain/user_data.dart';
 import '../door_status/door_status_appbar.dart';
 import '../header_footer_drawer/drawer.dart';
 import '../network/url.dart';
-import 'create_group_chat_room_page.dart';
+import 'group/create_group_chat_room_page.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:http/http.dart' as http;
 
 class ChatRoomListPage extends StatefulWidget {
@@ -21,23 +23,28 @@ class ChatRoomListPage extends StatefulWidget {
 }
 
 class _ChatRoomListPage extends State<ChatRoomListPage> {
-  List<GroupChatRoomData> groupChatRoomList = [];
-  List<UserData> userData = [];
+  List<GetGroupChatRoomData> groupChatRoomList = [];
+  List<UserPrivateChatData> userData = [];
   List<GroupChatUserData> groupChatUsers = [];
   List<GroupChatRoomData> groupChatData = [];
   List<GroupChatRoomData> notGroupChatData = [];
   late int privateChatroomId;
-  late UserData myData;
+  UserData? myData;
+  GroupChatUserData? groupMyData;
+
+  late WebSocketChannel _channel;
 
   @override
   void initState() {
     fetchChatRoomList();
+    _connectWebSocket();
+    _connectGroupWebSocket();
     super.initState();
   }
 
   @override
   void dispose() {
-
+    _channel.sink.close();
     super.dispose();
   }
 
@@ -55,7 +62,11 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
       final List<dynamic> body = jsonDecode(responseBody);
 
       // 必要なデータを取得
-      groupChatRoomList = body.map((dynamic json) => GroupChatRoomData.fromJson(json)).toList();
+      if (mounted) {
+        setState(() {
+          groupChatRoomList = body.map((dynamic json) => GetGroupChatRoomData.fromJson(json)).toList();
+        });
+      }
 
     } else {
       // リクエストが失敗した場合の処理
@@ -110,7 +121,7 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
       // 必要なデータを取得
       if (mounted) {
         setState(() {
-          userData = body.map((dynamic json) => UserData.fromJson(json)).toList();
+          userData = body.map((dynamic json) => UserPrivateChatData.fromJson(json)).toList();
         });
       }
 
@@ -120,55 +131,148 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
       print('リクエストが失敗しました: ${responseGet.statusCode}');
     }
 
-    // 参加中のグループチャットの一覧を取得
-    var uriEntryGroup = Uri.parse('${httpUrl}get_entry_group_chat_room/${myData.id}');
-    // GETリクエストを送信
-    var responseEntryGroup = await http.get(uriEntryGroup);
+    if (myData != null) {
+      // 参加中のグループチャットの一覧を取得
+      var uriEntryGroup = Uri.parse('${httpUrl}get_entry_group_chat_room/${myData!.id}');
+      // GETリクエストを送信
+      var responseEntryGroup = await http.get(uriEntryGroup);
 
-    // レスポンスのステータスコードを確認
-    if (responseEntryGroup.statusCode == 200) {
-      // レスポンスボディをUTF-8でデコード
-      var responseBody = utf8.decode(responseEntryGroup.bodyBytes);
+      // レスポンスのステータスコードを確認
+      if (responseEntryGroup.statusCode == 200) {
+        // レスポンスボディをUTF-8でデコード
+        var responseBody = utf8.decode(responseEntryGroup.bodyBytes);
 
-      // JSONデータをデコード
-      final List<dynamic> body = jsonDecode(responseBody);
+        // JSONデータをデコード
+        final List<dynamic> body = jsonDecode(responseBody);
 
-      //　必要なデータを取得
-      if (mounted) {
-        setState(() {
-          groupChatData = body.map((dynamic json) => GroupChatRoomData.fromJson(json)).toList();
-        });
+        //　必要なデータを取得
+        if (mounted) {
+          setState(() {
+            groupChatData = body.map((dynamic json) => GroupChatRoomData.fromJson(json)).toList();
+          });
+        }
+
+      } else {
+        // リクエストが失敗した場合の処理
+        print('リクエストが失敗しました: ${responseEntryGroup.statusCode}');
       }
 
-    } else {
-      // リクエストが失敗した場合の処理
-      print('リクエストが失敗しました: ${responseEntryGroup.statusCode}');
+      // 参加していないグループチャット一覧を取得する
+      var uriNotEntryGroup = Uri.parse('${httpUrl}get_not_entry_group_chat_room/${myData!.id}');
+      // GETリクエストを送信
+      var responseNotEntryGroup = await http.get(uriNotEntryGroup);
+
+      // レスポンスのステータスコードを確認
+      if (responseNotEntryGroup.statusCode == 200) {
+        // レスポンスボディをUTF-8でデコード
+        var responseBody = utf8.decode(responseNotEntryGroup.bodyBytes);
+        // JSONデータをデコード
+        final List<dynamic> body = jsonDecode(responseBody);
+
+        // 必要なデータを取得
+        if (mounted) {
+          setState(() {
+            notGroupChatData = body.map((dynamic json) => GroupChatRoomData.fromJson(json)).toList();
+          });
+        }
+
+      } else {
+        // リクエストが失敗した場合の処理
+        print('リクエストが失敗しました: ${responseNotEntryGroup.statusCode}');
+      }
     }
 
-    // 参加していないグループチャット一覧を取得する
-    var uriNotEntryGroup = Uri.parse('${httpUrl}get_not_entry_group_chat_room/${myData.id}');
+  }
+
+  void _connectWebSocket() {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    _channel = WebSocketChannel.connect(
+      Uri.parse('${wsUrl}ws_private_userlist/${currentUser!.uid}'),
+    );
+    _channel.stream.listen((message) async {
+      if (!mounted) return;
+      final decodedMessage = json.decode(message);
+      if (decodedMessage['type'] == 'broadcast') {
+        final messageData = decodedMessage['message'];
+        final String userId = messageData['user_id'];
+        final DateTime updatedAt = DateTime.parse(messageData['updated_at'] as String);
+        // 対象メッセージを探し、isRead を更新
+        final int index = userData.indexWhere((user) => user.id == userId);
+        if (index != -1) {
+          final user = userData[index];
+          user.updatedAt = updatedAt;
+          user.unreadCount ++;
+          setState(() {
+            userData.removeAt(index);
+            userData.insert(0, user);
+          });
+          print('成功');
+        } else {
+          print('失敗');
+        }
+      }
+    });
+  }
+
+  void _connectGroupWebSocket() {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    _channel = WebSocketChannel.connect(
+      Uri.parse('${wsUrl}ws_group_chat_list/${currentUser!.uid}'),
+    );
+    _channel.stream.listen((message) async {
+      if (!mounted) return;
+      final decodedMessage = json.decode(message);
+      if (decodedMessage['type'] == 'broadcast') {
+        final messageData = decodedMessage['message'];
+        final int groupChatRoomId = messageData['group_chat_room_id'];
+        final DateTime updatedAt = DateTime.parse(messageData['updated_at'] as String);
+        // 対象メッセージを探し、isRead を更新
+        final int index = groupChatData.indexWhere((group) => group.id == groupChatRoomId);
+        if (index != -1) {
+          final group = groupChatData[index];
+          group.updatedAt = updatedAt;
+          group.unreadCount ++;
+          setState(() {
+            groupChatData.removeAt(index);
+            groupChatData.insert(0, group);
+          });
+          print('成功');
+        } else {
+          print('失敗');
+        }
+      }
+    });
+  }
+
+  Future<void> getGroupChatUserMyData(int groupChatRoomId) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    // MyUser情報を取得
+    var uri = Uri.parse('${httpUrl}get_group_chat_room_user/$groupChatRoomId/${currentUser!.uid}');
+
     // GETリクエストを送信
-    var responseNotEntryGroup = await http.get(uriNotEntryGroup);
+    var response = await http.get(uri);
 
     // レスポンスのステータスコードを確認
-    if (responseNotEntryGroup.statusCode == 200) {
+    if (response.statusCode == 200) {
       // レスポンスボディをUTF-8でデコード
-      var responseBody = utf8.decode(responseNotEntryGroup.bodyBytes);
+      var responseBody = utf8.decode(response.bodyBytes);
+
       // JSONデータをデコード
-      final List<dynamic> body = jsonDecode(responseBody);
+      var responseData = jsonDecode(responseBody);
 
       // 必要なデータを取得
       if (mounted) {
         setState(() {
-          notGroupChatData = body.map((dynamic json) => GroupChatRoomData.fromJson(json)).toList();
+          groupMyData = GroupChatUserData.fromJson(responseData);
         });
       }
 
+      // 取得したデータを使用する
     } else {
       // リクエストが失敗した場合の処理
-      print('リクエストが失敗しました: ${responseNotEntryGroup.statusCode}');
+      print('リクエストが失敗しました: ${response.statusCode}');
     }
-
   }
 
   @override
@@ -224,10 +328,26 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
                     onTap: () async {
                       //個人チャットルーム遷移
                       await createOrGetPrivateChatRoom(userData[index].id);
+                      await updateUnreadPrivateMessage(privateChatroomId, userData[index].id);
                       await Navigator.of(context).push(
                         MaterialPageRoute(
                             builder: (context) {
-                              return PrivateChatPage(privateChatroomId: privateChatroomId, userData: userData[index], myData: myData);
+                              return PrivateChatPage(
+                                  privateChatroomId: privateChatroomId,
+                                  userData: UserData(
+                                      id: userData[index].id,
+                                      email: userData[index].email,
+                                      group: userData[index].group,
+                                      grade: userData[index].grade,
+                                      name: userData[index].name,
+                                      status: userData[index].status,
+                                      imageURL: userData[index].imageURL,
+                                      imageName: userData[index].imageName,
+                                      location: userData[index].location,
+                                      flag: userData[index].flag
+                                  ),
+                                  myData: myData!,
+                              );
                             }
                         ),
                       );
@@ -243,8 +363,8 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
                         leading: CircleAvatar(
                           backgroundColor: Colors.grey,
                           radius: 50,
-                          backgroundImage: userData[index].imgData != '' ? Image.memory(
-                            base64Decode(userData[index].imgData),
+                          backgroundImage: userData[index].imageURL != '' ? Image.network(
+                            userData[index].imageURL,
                             fit: BoxFit.cover,
                             errorBuilder: (c, o, s) {
                               return const Icon(
@@ -256,8 +376,71 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
                               : const AssetImage('assets/images/default.png'),
                         ),
                         title: Text(userData[index].name),
-                        subtitle: Text('${userData[index].group}　${userData[index].grade}　${userData[index].status}'),
-                        trailing: const Icon(Icons.input),
+                        subtitle: userData[index].group == 'Network班' ?
+                        Text('Net班　${userData[index].grade}　${userData[index].status}')
+                        : Text('${userData[index].group}　${userData[index].grade}　${userData[index].status}'),
+                        trailing: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            userData[index].updatedAt != null
+                                ? Builder(
+                              builder: (context) {
+                                DateTime updated = userData[index].updatedAt!;
+                                DateTime now = DateTime.now();
+
+                                // 日付を比較するために、時刻情報を削除
+                                DateTime updatedDate = DateTime(updated.year, updated.month, updated.day);
+                                DateTime nowDate = DateTime(now.year, now.month, now.day);
+
+                                String timeText;
+                                int dayDifference = nowDate.difference(updatedDate).inDays;
+
+                                if (dayDifference == 0) {
+                                  // 今日
+                                  timeText = DateFormat.Hm('ja').format(updated);
+                                } else if (dayDifference == 1) {
+                                  // 昨日
+                                  timeText = '昨日';
+                                } else if (dayDifference == 2) {
+                                  // 一昨日
+                                  timeText = '一昨日';
+                                } else if (dayDifference <= 6) {
+                                  // 1週間以内
+                                  timeText = '${DateFormat.E('ja').format(updated)}曜日';
+                                } else {
+                                  // それ以前
+                                  timeText = DateFormat.yMd('ja').format(updated);
+                                }
+
+                                return Text(
+                                  timeText,
+                                  style: TextStyle(color: Colors.grey[600]),
+                                );
+                              },
+                            )
+                                : Text('チャットなし', style: TextStyle(color: Colors.grey[600])),
+                            if (userData[index].unreadCount > 0)
+                              Container(
+                                margin: const EdgeInsets.only(top: 4),
+                                width: 24,
+                                height: 24,
+                                decoration: const BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '${userData[index].unreadCount}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        )
                       ),
                     ),
                   );
@@ -278,13 +461,18 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
                     onTap: () async {
                       //グループチャットルーム遷移
                       await getGroupChatUsers(groupChatData[index].id);
-                      await Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) {
-                              return GroupChatPage(groupChatRoomData: groupChatData[index], myData: myData, groupUsers: groupChatUsers);
-                            }
-                        ),
-                      );
+                      await getGroupChatUserMyData(groupChatData[index].id);
+                      await updateUnreadGroupMessage(groupChatData[index].id, myData!.id);
+                      if (groupMyData != null) {
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) {
+                                return GroupChatPage(groupChatRoomData: groupChatData[index], myData: groupMyData!, groupUsers: groupChatUsers);
+                              }
+                          ),
+                        );
+                      }
+
                     },
                     child: Container(
                       decoration: const BoxDecoration(
@@ -297,8 +485,8 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
                         leading: CircleAvatar(
                           backgroundColor: Colors.grey,
                           radius: 50,
-                          backgroundImage: groupChatData[index].imgData != '' ? Image.memory(
-                            base64Decode(groupChatData[index].imgData),
+                          backgroundImage: groupChatData[index].imageURL != '' ? Image.network(
+                            groupChatData[index].imageURL,
                             fit: BoxFit.cover,
                             errorBuilder: (c, o, s) {
                               return const Icon(
@@ -310,7 +498,66 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
                               : const AssetImage('assets/images/group_default.jpg'),
                         ),
                         title: Text(groupChatData[index].name),
-                        trailing: const Icon(Icons.input),
+                        trailing: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Builder(
+                              builder: (context) {
+                                DateTime updated = groupChatData[index].updatedAt;
+                                DateTime now = DateTime.now();
+
+                                // 日付を比較するために、時刻情報を削除
+                                DateTime updatedDate = DateTime(updated.year, updated.month, updated.day);
+                                DateTime nowDate = DateTime(now.year, now.month, now.day);
+
+                                String timeText;
+                                int dayDifference = nowDate.difference(updatedDate).inDays;
+
+                                if (dayDifference == 0) {
+                                  // 今日
+                                  timeText = DateFormat.Hm('ja').format(updated);
+                                } else if (dayDifference == 1) {
+                                  // 昨日
+                                  timeText = '昨日';
+                                } else if (dayDifference == 2) {
+                                  // 一昨日
+                                  timeText = '一昨日';
+                                } else if (dayDifference <= 6) {
+                                  // 1週間以内
+                                  timeText = '${DateFormat.E('ja').format(updated)}曜日';
+                                } else {
+                                  // それ以前
+                                  timeText = DateFormat.yMd('ja').format(updated);
+                                }
+
+                                return Text(
+                                  timeText,
+                                  style: TextStyle(color: Colors.grey[600]),
+                                );
+                              },
+                            ),
+                            if (groupChatData[index].unreadCount > 0)
+                              Container(
+                                margin: const EdgeInsets.only(top: 4),
+                                width: 24,
+                                height: 24,
+                                decoration: const BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '${groupChatData[index].unreadCount}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -343,8 +590,8 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
                         leading: CircleAvatar(
                           backgroundColor: Colors.grey,
                           radius: 50,
-                          backgroundImage: notGroupChatData[index].imgData != '' ? Image.memory(
-                            base64Decode(notGroupChatData[index].imgData),
+                          backgroundImage: notGroupChatData[index].imageURL != '' ? Image.network(
+                            notGroupChatData[index].imageURL,
                             fit: BoxFit.cover,
                             errorBuilder: (c, o, s) {
                               return const Icon(
@@ -387,8 +634,8 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
     );
   }
 
-  Future createOrGetPrivateChatRoom(int userId) async {
-    var uri = Uri.parse('${httpUrl}private_chat_room/${myData.id}/$userId');
+  Future createOrGetPrivateChatRoom(String userId) async {
+    var uri = Uri.parse('${httpUrl}private_chat_room/${myData!.id}/$userId');
 
     // GETリクエストを送信
     var response = await http.get(uri);
@@ -402,12 +649,49 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
       var responseData = jsonDecode(responseBody);
 
       // 必要なデータを取得
+
       privateChatroomId = responseData['id'];
+
+      print(privateChatroomId);
 
       // 取得したデータを使用する
     } else {
       // リクエストが失敗した場合の処理
       print('リクエストが失敗しました: ${response.statusCode}');
+    }
+  }
+
+  Future updateUnreadPrivateMessage(int roomId, String userId) async {
+    var url = Uri.parse('${httpUrl}private_message_unread_update/$roomId/$userId');
+
+    // 送信するデータを作成
+    Map<String, dynamic> data = {
+      'private_chat_room_id': roomId,
+      'user_id': userId,
+      // 他のキーと値を追加
+    };
+
+    // リクエストヘッダーを設定
+    Map<String, String> headers = {
+      'Content-Type': 'application/json', // JSON形式のデータを送信する場合
+      // 他のヘッダーを必要に応じて追加
+    };
+
+    try {
+      // HTTP POSTリクエストを送信
+      final request = await http.patch(
+        url,
+        headers: headers,
+        body: json.encode(data), // データをJSON形式にエンコード
+      );
+
+      // レスポンスをログに出力（デバッグ用）
+      print('Response status: ${request.statusCode}');
+      print('Response body: ${request.body}');
+
+    } catch (e) {
+      // エラーハンドリング
+      print('Error: $e');
     }
   }
 
@@ -432,6 +716,41 @@ class _ChatRoomListPage extends State<ChatRoomListPage> {
       print('リクエストが失敗しました: ${response.statusCode}');
     }
   }
+
+  Future updateUnreadGroupMessage(int roomId, String userId) async {
+    var url = Uri.parse('${httpUrl}group_message_unread_update/$roomId/$userId');
+
+    // 送信するデータを作成
+    Map<String, dynamic> data = {
+      'group_chat_room_id': roomId,
+      'user_id': userId,
+      // 他のキーと値を追加
+    };
+
+    // リクエストヘッダーを設定
+    Map<String, String> headers = {
+      'Content-Type': 'application/json', // JSON形式のデータを送信する場合
+      // 他のヘッダーを必要に応じて追加
+    };
+
+    try {
+      // HTTP POSTリクエストを送信
+      final request = await http.patch(
+        url,
+        headers: headers,
+        body: json.encode(data), // データをJSON形式にエンコード
+      );
+
+      // レスポンスをログに出力（デバッグ用）
+      print('Response status: ${request.statusCode}');
+      print('Response body: ${request.body}');
+
+    } catch (e) {
+      // エラーハンドリング
+      print('Error: $e');
+    }
+  }
+
 
 }
 

@@ -1,15 +1,13 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:labmaidfastapi/header_footer_drawer/footer.dart';
 
-import '../domain/chat_data.dart';
+import '../../domain/chat_data.dart';
 import 'package:http/http.dart' as http;
 
-import '../network/url.dart';
+import '../../network/url.dart';
 
 class GroupChatRoomDeletePage extends StatefulWidget {
-  final List<GroupChatRoomData> groupChatRoomList;
+  final List<GetGroupChatRoomData> groupChatRoomList;
   const GroupChatRoomDeletePage({Key? key, required this.groupChatRoomList}) : super(key: key);
 
   @override
@@ -93,8 +91,8 @@ class _GroupChatRoomDeletePage extends State<GroupChatRoomDeletePage> {
                   leading: CircleAvatar(
                     backgroundColor: Colors.grey,
                     radius: 50,
-                    backgroundImage: widget.groupChatRoomList[index].imgData != '' ? Image.memory(
-                      base64Decode(widget.groupChatRoomList[index].imgData),
+                    backgroundImage: widget.groupChatRoomList[index].imageURL != '' ? Image.network(
+                      widget.groupChatRoomList[index].imageURL,
                       fit: BoxFit.cover,
                       errorBuilder: (c, o, s) {
                         return const Icon(

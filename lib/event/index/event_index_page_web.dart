@@ -34,7 +34,7 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
   late WebSocketChannel _channel;
 
   List<EventData> events = [];
-  int? id;
+  String? userId;
   String? name;
   String? email;
 
@@ -178,7 +178,7 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
     } else {
       return const CalendarHeaderStyle(
           textAlign: TextAlign.center,
-          backgroundColor: Colors.indigo,
+          backgroundColor: Color.fromARGB(255, 100, 100, 200),
           textStyle: TextStyle(
             fontSize: 25,
             fontStyle: FontStyle.normal,
@@ -253,12 +253,12 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
 
   Future<void> _fetchMyUserData() async {
     final user = FirebaseAuth.instance.currentUser;
-    final userId = user!.uid;
     setState(() {
+      userId = user!.uid;
       email = user.email;
     });
 
-    var uriUser = Uri.parse('${httpUrl}user_name_id/$userId');
+    var uriUser = Uri.parse('${httpUrl}get_user_name/$userId');
     var responseUser = await http.get(uriUser);
 
     // レスポンスのステータスコードを確認
@@ -272,7 +272,6 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
       // 必要なデータを取得
       if (mounted) {
         setState(() {
-          id = responseData['id'];
           name = responseData['name'];
         });
       }
@@ -530,7 +529,7 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
                         EventDialogUtils.showCustomDialog(
                           context: context,
                           selectedDate: details.date!,
-                          userId: id!,
+                          userId: userId!,
                           name: name!,
                           email: email!,
                         );
@@ -1149,29 +1148,30 @@ class _EventIndexPageWebState extends State<EventIndexPageWeb> {
   Color _isTitleToColorBox(String title, String unit) {
     if (title == 'ミーティング') {
       if (unit == '全体') {
-        return Colors.purple.shade200;
+        return Colors.purple.withOpacity(0.3);
       } else if (unit == '個人') {
-        return Colors.deepPurple.shade200;
+        return Colors.deepPurple.withOpacity(0.3);
       } else if (unit == 'Web班') {
-        return Colors.cyan.shade200;
+        return Colors.cyan.withOpacity(0.3);
       } else if (unit == 'Net班') {
-        return Colors.amber.shade200;
-      } else if (unit == 'Grid班') {
-        return Colors.lightGreen.shade200;
+        return Colors.amber.withOpacity(0.3);
+      } else if (unit == 'Grid班'){
+        return Colors.lightGreen.withOpacity(0.3);
       } else if (unit == 'B4') {
-        return Colors.teal.shade200;
+        return Colors.teal.withOpacity(0.3);
       } else if (unit == 'M1') {
-        return Colors.orange.shade200;
+        return Colors.orange.withOpacity(0.3);
       } else if (unit == 'M2') {
-        return Colors.blueGrey.shade200;
+        return Colors.blueGrey.withOpacity(0.3);
       } else {
-        return Colors.red.shade200;
+        return Colors.red.withOpacity(0.3);
       }
     } else if (title == '輪講') {
-      return Colors.indigo.shade200;
+      return Colors.indigo.withOpacity(0.3);
     } else {
-      return Colors.pink.shade200;
+      return Colors.pink.withOpacity(0.3);
     }
+
   }
 
   Color _isTitleToColorBorder(String title, String unit) {

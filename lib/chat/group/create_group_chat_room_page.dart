@@ -1,12 +1,11 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:labmaidfastapi/domain/pick_image_data.dart';
 import 'package:labmaidfastapi/header_footer_drawer/footer.dart';
 import 'package:provider/provider.dart';
 
-import '../domain/user_data.dart';
-import '../pick_export/pick_image_export.dart';
+import '../../domain/user_data.dart';
+import '../../pick_export/pick_image_export.dart';
 import 'create_group_chat_room_model.dart';
 
 
@@ -22,14 +21,14 @@ class _AddRoomPage extends State<AddRoomPage> {
 
   String _group = '全体';
 
-  Uint8List? imageData;
+  PickedImage? imageData;
 
   void _handleRadioButton(String group) =>
       setState(() {
         _group = group;
       });
 
-  List<GroupChatMember> getMembersByGroup(List<GroupChatMember> users, String targetGroup) {
+  List<GroupChatMemberCreate> getMembersByGroup(List<GroupChatMemberCreate> users, String targetGroup) {
     return users.where((user) => user.group == targetGroup).toList();
   }
 
@@ -171,8 +170,7 @@ class _AddRoomPage extends State<AddRoomPage> {
           ),
           ).toList();
 
-          return model.myData != null ?
-          Column(
+          return Column(
             children: [
               Expanded(
                 child: GestureDetector(
@@ -203,14 +201,8 @@ class _AddRoomPage extends State<AddRoomPage> {
                               child: CircleAvatar(
                                 backgroundColor: Colors.grey,
                                 radius: 50,
-                                backgroundImage: imageData != null ? Image.memory(imageData!).image : const AssetImage('assets/images/group_default.jpg'),
+                                backgroundImage: imageData != null ? Image.memory(imageData!.bytes).image : const AssetImage('assets/images/group_default.jpg'),
                               ),
-                            ),
-                          ),
-                          Text(
-                            'ルーム作成者：${model.myData!.name}',
-                            style: const TextStyle(
-                              fontSize: 25,
                             ),
                           ),
                           const Divider(
@@ -521,10 +513,6 @@ class _AddRoomPage extends State<AddRoomPage> {
                 height: 60,
               ),
             ],
-          ) : const Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation(Colors.blue),
-            ),
           );
         }),
       ),

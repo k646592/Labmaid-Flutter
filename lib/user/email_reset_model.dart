@@ -13,7 +13,6 @@ class EmailResetModel extends ChangeNotifier {
   bool isLoading = false;
 
   String userId = '';
-  int? id;
   String initialEmail = '';
 
   void startLoading() {
@@ -32,24 +31,6 @@ class EmailResetModel extends ChangeNotifier {
     userId = uid;
     emailController.text = '';
     initialEmail = user.email!;
-    var uri = Uri.parse('${httpUrl}user_id/$userId');
-    var response = await http.get(uri);
-    // レスポンスのステータスコードを確認
-    if (response.statusCode == 200) {
-      // レスポンスボディをUTF-8でデコード
-      var responseBody = utf8.decode(response.bodyBytes);
-
-      // JSONデータをデコード
-      var responseData = jsonDecode(responseBody);
-
-      // 必要なデータを取得
-      id = responseData['id'];
-
-      // 取得したデータを使用する
-    } else {
-      // リクエストが失敗した場合の処理
-      print('リクエストが失敗しました: ${response.statusCode}');
-    }
 
     notifyListeners();
   }
@@ -104,7 +85,7 @@ class EmailResetModel extends ChangeNotifier {
   }
 
   Future<void> updateEmailFastAPI() async {
-    var uri = Uri.parse('${httpUrl}users/email/$id');
+    var uri = Uri.parse('${httpUrl}users/email/$userId');
 
     // 送信するデータを作成
     Map<String, dynamic> data = {

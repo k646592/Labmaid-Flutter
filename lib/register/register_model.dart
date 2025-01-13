@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:labmaidfastapi/domain/pick_image_data.dart';
 import 'dart:typed_data';
 
 import 'package:labmaidfastapi/user/shared_preferences.dart';
 
-import '../image_size/size_limit.dart';
 import '../network/url.dart';
 
 
@@ -29,6 +29,7 @@ class RegisterModel extends ChangeNotifier {
   String? grade;
   String? base64Image;
   Uint8List? imageBytes;
+  String? imageName;
 
   bool isLoading = false;
 
@@ -78,7 +79,7 @@ class RegisterModel extends ChangeNotifier {
     return data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
   }
 
-  Future signUp(Uint8List? userImage) async {
+  Future signUp(PickedImage? userImage) async {
     email = emailController.text;
     password = passwordController.text;
     passConfirm = passwordConfirmController.text;
@@ -129,27 +130,31 @@ class RegisterModel extends ChangeNotifier {
         final request = http.MultipartRequest('POST', uri);
         if (userImage == null) {
           imageBytes = await loadImageBytes(imagePath);
+          imageName = "default.png";
         } else {
-          imageBytes = userImage;
+          imageBytes = userImage.bytes;
+          imageName = userImage.fileName;
         }
 
+        /*
         if (!sizeLimit(imageBytes!)) {
           throw '画像サイズが2.2Mを超えているため、画像サイズは更新できませんでした。';
         }
+         */
 
         Map<String, String> headers = {"Content-type": "multipart/form-data"};
 
-        final file = http.MultipartFile.fromBytes('file', imageBytes!, filename: 'default.png');
+        final file = http.MultipartFile.fromBytes('image', imageBytes!, filename: imageName);
         request.files.add(file);
         request.headers.addAll(headers);
 
         request.fields.addAll({
+          'firebase_user_id': uid,
           'email': email!,
           'grade': grade!,
           'group': group!,
           'name': name!,
           'status': status,
-          'firebase_user_id': uid,
           'now_location': 'キャンパス外',
           'location_flag': false.toString(),
         });
