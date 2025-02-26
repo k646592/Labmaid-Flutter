@@ -63,15 +63,6 @@ class LoginPage extends StatelessWidget {
                                       fontSize: 30,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                /*
-                                SizedBox(height: 20),
-                                Text(
-                                  'Labmaidを利用するためにログインしてください。',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                */
                                 const SizedBox(height: 10),
                                 TextField(
                                   controller: model.emailController,

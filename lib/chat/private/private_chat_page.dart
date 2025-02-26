@@ -693,9 +693,11 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
                           Expanded(
                             child: TextFormField(
                               controller: _messageController,
-                              minLines: 1,
                               focusNode: _focusNode,
-                              maxLines: _isExpanded ? 5 : 1,
+                              minLines: 1,
+                              maxLines: _isExpanded ? 5 : null, // maxLinesをnullにすると無制限
+                              keyboardType: TextInputType.multiline, // 複数行入力を許可
+                              textInputAction: TextInputAction.newline, // 改行を有効化
                               decoration: const InputDecoration(
                                 hintText: 'メッセージを入力',
                                 border: InputBorder.none,
@@ -782,13 +784,6 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
 
 }
 
-
-
-
-/*
-
-
-*/
 
 
 

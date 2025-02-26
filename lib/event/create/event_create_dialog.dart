@@ -109,544 +109,549 @@ class _EventDialogState extends State<EventDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 4.0,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        width: 300,
-        padding: const EdgeInsets.all(16),
-        child: Scrollbar(
-          controller: _scrollController, // ScrollControllerを指定
-          thumbVisibility: true,
-          child: SingleChildScrollView(
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Material(
+        elevation: 4.0,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          width: 300,
+          padding: const EdgeInsets.all(16),
+          child: Scrollbar(
             controller: _scrollController, // ScrollControllerを指定
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (_isLoading)
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 16),
-                    child: CircularProgressIndicator(),
+            thumbVisibility: true,
+            child: SingleChildScrollView(
+              controller: _scrollController, // ScrollControllerを指定
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (_isLoading)
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 16),
+                      child: CircularProgressIndicator(),
+                    ),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text('内容',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 10,
+                  Container(
+                    padding: const EdgeInsets.all(5.0),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 2,
+                        color: const Color(0xffb3b9ed),
                       ),
-                      Text('内容',
-                        style: TextStyle(
-                          color: Colors.black45,
-                          fontSize: 15,
+                      borderRadius: BorderRadius.circular(7),
+                    ),
+                    child: Row(
+                      children: [
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        DropdownButton(
+                          value: _content,
+                          items: const [
+                            DropdownMenuItem(
+                              value: 'ミーティング',
+                              child: Text('ミーティング'),
+                            ),
+                            DropdownMenuItem(
+                              value: '輪講',
+                              child: Text('輪講'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'その他',
+                              child: Text('その他'),
+                            ),
+                          ],
+                          onChanged: (text) {
+                            setState(() {
+                              _content = text.toString();
+                              if (text.toString() == 'ミーティング') {
+                                _display = false;
+                                _titleController.text = 'ミーティング';
+                              }
+                              if (text.toString() == '輪講') {
+                                _display = false;
+                                _titleController.text = '輪講';
+                              }
+                              if (text.toString() == 'その他') {
+                                _display = true;
+                                _titleController.text = '';
+                              }
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text('タイトル',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextFormField(
+                    controller: _titleController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          width: 2,
+                          color: Color(0xffb3b9ed),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(5.0),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 2,
-                      color: const Color(0xffb3b9ed),
-                    ),
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  child: Row(
-                    children: [
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      DropdownButton(
-                        value: _content,
-                        items: const [
-                          DropdownMenuItem(
-                            value: 'ミーティング',
-                            child: Text('ミーティング'),
-                          ),
-                          DropdownMenuItem(
-                            value: '輪講',
-                            child: Text('輪講'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'その他',
-                            child: Text('その他'),
-                          ),
-                        ],
-                        onChanged: (text) {
-                          setState(() {
-                            _content = text.toString();
-                            if (text.toString() == 'ミーティング') {
-                              _display = false;
-                              _titleController.text = 'ミーティング';
-                            }
-                            if (text.toString() == '輪講') {
-                              _display = false;
-                              _titleController.text = '輪講';
-                            }
-                            if (text.toString() == 'その他') {
-                              _display = true;
-                              _titleController.text = '';
-                            }
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('タイトル',
-                        style: TextStyle(
-                          color: Colors.black45,
-                          fontSize: 15,
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          width: 2,
+                          color: Color(0xffb3b9ed),
                         ),
                       ),
-                    ],
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          width: 2,
+                          color: Color(0xffb3b9ed),
+                        ),
+                      ).copyWith(
+                        borderSide: const BorderSide(
+                          width: 2,
+                          color: Color(0xfff96c6c),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          width: 2,
+                          color: Color(0xffb3b9ed),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          width: 2,
+                          color: Color(0xffb3b9ed),
+                        ),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          width: 2,
+                          color: Color(0xffb3b9ed),
+                        ),
+                      ),
+                      hintText: "Event Title",
+                      hintStyle: const TextStyle(
+                        color: Color(0xff626262),
+                        fontSize: 17,
+                      ),
+                      labelStyle: const TextStyle(
+                        color: Color(0xff626262),
+                        fontSize: 17,
+                      ),
+                      helperStyle: const TextStyle(
+                        color: Color(0xff626262),
+                        fontSize: 17,
+                      ),
+                      errorStyle: const TextStyle(
+                        color: Color(0xfff96c6c),
+                        fontSize: 12,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 20,
+                      ),
+                    ).copyWith(),
+                    style: const TextStyle(
+                      color: Color(0xff626262),
+                      fontSize: 17.0,
+                    ),
+                    enabled: _display,
+
+                    validator: (value) {
+                      if (_titleController.text == "") {
+                        return "Please enter event title.";
+                      }
+
+                      return null;
+                    },
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
                   ),
-                ),
-                TextFormField(
-                  controller: _titleController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(7),
-                      borderSide: const BorderSide(
-                        width: 2,
-                        color: Color(0xffb3b9ed),
-                      ),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  unitSelector(_content),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text('開始時刻',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
                     ),
-                    disabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(7),
-                      borderSide: const BorderSide(
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(5.0),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(
                         width: 2,
-                        color: Color(0xffb3b9ed),
+                        color: const Color(0xffb3b9ed),
                       ),
-                    ),
-                    errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(7),
-                      borderSide: const BorderSide(
+                    ),
+                    alignment: Alignment.centerLeft,
+                    child: TextButton(
+                      child: Text('${DateFormat.yMMMd('ja').format(selectedStartDate).toString()}(${DateFormat.E('ja').format(selectedStartDate)})ー${DateFormat.Hm('ja').format(selectedStartDate)}',
+                        style: const TextStyle(
+                          fontSize: 17.0,
+                        ),
+                      ),
+                      onPressed: () {
+                        DatePicker.showDateTimePicker(
+                          context,
+                          // 現在の日時
+                          currentTime: selectedStartDate,
+                          // 選択できる日時の範囲
+                          minTime: DateTime(currentDate.year,currentDate.month,currentDate.day,0,0,0),
+                          maxTime: DateTime(2030, 12, 31,23,0,0),
+
+                          // ドラムロールを変化させたときの処理
+                          onChanged: (dateTime) {
+                          },
+
+                          // 「完了」を押したときの処理
+                          onConfirm: (dateTime) {
+                            setState(() {
+                              selectedStartDate = dateTime;
+                              if (selectedStartDate.isAfter(selectedEndDate)) {
+                                selectedEndDate = DateTime(selectedStartDate.year,selectedStartDate.month,selectedStartDate.day,23,00,00);
+                              }
+                            });
+                          },
+
+                          // 「キャンセル」を押したときの処理
+                          onCancel: () {
+                          },
+                          //言語
+                          locale: LocaleType.jp,
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text('終了時刻',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(5.0),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(
                         width: 2,
-                        color: Color(0xffb3b9ed),
+                        color: const Color(0xffb3b9ed),
+                      ),
+                      borderRadius: BorderRadius.circular(7),
+                    ),
+                    alignment: Alignment.centerLeft,
+                    child: TextButton(
+                      child: Text('${DateFormat.yMMMd('ja').format(selectedEndDate).toString()}(${DateFormat.E('ja').format(selectedEndDate)})ー${DateFormat.Hm('ja').format(selectedEndDate)}',
+                        style: const TextStyle(
+                          fontSize: 17.0,
+                        ),
+                      ),
+                      onPressed: () {
+                        DatePicker.showDateTimePicker(
+                          context,
+                          // 現在の日時
+                          currentTime: selectedEndDate,
+                          // 選択できる日時の範囲
+                          minTime: selectedStartDate,
+                          maxTime: DateTime(2030, 12, 31),
+
+                          // ドラムロールを変化させたときの処理
+                          onChanged: (dateTime) {
+                          },
+
+                          // 「完了」を押したときの処理
+                          onConfirm: (dateTime) {
+                            setState(() {
+                              selectedEndDate = dateTime;
+                            });
+                          },
+
+                          // 「キャンセル」を押したときの処理
+                          onCancel: () {
+                          },
+                          //言語
+                          locale: LocaleType.jp,
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text('詳細',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextFormField(
+                    focusNode: _descriptionNode,
+                    controller: _descriptionController,
+                    style: const TextStyle(
+                      color: Color(0xff626262),
+                      fontSize: 17.0,
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.newline,
+                    selectionControls: MaterialTextSelectionControls(),
+                    minLines: 1,
+                    maxLines: 10,
+                    maxLength: 1000,
+                    validator: (value) {
+                      if (value == null || value.trim() == "") {
+                        return "Please enter attendance description.";
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          width: 2,
+                          color: Color(0xffb3b9ed),
+                        ),
+                      ),
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          width: 2,
+                          color: Color(0xffb3b9ed),
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          width: 2,
+                          color: Color(0xffb3b9ed),
+                        ),
+                      ).copyWith(
+                        borderSide: const BorderSide(
+                          width: 2,
+                          color: Color(0xfff96c6c),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          width: 2,
+                          color: Color(0xffb3b9ed),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          width: 2,
+                          color: Color(0xffb3b9ed),
+                        ),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          width: 2,
+                          color: Color(0xffb3b9ed),
+                        ),
+                      ),
+                      hintText: "Attendance Title",
+                      hintStyle: const TextStyle(
+                        color: Color(0xff626262),
+                        fontSize: 17,
+                      ),
+                      labelStyle: const TextStyle(
+                        color: Color(0xff626262),
+                        fontSize: 17,
+                      ),
+                      helperStyle: const TextStyle(
+                        color: Color(0xff626262),
+                        fontSize: 17,
+                      ),
+                      errorStyle: const TextStyle(
+                        color: Color(0xfff96c6c),
+                        fontSize: 12,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 20,
                       ),
                     ).copyWith(
-                      borderSide: const BorderSide(
-                        width: 2,
-                        color: Color(0xfff96c6c),
-                      ),
+                      hintText: "Event Description",
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(7),
-                      borderSide: const BorderSide(
-                        width: 2,
-                        color: Color(0xffb3b9ed),
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(7),
-                      borderSide: const BorderSide(
-                        width: 2,
-                        color: Color(0xffb3b9ed),
-                      ),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(7),
-                      borderSide: const BorderSide(
-                        width: 2,
-                        color: Color(0xffb3b9ed),
-                      ),
-                    ),
-                    hintText: "Event Title",
-                    hintStyle: const TextStyle(
-                      color: Color(0xff626262),
-                      fontSize: 17,
-                    ),
-                    labelStyle: const TextStyle(
-                      color: Color(0xff626262),
-                      fontSize: 17,
-                    ),
-                    helperStyle: const TextStyle(
-                      color: Color(0xff626262),
-                      fontSize: 17,
-                    ),
-                    errorStyle: const TextStyle(
-                      color: Color(0xfff96c6c),
-                      fontSize: 12,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 20,
-                    ),
-                  ).copyWith(),
-                  style: const TextStyle(
-                    color: Color(0xff626262),
-                    fontSize: 17.0,
                   ),
-                  enabled: _display,
-
-                  validator: (value) {
-                    if (_titleController.text == "") {
-                      return "Please enter event title.";
-                    }
-
-                    return null;
-                  },
-                  keyboardType: TextInputType.text,
-                  textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(
-                  height: 15.0,
-                ),
-                unitSelector(_content),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 10),
+                        const Text(
+                          'メール送信',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 15,
+                          ),
+                        ),
+                        const Spacer(),
+                        CupertinoSwitch(
+                          value: _mailSend,
+                          onChanged: (value) {
+                            setState(() {
+                              _mailSend = value;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('開始時刻',
-                        style: TextStyle(
-                          color: Colors.black45,
-                          fontSize: 15,
+                      // 戻るボタン
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey, // 戻るボタンの色
+                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                          ),
+                          child: const Text(
+                            '戻る',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(5.0),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 2,
-                      color: const Color(0xffb3b9ed),
-                    ),
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  alignment: Alignment.centerLeft,
-                  child: TextButton(
-                    child: Text('${DateFormat.yMMMd('ja').format(selectedStartDate).toString()}(${DateFormat.E('ja').format(selectedStartDate)})ー${DateFormat.Hm('ja').format(selectedStartDate)}',
-                      style: const TextStyle(
-                        fontSize: 17.0,
-                      ),
-                    ),
-                    onPressed: () {
-                      DatePicker.showDateTimePicker(
-                        context,
-                        // 現在の日時
-                        currentTime: selectedStartDate,
-                        // 選択できる日時の範囲
-                        minTime: DateTime(currentDate.year,currentDate.month,currentDate.day,0,0,0),
-                        maxTime: DateTime(2030, 12, 31,23,0,0),
+                      // 登録ボタン
+                      ElevatedButton(
+                        onPressed: () async {
+                          _toggleLoading();
+                          Future.delayed(const Duration(seconds: 1), () async {
+                            _toggleLoading();
+                            try {
+                              //イベント追加
+                              await addEvent(_titleController.text, selectedStartDate, selectedEndDate, _unit,_descriptionController.text, _mailSend, );
+                              if (_mailSend == true) {
+                                await sendEmail(_titleController.text, selectedStartDate, selectedEndDate, _unit,_descriptionController.text, );
+                              }
 
-                        // ドラムロールを変化させたときの処理
-                        onChanged: (dateTime) {
-                        },
-
-                        // 「完了」を押したときの処理
-                        onConfirm: (dateTime) {
-                          setState(() {
-                            selectedStartDate = dateTime;
-                            if (selectedStartDate.isAfter(selectedEndDate)) {
-                              selectedEndDate = DateTime(selectedStartDate.year,selectedStartDate.month,selectedStartDate.day,23,00,00);
+                              Navigator.of(context).pop();
+                              const snackBar = SnackBar(
+                                backgroundColor: Colors.green,
+                                content: Text('イベントの登録をしました。'),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            } catch (e) {
+                              final snackBar = SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text(e.toString()),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             }
                           });
-                        },
-
-                        // 「キャンセル」を押したときの処理
-                        onCancel: () {
-                        },
-                        //言語
-                        locale: LocaleType.jp,
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('終了時刻',
-                        style: TextStyle(
-                          color: Colors.black45,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(5.0),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 2,
-                      color: const Color(0xffb3b9ed),
-                    ),
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  alignment: Alignment.centerLeft,
-                  child: TextButton(
-                    child: Text('${DateFormat.yMMMd('ja').format(selectedEndDate).toString()}(${DateFormat.E('ja').format(selectedEndDate)})ー${DateFormat.Hm('ja').format(selectedEndDate)}',
-                      style: const TextStyle(
-                        fontSize: 17.0,
-                      ),
-                    ),
-                    onPressed: () {
-                      DatePicker.showDateTimePicker(
-                        context,
-                        // 現在の日時
-                        currentTime: selectedEndDate,
-                        // 選択できる日時の範囲
-                        minTime: selectedStartDate,
-                        maxTime: DateTime(2030, 12, 31),
-
-                        // ドラムロールを変化させたときの処理
-                        onChanged: (dateTime) {
-                        },
-
-                        // 「完了」を押したときの処理
-                        onConfirm: (dateTime) {
-                          setState(() {
-                            selectedEndDate = dateTime;
-                          });
-                        },
-
-                        // 「キャンセル」を押したときの処理
-                        onCancel: () {
-                        },
-                        //言語
-                        locale: LocaleType.jp,
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('詳細',
-                        style: TextStyle(
-                          color: Colors.black45,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                TextFormField(
-                  focusNode: _descriptionNode,
-                  controller: _descriptionController,
-                  style: const TextStyle(
-                    color: Color(0xff626262),
-                    fontSize: 17.0,
-                  ),
-                  keyboardType: TextInputType.multiline,
-                  textInputAction: TextInputAction.newline,
-                  selectionControls: MaterialTextSelectionControls(),
-                  minLines: 1,
-                  maxLines: 10,
-                  maxLength: 1000,
-                  validator: (value) {
-                    if (value == null || value.trim() == "") {
-                      return "Please enter attendance description.";
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(7),
-                      borderSide: const BorderSide(
-                        width: 2,
-                        color: Color(0xffb3b9ed),
-                      ),
-                    ),
-                    disabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(7),
-                      borderSide: const BorderSide(
-                        width: 2,
-                        color: Color(0xffb3b9ed),
-                      ),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(7),
-                      borderSide: const BorderSide(
-                        width: 2,
-                        color: Color(0xffb3b9ed),
-                      ),
-                    ).copyWith(
-                      borderSide: const BorderSide(
-                        width: 2,
-                        color: Color(0xfff96c6c),
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(7),
-                      borderSide: const BorderSide(
-                        width: 2,
-                        color: Color(0xffb3b9ed),
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(7),
-                      borderSide: const BorderSide(
-                        width: 2,
-                        color: Color(0xffb3b9ed),
-                      ),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(7),
-                      borderSide: const BorderSide(
-                        width: 2,
-                        color: Color(0xffb3b9ed),
-                      ),
-                    ),
-                    hintText: "Attendance Title",
-                    hintStyle: const TextStyle(
-                      color: Color(0xff626262),
-                      fontSize: 17,
-                    ),
-                    labelStyle: const TextStyle(
-                      color: Color(0xff626262),
-                      fontSize: 17,
-                    ),
-                    helperStyle: const TextStyle(
-                      color: Color(0xff626262),
-                      fontSize: 17,
-                    ),
-                    errorStyle: const TextStyle(
-                      color: Color(0xfff96c6c),
-                      fontSize: 12,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 20,
-                    ),
-                  ).copyWith(
-                    hintText: "Event Description",
-                  ),
-                ),
-                const SizedBox(
-                  height: 15.0,
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 10),
-                      const Text(
-                        'メール送信',
-                        style: TextStyle(
-                          color: Colors.black45,
-                          fontSize: 15,
-                        ),
-                      ),
-                      const Spacer(),
-                      CupertinoSwitch(
-                        value: _mailSend,
-                        onChanged: (value) {
-                          setState(() {
-                            _mailSend = value;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 15.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    // 戻るボタン
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey, // 戻るボタンの色
+                          backgroundColor: Colors.blue, // 登録ボタンの色
                           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                         ),
                         child: const Text(
-                          '戻る',
+                          '登録',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,
                           ),
                         ),
                       ),
-                    ),
-                    // 登録ボタン
-                    ElevatedButton(
-                      onPressed: () async {
-                        _toggleLoading();
-                        Future.delayed(const Duration(seconds: 1), () async {
-                          _toggleLoading();
-                          try {
-                            //イベント追加
-                            await addEvent(_titleController.text, selectedStartDate, selectedEndDate, _unit,_descriptionController.text, _mailSend, );
-                            if (_mailSend == true) {
-                              await sendEmail(_titleController.text, selectedStartDate, selectedEndDate, _unit,_descriptionController.text, );
-                            }
-
-                            Navigator.of(context).pop();
-                            const snackBar = SnackBar(
-                              backgroundColor: Colors.green,
-                              content: Text('イベントの登録をしました。'),
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          } catch (e) {
-                            final snackBar = SnackBar(
-                              backgroundColor: Colors.red,
-                              content: Text(e.toString()),
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          }
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue, // 登録ボタンの色
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                      ),
-                      child: const Text(
-                        '登録',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

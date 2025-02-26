@@ -1,12 +1,13 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:labmaidfastapi/minutes/minutes_pdf_preview.dart';
-import 'package:labmaidfastapi/minutes/voice_minutes/voice_minutes_page.dart';
-
 import '../domain/memo_data.dart';
-import '../network/url.dart';
+import '../network/url.dart'; // httpUrl, wsUrl の定義
+import 'minutes_pdf_preview.dart';
+import 'minutes_websocket.dart';
+import 'voice_minutes/voice_minutes_page.dart'; // WebSocketクライアントクラス
 
 class MainTextPage extends StatefulWidget {
   final MemoData memo;
@@ -19,20 +20,77 @@ class MainTextPage extends StatefulWidget {
 class _MainTextPageState extends State<MainTextPage> {
   late TextEditingController _mainTextController;
   late FocusNode _mainTextNode;
-
-  String pdf = '';
+  MeetingWebSocketClient? _webSocketClient; // WebSocket クライアント
+  bool _isLoading = true; // ロード状態
+  bool _isUserInput = true; // 🚀 ユーザーが入力したかどうか
+  Timer? _debounce;
 
   @override
   void initState() {
-    _mainTextController = TextEditingController();
-    _mainTextController.text = widget.memo.mainText;
-    _mainTextNode = FocusNode();
     super.initState();
+    _mainTextController = TextEditingController();
+    _mainTextNode = FocusNode();
+
+    _fetchMeetingText(); // 初回ロード時に過去の議事録を取得
+  }
+
+  /// ✅ 既存の議事録 (`main_text`) を取得
+  Future<void> _fetchMeetingText() async {
+    final url = Uri.parse('${httpUrl}meetings/${widget.memo.id}');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      setState(() {
+        _mainTextController.text = data['main_text']; // 過去のテキストをセット
+        _isLoading = false;
+      });
+
+      // WebSocket 接続開始
+      _initializeWebSocket();
+    } else {
+      print("❌ Failed to fetch meeting text");
+    }
+  }
+
+  /// ✅ WebSocket 初期化
+  void _initializeWebSocket() {
+    _webSocketClient = MeetingWebSocketClient(
+      meetingId: widget.memo.id,
+      onTextReceived: (receivedText) {
+        // 🚀 すでに同じテキストなら変更しない
+        if (_mainTextController.text != receivedText) {
+          setState(() {
+            _isUserInput = false; // 🚀 受信したデータなので、送信しない
+            _mainTextController.text = receivedText;
+          });
+        }
+      },
+    );
+
+    _webSocketClient!.connect(wsUrl);
+
+    // 🚀 ユーザーが入力した場合のみ WebSocket で送信
+    _mainTextController.addListener(() {
+      if (_isUserInput) {
+        final newText = _mainTextController.text;
+
+        // 🚀 デバウンス処理（一定時間待ってから送信）
+        if (_debounce?.isActive ?? false) _debounce!.cancel();
+        _debounce = Timer(Duration(milliseconds: 300), () {
+          print("📤 Sending debounced text via WebSocket: $newText");
+          _webSocketClient?.sendText(newText);
+        });
+      }
+      _isUserInput = true; // 🚀 次回の変更は「ユーザー入力」として処理
+    });
   }
 
   @override
   void dispose() {
+    _mainTextController.dispose();
     _mainTextNode.dispose();
+    _webSocketClient?.disconnect();
     super.dispose();
   }
 
@@ -40,33 +98,20 @@ class _MainTextPageState extends State<MainTextPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(widget.memo.title),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        backgroundColor: Colors.blue.shade800,
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        centerTitle: true,
-        elevation: 0.0,
-        title: Text(
-          widget.memo.title,
-          style: const TextStyle(
-            color: Colors.white,
-          ),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          kIsWeb ? const SizedBox()
-          : IconButton(
+          kIsWeb
+              ? const SizedBox()
+              : IconButton(
             onPressed: () async {
-              // PDF化してプレビューを表示する処理
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => VoiceMemoPage(memo: widget.memo,),
+                  builder: (context) => VoiceMemoPage(memo: widget.memo),
                 ),
               );
             },
@@ -74,30 +119,27 @@ class _MainTextPageState extends State<MainTextPage> {
           ),
           IconButton(
             onPressed: () async {
-              // PDF化してプレビューを表示する処理
               await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => MinutesPdfPreview(
-                      _mainTextController.text,
-                      widget.memo.title,
+                    _mainTextController.text,
+                    widget.memo.title,
                   ),
                 ),
               );
             },
             icon: const Icon(Icons.picture_as_pdf),
           ),
+          /*
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: () async {
-
               try {
-                // mainTextの更新
                 await updateMainText();
-
                 const snackBar = SnackBar(
                   backgroundColor: Colors.green,
-                  content: Text('議事録の登録をしました。'),
+                  content: Text('議事録の更新をしました。'),
                 );
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               } catch (e) {
@@ -109,45 +151,42 @@ class _MainTextPageState extends State<MainTextPage> {
               }
             },
           ),
+          */
         ],
       ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus(); // フォーカスを解除
-        },
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator()) // ローディング表示
+          : GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: TextField(
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                  ),
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 40,
                   controller: _mainTextController,
+                  focusNode: _mainTextNode,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  decoration:
+                  const InputDecoration(border: InputBorder.none),
                 ),
               ),
             ),
-            const SizedBox(height: 50), // 下部に50ピクセルの空白を追加
+            const SizedBox(height: 50),
           ],
         ),
       ),
     );
   }
 
+  /// ✅ HTTP PATCH で明示的に DB を更新
   Future updateMainText() async {
     final url = Uri.parse('${httpUrl}update_main_text/${widget.memo.id}');
     final response = await http.patch(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        'main_text': _mainTextController.text,
-      }),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'main_text': _mainTextController.text}),
     );
 
     if (response.statusCode == 200) {
@@ -157,5 +196,4 @@ class _MainTextPageState extends State<MainTextPage> {
       print('Request failed with status: ${response.statusCode}');
     }
   }
-
 }
