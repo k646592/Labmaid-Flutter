@@ -127,6 +127,7 @@ Future<void> postLocation() async {
     final wifiSSID = await info.getWifiName();
 
     print(wifiBSSID);
+    print(wifiSSID);
     print(firebaseUserId);
 
     if (firebaseUserId != null) {

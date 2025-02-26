@@ -196,7 +196,7 @@ class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
                                 ),
                                 TextButton(
                                   onPressed: () async {
-                                    _removeMemberFromGroup(groupChatUsers[index], groupChatRoomData);
+                                    await _removeMemberFromGroup(groupChatUsers[index], groupChatRoomData);
                                     await Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (context) => const Footer(pageNumber: 2),
@@ -230,7 +230,7 @@ class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
                               ),
                               TextButton(
                                 onPressed: () async {
-                                  _exitMeFromGroup(myData, groupChatRoomData);
+                                  await _exitMeFromGroup(myData, groupChatRoomData);
                                   await Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => const Footer(pageNumber: 2),
@@ -259,7 +259,7 @@ class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
     }
   }
 
-  void _removeMemberFromGroup(GroupChatUserData user, GroupChatRoomData groupChatRoomData) async {
+  Future<void> _removeMemberFromGroup(GroupChatUserData user, GroupChatRoomData groupChatRoomData) async {
     // サーバーやデータベースとの通信を行い、ユーザーをグループから削除
     var uri = Uri.parse('${httpUrl}group_member_update/${groupChatRoomData.id}/${user.id}');
 
@@ -277,7 +277,7 @@ class _GroupChatRoomInfoState extends State<GroupChatRoomInfo> {
     }
   }
 
-  void _exitMeFromGroup(GroupChatUserData myData, GroupChatRoomData groupChatRoomData) async {
+  Future<void> _exitMeFromGroup(GroupChatUserData myData, GroupChatRoomData groupChatRoomData) async {
     // サーバーやデータベースとの通信を行い、ユーザーをグループから削除
     var uri = Uri.parse('${httpUrl}group_member_update/${groupChatRoomData.id}/${myData.id}');
 

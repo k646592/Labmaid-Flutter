@@ -10,8 +10,10 @@ import 'login/login_page.dart'; // ログインページのインポート
 import 'package:flutter/foundation.dart';
 import 'firebase_options.dart'; // Firebaseオプションのインポート
 import 'shared/constants.dart'; // 定数のインポート
+import 'dart:async';
 
 Future<void> main() async {
+  final startupTimer = Stopwatch()..start();
   // Flutterエンジンが初期化されるまで待機
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -35,6 +37,11 @@ Future<void> main() async {
     await requestLocationPermission();
     await initializeBackgroundService(); // バックグラウンドサービスの初期化
   }
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    startupTimer.stop();
+    print('アプリ起動時間：${startupTimer.elapsedMilliseconds}ms');
+  });
 
   // MyAppウィジェットをルートとして実行
   runApp(

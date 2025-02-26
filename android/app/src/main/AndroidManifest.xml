@@ -27,6 +27,12 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Foreground Serviceの設定 -->
+        <service
+            android:name="id.flutter.flutter_background_service.BackgroundService"
+            android:foregroundServiceType="location"
+            />
+
     </application>
 
     <!-- 権限の追加 -->
